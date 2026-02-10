@@ -1,0 +1,231 @@
+---
+alwaysApply: true
+---
+version: 1
+name: "wmt-framework-springboot-mybatisplus"
+description: "面向依赖 wmt-framework 的业务系统开发规则（Controller统一返回CommonResult，分页统一PageParam/PageResult，MyBatis-Plus + MPJ + BaseMapperX）"
+
+language: "zh-CN"
+
+applies_to:
+  - "*.java"
+  - "pom.xml"
+  - "application*.yml"
+  - "application*.yaml"
+
+code_style:
+  java:
+    - "Controller 层：方法返回类型一律为 CommonResult<T>；分页返回 CommonResult<PageResult<T>>>。"
+    - "禁止在 AOP 层自动包装返回值；Controller 需主动返回 CommonResult。"
+    - "参数校验统一使用 @Validated/@Valid，异常由全局异常处理器转为 CommonResult 错误响应。"
+    - "业务异常使用 ServiceException/ServiceExceptionUtil 抛出，不返回 null 或裸异常。"
+    - "分页入参统一使用 PageParam 或 SortablePageParam；出参统一 PageResult。"
+    - "Mapper 统一 extends BaseMapperX<Entity>，分页优先使用 BaseMapperX 提供的 selectPage/selectJoinPage。"
+    - "禁止自定义 ResponseEntity 包装；禁止返回 Map/JSONObject 代替 CommonResult。"
+    - "实体/DTO/VO 命名：DO 持久层、DTO 入参、VO 出参，避免混用。"
+    - "Swagger/OpenAPI：对外接口使用 @Operation/@Parameter，POJO 使用 @Schema 标注字段。"
+
+project_knowledge:
+  common_result:
+    class: "com.wmt.framework.common.pojo.CommonResult"
+    success_factory: "CommonResult.success(data)"
+    error_factory:
+      - "CommonResult.error(code, message)"
+      - "CommonResult.error(ErrorCode)"
+      - "CommonResult.error(ServiceException)"
+    is_success: "result.isSuccess() 或 CommonResult.isSuccess(code)"
+  pagination:
+    request:
+      - "com.wmt.framework.common.pojo.PageParam"
+      - "com.wmt.framework.common.pojo.SortablePageParam"
+      - "com.wmt.framework.common.pojo.SortingField"
+    response: "com.wmt.framework.common.pojo.PageResult"
+    utils:
+      - "com.wmt.framework.common.util.object.PageUtils"
+      - "com.wmt.framework.mybatis.core.util.MyBatisUtils"
+  exceptions:
+    service_exception: "com.wmt.framework.common.exception.ServiceException"
+    error_code: "com.wmt.framework.common.exception.ErrorCode"
+    global_error_codes: "com.wmt.framework.common.exception.enums.GlobalErrorCodeConstants"
+    util: "com.wmt.framework.common.exception.util.ServiceExceptionUtil"
+    guidance:
+      - "Controller/Service 命中业务规则失败时，使用 ServiceException 或 ServiceExceptionUtil 抛出。"
+      - "无需自定义全局异常处理器，本库已提供：将异常转换为 CommonResult。"
+  web:
+    handlers:
+      - "com.wmt.framework.web.core.handler.GlobalExceptionHandler"
+      - "com.wmt.framework.web.core.handler.GlobalResponseBodyHandler（仅记录，不自动包裹）"
+    utils:
+      - "com.wmt.framework.web.core.util.WebFrameworkUtils"
+  mybatis_plus:
+    auto_config: "com.wmt.framework.mybatis.config.WmtMybatisAutoConfiguration"
+    mapper_base: "com.wmt.framework.mybatis.core.mapper.BaseMapperX"
+    mp_interceptor: "com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor"
+    join_mapper: "com.github.yulichang.base.MPJBaseMapper"
+    guidance:
+      - "Mapper 统一继承 BaseMapperX<T>，可用自带的 selectPage/selectJoinPage 方法。"
+      - "分页参数 PageParam 的 pageSize = -1 代表不分页，selectPage 会直接返回全量列表。"
+      - "排序推荐使用 SortablePageParam + SortingField，由 BaseMapperX/MyBatisUtils 处理。"
+
+generate_defaults:
+  controller:
+    patterns:
+      - "统一返回 CommonResult；方法名语义化（create/update/delete/get/getPage/list）；入参校验用 @Validated/@Valid。"
+      - "分页查询接口：入参 PageParam/SortablePageParam + 业务查询条件 DTO；出参 CommonResult<PageResult<VO>>。"
+      - "出参 VO 与 DO 分离，避免直接暴露数据库对象。"
+    template_crud:
+      - "List 查询：CommonResult<List<VO>> list(ReqDTO req)"
+      - "分页查询：CommonResult<PageResult<VO>> page(SortablePageParam pageParam, ReqDTO req)"
+      - "详情：CommonResult<VO> get(@NotNull Long id)"
+      - "新增：CommonResult<Long> create(@Valid CreateReqDTO reqDTO)"
+      - "更新：CommonResult<Boolean> update(@Valid UpdateReqDTO reqDTO)"
+      - "删除：CommonResult<Boolean> delete(@NotNull Long id)"
+  service:
+    patterns:
+      - "Service 捕获必要异常并转为 ServiceException；其他异常允许冒泡，由全局处理器接管。"
+      - "分页统一返回 PageResult<VO/DTO>；禁止返回 IPage/Page。"
+  mapper:
+    patterns:
+      - "接口定义：public interface XxxMapper extends BaseMapperX<XxxDO> {}"
+      - "分页：优先使用 BaseMapperX.selectPage(PageParam, Wrapper) 或 selectJoinPage。"
+      - "条件构造：使用 MP 的 Wrapper/MPJLambdaWrapper，避免手写 SQL 优先。"
+  dto_vo:
+    patterns:
+      - "DTO（入参）加 @Schema 和校验注解；VO（出参）加 @Schema。"
+      - "禁止在 VO 中出现数据库字段的技术性标记（如逻辑删除/版本号）。"
+
+snippets:
+  imports_controller_required:
+    - "import com.wmt.framework.common.pojo.CommonResult;"
+    - "import com.wmt.framework.common.pojo.PageParam;"
+    - "import com.wmt.framework.common.pojo.SortablePageParam;"
+    - "import com.wmt.framework.common.pojo.PageResult;"
+    - "import org.springframework.validation.annotation.Validated;"
+    - "import jakarta.validation.Valid;"
+    - "import jakarta.validation.constraints.*;"
+    - "import io.swagger.v3.oas.annotations.Operation;"
+    - "import io.swagger.v3.oas.annotations.tags.Tag;"
+  imports_service_exception:
+    - "import com.wmt.framework.common.exception.ServiceException;"
+    - "import com.wmt.framework.common.exception.enums.GlobalErrorCodeConstants;"
+    - "import com.wmt.framework.common.exception.util.ServiceExceptionUtil;"
+  imports_mapper_required:
+    - "import com.wmt.framework.mybatis.core.mapper.BaseMapperX;"
+    - "import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;"
+    - "import com.github.yulichang.wrapper.MPJLambdaWrapper;"
+
+  controller_page_method:
+    language: "java"
+    code: |
+      @Operation(summary = "分页查询示例")
+      @GetMapping("/page")
+      public CommonResult<PageResult<FooVO>> getFooPage(@Valid SortablePageParam pageParam, @Validated FooPageReqDTO req) {
+          PageResult<FooDO> page = fooService.getFooPage(pageParam, req);
+          PageResult<FooVO> voPage = new PageResult<>(convertList(page.getList(), FooVO::from), page.getTotal());
+          return CommonResult.success(voPage);
+      }
+
+  controller_crud_methods:
+    language: "java"
+    code: |
+      @Operation(summary = "创建")
+      @PostMapping("/create")
+      public CommonResult<Long> createFoo(@Valid @RequestBody FooCreateReqDTO req) {
+          Long id = fooService.createFoo(req);
+          return CommonResult.success(id);
+      }
+
+      @Operation(summary = "更新")
+      @PostMapping("/update")
+      public CommonResult<Boolean> updateFoo(@Valid @RequestBody FooUpdateReqDTO req) {
+          return CommonResult.success(fooService.updateFoo(req));
+      }
+
+      @Operation(summary = "删除")
+      @PostMapping("/delete")
+      public CommonResult<Boolean> deleteFoo(@NotNull @RequestParam("id") Long id) {
+          return CommonResult.success(fooService.deleteFoo(id));
+      }
+
+      @Operation(summary = "详情")
+      @GetMapping("/get")
+      public CommonResult<FooVO> getFoo(@NotNull @RequestParam("id") Long id) {
+          return CommonResult.success(fooService.getFoo(id));
+      }
+
+  service_signatures:
+    language: "java"
+    code: |
+      public interface FooService {
+          PageResult<FooDO> getFooPage(SortablePageParam pageParam, FooPageReqDTO req);
+          Long createFoo(FooCreateReqDTO req);
+          boolean updateFoo(FooUpdateReqDTO req);
+          boolean deleteFoo(Long id);
+          FooVO getFoo(Long id);
+      }
+
+  mapper_base:
+    language: "java"
+    code: |
+      @Mapper
+      public interface FooMapper extends BaseMapperX<FooDO> {
+          default PageResult<FooDO> selectPage(SortablePageParam pageParam, FooPageReqDTO req) {
+              QueryWrapper<FooDO> qw = new QueryWrapper<>();
+              // 构建条件：qw.lambda().eq(...).like(...).between(...);
+              return this.selectPage(pageParam, qw);
+          }
+      }
+
+  mapper_join_page:
+    language: "java"
+    code: |
+      @Mapper
+      public interface FooMapper extends BaseMapperX<FooDO> {
+          default PageResult<FooJoinVO> selectJoinPage(SortablePageParam pageParam, FooPageReqDTO req) {
+              MPJLambdaWrapper<FooDO> qw = new MPJLambdaWrapper<FooDO>()
+                  .select(FooDO::getId, FooDO::getName)
+                  .leftJoin(BarDO.class, BarDO::getId, FooDO::getBarId)
+                  .select(BarDO::getBarName);
+              return this.selectJoinPage(pageParam, FooJoinVO.class, qw);
+          }
+      }
+
+  exception_usage:
+    language: "java"
+    code: |
+      // 规则不满足时，抛业务异常
+      if (duplicated) {
+          throw new ServiceException(GlobalErrorCodeConstants.BAD_REQUEST.getCode(), "名称重复");
+          // 或者：throw ServiceExceptionUtil.exception0(GlobalErrorCodeConstants.BAD_REQUEST);
+      }
+
+guardrails:
+  - "Controller/Service 只能返回 CommonResult；禁止返回裸 List/Page。"
+  - "分页统一 PageParam/SortablePageParam -> PageResult。"
+  - "禁止手写 IPage/Page 作为对外返回；内部可临时使用，但最终需转换为 PageResult。"
+  - "禁止在控制器层捕获并吞掉异常；业务异常应直接抛出。"
+  - "Mapper 优先 Wrapper/MPJLambdaWrapper 构建条件，减少手写 SQL。"
+  - "禁止在 VO 中暴露技术性字段（如逻辑删除、版本号）。"
+  - "避免返回 null：无数据用 CommonResult.success(null) 或 PageResult.empty()。"
+
+auto_fixes:
+  - "检测到 Controller 返回非 CommonResult 时：改造为返回 CommonResult，并补齐 import。"
+  - "检测到分页返回 IPage/Page：新增转换为 PageResult 的逻辑。"
+  - "检测到 Mapper 未继承 BaseMapperX：改为 extends BaseMapperX<Entity>。"
+  - "检测到缺少 @Validated/@Valid：为 Controller 类/方法或参数补齐。"
+  - "检测到 try-catch 吞异常：移除不必要的 catch 或改为抛出 ServiceException。"
+
+references:
+  - "com.wmt.framework.common.pojo.CommonResult"
+  - "com.wmt.framework.common.pojo.PageParam"
+  - "com.wmt.framework.common.pojo.SortablePageParam"
+  - "com.wmt.framework.common.pojo.PageResult"
+  - "com.wmt.framework.common.util.object.PageUtils"
+  - "com.wmt.framework.mybatis.core.mapper.BaseMapperX"
+  - "com.wmt.framework.mybatis.core.util.MyBatisUtils"
+  - "com.wmt.framework.web.core.handler.GlobalExceptionHandler"
+  - "com.wmt.framework.web.core.handler.GlobalResponseBodyHandler"
+  - "com.wmt.framework.web.core.util.WebFrameworkUtils"
+  - "com.wmt.framework.common.exception.ServiceException"
+  - "com.wmt.framework.common.exception.enums.GlobalErrorCodeConstants"
+  - "com.wmt.framework.common.exception.util.ServiceExceptionUtil"

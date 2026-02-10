@@ -1,0 +1,2 @@
+com.wmt.framework.quartz.config.WmtQuartzAutoConfiguration
+com.wmt.framework.quartz.config.WmtAsyncAutoConfiguration

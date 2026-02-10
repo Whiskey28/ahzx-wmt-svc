@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>wmt</artifactId>
+        <groupId>com.wmt</groupId>
+        <version>${revision}</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>wmt-module-mall</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.artifactId}</name>
+
+    <description>
+        商城大模块，由 product 商品、promotion 营销、trade 交易、statistics 统计等组成
+    </description>
+    <modules>
+        <module>wmt-module-product</module>
+        <module>wmt-module-promotion</module>
+        <module>wmt-module-trade</module>
+        <module>wmt-module-statistics</module>
+        <!--
+            特殊：为什么会有 wmt-module-trade-api 呢？
+                wmt-module-promotion 和 wmt-module-trade 之间相互循环依赖，所以抽出 wmt-module-trade-api 模块，这样：
+                1. wmt-module-promotion 依赖 wmt-module-trade-api
+                2. wmt-module-trade 依赖 wmt-module-promotion
+            从而不存在相互（循环）依赖，即 wmt-module-trade => wmt-module-promotion => wmt-module-trade-api
+         -->
+        <module>wmt-module-trade-api</module>
+    </modules>
+
+</project>

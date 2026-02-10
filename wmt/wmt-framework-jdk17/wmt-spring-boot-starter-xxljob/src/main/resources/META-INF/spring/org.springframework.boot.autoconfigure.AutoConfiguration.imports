@@ -1,0 +1,4 @@
+com.wmt.framework.xxljob.config.WmtXxlJobAutoConfiguration
+com.wmt.framework.xxljob.config.XxlJobExecutorFactory
+com.wmt.framework.xxljob.config.XxlJobHealthIndicator
+

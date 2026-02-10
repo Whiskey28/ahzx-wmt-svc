@@ -1,0 +1,3 @@
+com.wmt.framework.security.config.WmtSecurityAutoConfiguration
+com.wmt.framework.security.config.WmtWebSecurityConfigurerAdapter
+com.wmt.framework.operatelog.config.WmtOperateLogConfiguration

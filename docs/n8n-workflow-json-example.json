@@ -1,0 +1,459 @@
+{
+  "name": "内容自动化生成与发布工作流",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "定时触发器",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://your-api:48080/api/content/crawler/query",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.API_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "keywords",
+              "value": "=[\"科技\", \"AI\", \"编程\"]"
+            },
+            {
+              "name": "limit",
+              "value": "10"
+            },
+            {
+              "name": "processed",
+              "value": "false"
+            },
+            {
+              "name": "minLikeCount",
+              "value": "100"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "query-crawler-data",
+      "name": "查询 mediaCrawler 数据",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "split-batches",
+      "name": "分批处理",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [650, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// 数据过滤和质量评估\nconst items = $input.all();\n\nconst filteredItems = items\n  .filter(item => {\n    const data = item.json;\n    // 过滤条件：点赞数、评论数、是否已处理\n    return (data.likeCount || 0) > 100 && \n           (data.commentCount || 0) > 10 &&\n           !data.processed;\n  })\n  .map(item => {\n    const data = item.json;\n    // 计算质量分数\n    const qualityScore = ((data.likeCount || 0) * 0.4 + \n                         (data.commentCount || 0) * 0.3 + \n                         (data.shareCount || 0) * 0.3);\n    return {\n      json: {\n        ...data,\n        qualityScore: qualityScore\n      }\n    };\n  });\n\nreturn filteredItems;"
+      },
+      "id": "filter-data",
+      "name": "数据过滤分析",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://your-api:48080/api/content/generate",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.API_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "dataId",
+              "value": "={{$json.id}}"
+            },
+            {
+              "name": "sourceData",
+              "value": "={{JSON.stringify($json)}}"
+            },
+            {
+              "name": "platform",
+              "value": "xiaohongshu"
+            },
+            {
+              "name": "generateImage",
+              "value": "true"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "generate-content",
+      "name": "AI 生成完整内容",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://your-api:48080/api/content/check-sensitivity",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "content",
+              "value": "={{$json.content}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "check-sensitivity",
+      "name": "内容审核",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1250, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.hasSensitiveWords}}",
+              "operation": "equals",
+              "value2": false
+            }
+          ]
+        }
+      },
+      "id": "if-check",
+      "name": "审核通过？",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1450, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://your-api:48080/api/content/publish/xiaohongshu",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.API_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "platform",
+              "value": "xiaohongshu"
+            },
+            {
+              "name": "title",
+              "value": "={{$json.title}}"
+            },
+            {
+              "name": "content",
+              "value": "={{$json.content}}"
+            },
+            {
+              "name": "images",
+              "value": "={{$json.imageUrls}}"
+            },
+            {
+              "name": "tags",
+              "value": "={{$json.tags}}"
+            },
+            {
+              "name": "dataId",
+              "value": "={{$json.dataId}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "publish-xiaohongshu",
+      "name": "发布到小红书",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1650, 200]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://your-api:48080/api/content/publish/douyin",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.API_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "platform",
+              "value": "douyin"
+            },
+            {
+              "name": "title",
+              "value": "={{$json.title}}"
+            },
+            {
+              "name": "content",
+              "value": "={{$json.content}}"
+            },
+            {
+              "name": "images",
+              "value": "={{$json.imageUrls}}"
+            },
+            {
+              "name": "dataId",
+              "value": "={{$json.dataId}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "publish-douyin",
+      "name": "发布到抖音",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1650, 400]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://your-api:48080/api/content/update-status",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer {{$env.API_TOKEN}}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "dataId",
+              "value": "={{$json.dataId}}"
+            },
+            {
+              "name": "processed",
+              "value": "true"
+            },
+            {
+              "name": "published",
+              "value": "true"
+            },
+            {
+              "name": "publishTime",
+              "value": "={{$now.toMillis()}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "update-status",
+      "name": "更新发布状态",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1850, 300]
+    },
+    {
+      "parameters": {},
+      "id": "error-handler",
+      "name": "错误处理",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [1450, 500]
+    }
+  ],
+  "connections": {
+    "schedule-trigger": {
+      "main": [
+        [
+          {
+            "node": "query-crawler-data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "query-crawler-data": {
+      "main": [
+        [
+          {
+            "node": "split-batches",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "split-batches": {
+      "main": [
+        [
+          {
+            "node": "filter-data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "filter-data": {
+      "main": [
+        [
+          {
+            "node": "generate-content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "generate-content": {
+      "main": [
+        [
+          {
+            "node": "check-sensitivity",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check-sensitivity": {
+      "main": [
+        [
+          {
+            "node": "if-check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "if-check": {
+      "main": [
+        [
+          {
+            "node": "publish-xiaohongshu",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "publish-douyin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "publish-xiaohongshu": {
+      "main": [
+        [
+          {
+            "node": "update-status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "publish-douyin": {
+      "main": [
+        [
+          {
+            "node": "update-status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-01-01T00:00:00.000Z",
+  "versionId": "1"
+}
