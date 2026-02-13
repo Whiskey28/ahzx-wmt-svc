@@ -1,45 +1,4 @@
-<p align="center">
- <img src="https://img.shields.io/badge/Spring%20Boot-3.4.5-blue.svg" alt="Downloads">
- <img src="https://img.shields.io/badge/Vue-3.2-blue.svg" alt="Downloads">
- <img src="https://img.shields.io/github/license/ahcV/ruoyi-vue-pro" alt="Downloads" />
-</p>
 
-**严肃声明：现在、未来都不会有商业版本，所有代码全部开源!！**
-
-**「我喜欢写代码，乐此不疲」**  
-**「我喜欢做开源，以此为乐」**
-
-我 🐶 在上海艰苦奋斗，早中晚在 top3 大厂认真搬砖，夜里为开源做贡献。
-
-如果这个项目让你有所收获，记得 Star 关注哦，这对我是非常不错的鼓励与支持。
-
-## 🐶 新手必读
-
-* 演示地址【Vue3 + element-plus】：<http://dashboard-vue3.wmt.iocoder.cn>
-* 演示地址【Vue3 + vben(ant-design-vue)】：<http://dashboard-vben.wmt.iocoder.cn>
-* 演示地址【Vue2 + element-ui】：<http://dashboard.wmt.iocoder.cn>
-* 启动文档：<quick-start/>
-* 视频教程：<video/>
-
-## 🐰 版本说明
-
-| 版本                                                                  | JDK 8 + Spring Boot 2.7                                                   | JDK 17/21 + Spring Boot 3.2                                                           |
-|---------------------------------------------------------------------|---------------------------------------------------------------------------|---------------------------------------------------------------------------------------|
-| 【完整版】[ruoyi-vue-pro](https://gitee.com/zhijiantianya/ruoyi-vue-pro) | [`master`](https://gitee.com/zhijiantianya/ruoyi-vue-pro/tree/master/) 分支 | [`master-jdk17`](https://gitee.com/zhijiantianya/ruoyi-vue-pro/tree/master-jdk17/) 分支 |
-| 【精简版】[wmt-boot-mini](https://gitee.com/wmtcode/wmt-boot-mini) | [`master`](https://gitee.com/wmtcode/wmt-boot-mini/tree/master/) 分支   | [`master-jdk17`](https://gitee.com/wmtcode/wmt-boot-mini/tree/master-jdk17/) 分支   |
-
-* 【完整版】：包括系统功能、基础设施、会员中心、数据报表、工作流程、商城系统、微信公众号、CRM、ERP 等功能
-* 【精简版】：只包括系统功能、基础设施功能，不包括会员中心、数据报表、工作流程、商城系统、微信公众号、CRM、ERP 等功能
-
-可参考 [《迁移文档》](migrate-module/) ，只需要 5-10 分钟，即可将【完整版】按需迁移到【精简版】
-
-## 🐯 平台简介
-
-**AHC**，以开发者为中心，打造中国第一流的快速开发平台，全部开源，个人与企业可 100% 免费使用。
-
-> 有任何问题，或者想要的功能，可以在 _Issues_ 中提给艿艿。
->
-> 😜 给项目点点 Star 吧，这对我们真的很重要！
 
 ![架构图](/.image/common/ruoyi-vue-pro-architecture.png)
 
@@ -64,45 +23,6 @@
 ![架构演进](/.image/common/wmt-roadmap.png)
 
 三个项目的功能对比，可见社区共同整理的 [国产开源项目对比](https://www.yuque.com/xiatian-bsgny/lm0ec1/wqf8mn) 表格。
-
-### 后端项目
-
-| 项目                                                              | Star                                                                                                                                                                                                                                                                                             | 简介                          |
-|-----------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------|
-| [ruoyi-vue-pro](https://gitee.com/zhijiantianya/ruoyi-vue-pro)  | [![Gitee star](https://gitee.com/zhijiantianya/ruoyi-vue-pro/badge/star.svg?theme=white)](https://gitee.com/zhijiantianya/ruoyi-vue-pro) [![GitHub stars](https://img.shields.io/github/stars/ahcV/ruoyi-vue-pro.svg?style=social&label=Stars)](https://github.com/ahcV/ruoyi-vue-pro)       | 基于 Spring Boot 多模块架构        |
-| [wmt-cloud](https://gitee.com/zhijiantianya/wmt-cloud)      | [![Gitee star](https://gitee.com/zhijiantianya/wmt-cloud/badge/star.svg?theme=white)](https://gitee.com/zhijiantianya/wmt-cloud) [![GitHub stars](https://img.shields.io/github/stars/ahcV/wmt-cloud.svg?style=social&label=Stars)](https://github.com/ahcV/wmt-cloud)               | 基于 Spring Cloud 微服务架构       |
-| [Spring-Boot-Labs](https://gitee.com/wmtcode/SpringBoot-Labs) | [![Gitee star](https://gitee.com/wmtcode/SpringBoot-Labs/badge/star.svg?theme=white)](https://gitee.com/zhijiantianya/wmt-cloud) [![GitHub stars](https://img.shields.io/github/stars/wmtcode/SpringBoot-Labs.svg?style=social&label=Stars)](https://github.com/wmtcode/SpringBoot-Labs) | 系统学习 Spring Boot & Cloud 专栏 |
-
-### 前端项目
-
-| 项目                                                                         | Star                                                                                                                                                                                                                                                                                                                     | 简介                                     |
-|----------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------|
-| [wmt-ui-admin-vue3](https://gitee.com/wmtcode/wmt-ui-admin-vue3)     | [![Gitee star](https://gitee.com/wmtcode/wmt-ui-admin-vue3/badge/star.svg?theme=white)](https://gitee.com/wmtcode/wmt-ui-admin-vue3) [![GitHub stars](https://img.shields.io/github/stars/wmtcode/wmt-ui-admin-vue3.svg?style=social&label=Stars)](https://github.com/wmtcode/wmt-ui-admin-vue3)         | 基于 Vue3 + element-plus 实现的管理后台         |
-| [wmt-ui-admin-vben](https://gitee.com/wmtcode/wmt-ui-admin-vben)     | [![Gitee star](https://gitee.com/wmtcode/wmt-ui-admin-vben/badge/star.svg?theme=white)](https://gitee.com/wmtcode/wmt-ui-admin-vben) [![GitHub stars](https://img.shields.io/github/stars/wmtcode/wmt-ui-admin-vben.svg?style=social&label=Stars)](https://github.com/wmtcode/wmt-ui-admin-vben)         | 基于 Vue3 + vben(ant-design-vue) 实现的管理后台 |
-| [wmt-mall-uniapp](https://gitee.com/wmtcode/wmt-mall-uniapp)         | [![Gitee star](https://gitee.com/wmtcode/wmt-mall-uniapp/badge/star.svg?theme=white)](https://gitee.com/wmtcode/wmt-mall-uniapp) [![GitHub stars](https://img.shields.io/github/stars/wmtcode/wmt-mall-uniapp.svg?style=social&label=Stars)](https://github.com/wmtcode/wmt-mall-uniapp)                 | 基于 uni-app 实现的商城小程序                    |
-| [wmt-ui-admin-vue2](https://gitee.com/wmtcode/wmt-ui-admin-vue2)     | [![Gitee star](https://gitee.com/wmtcode/wmt-ui-admin-vue2/badge/star.svg?theme=white)](https://gitee.com/wmtcode/wmt-ui-admin-vue2) [![GitHub stars](https://img.shields.io/github/stars/wmtcode/wmt-ui-admin-vue2.svg?style=social&label=Stars)](https://github.com/wmtcode/wmt-ui-admin-vue2)         | 基于 Vue2 + element-ui 实现的管理后台           |
-| [wmt-ui-admin-uniapp](https://gitee.com/wmtcode/wmt-ui-admin-uniapp) | [![Gitee star](https://gitee.com/wmtcode/wmt-ui-admin-uniapp/badge/star.svg?theme=white)](https://gitee.com/wmtcode/wmt-ui-admin-uniapp) [![GitHub stars](https://img.shields.io/github/stars/wmtcode/wmt-ui-admin-uniapp.svg?style=social&label=Stars)](https://github.com/wmtcode/wmt-ui-admin-uniapp) | 基于 Vue2 + element-ui 实现的管理后台           |
-| [wmt-ui-go-view](https://gitee.com/wmtcode/wmt-ui-go-view)           | [![Gitee star](https://gitee.com/wmtcode/wmt-ui-go-view/badge/star.svg?theme=white)](https://gitee.com/wmtcode/wmt-ui-go-view) [![GitHub stars](https://img.shields.io/github/stars/wmtcode/wmt-ui-go-view.svg?style=social&label=Stars)](https://github.com/wmtcode/wmt-ui-go-view)                     | 基于 Vue3 + naive-ui 实现的大屏报表             |
-
-## 😎 开源协议
-
-**为什么推荐使用本项目？**
-
-① 本项目采用比 Apache 2.0 更宽松的 [MIT License](https://gitee.com/zhijiantianya/ruoyi-vue-pro/blob/master/LICENSE) 开源协议，个人与企业可 100% 免费使用，不用保留类作者、Copyright 信息。
-
-② 代码全部开源，不会像其他项目一样，只开源部分代码，让你无法了解整个项目的架构设计。[国产开源项目对比](https://www.yuque.com/xiatian-bsgny/lm0ec1/wqf8mn)
-
-![开源项目对比](/.image/common/project-vs.png)
-
-③ 代码整洁、架构整洁，遵循《阿里巴巴 Java 开发手册》规范，代码注释详细，113770 行 Java 代码，42462 行代码注释。
-
-## 🤝 项目外包
-
-我们也是接外包滴，如果你有项目想要外包，可以微信联系【**Aix9975**】。
-
-团队包含专业的项目经理、架构师、前端工程师、后端工程师、测试工程师、运维工程师，可以提供全流程的外包服务。
-
-项目可以是商城、SCRM 系统、OA 系统、物流系统、ERP 系统、CMS 系统、HIS 系统、支付系统、IM 聊天、微信公众号、微信小程序等等。
 
 ## 🐼 内置功能
 
@@ -145,11 +65,6 @@
 | 🚀  | 应用管理  | 管理 SSO 单点登录的应用，支持多种 OAuth2 授权方式 |
 | 🚀  | 地区管理  | 展示省份、城市、区镇等城市信息，支持 IP 对应城市      |
 
-![功能图](/.image/common/system-feature.png)
-
-### 工作流程
-
-![功能图](/.image/common/bpm-feature.png)
 
 基于 Flowable 构建，可支持信创（国产）数据库，满足中国特色流程操作：
 
@@ -221,7 +136,6 @@
 | 🚀  | 日志服务      | 轻量级日志中心，查看远程服务器的日志                           |
 | 🚀  | 单元测试      | 基于 JUnit + Mockito 实现单元测试，保证功能的正确性、代码的质量等    |
 
-![功能图](/.image/common/infra-feature.png)
 
 ### 数据报表
 
@@ -246,13 +160,6 @@
 | 🚀 | 图文草稿箱  | 新增常用的图文素材到草稿箱，可发布到公众号         |
 | 🚀 | 图文发表记录 | 查看已发布成功的图文素材，支持删除操作           |
 
-### 商城系统
-
-演示地址：<mall-preview/>
-
-![功能图](/.image/common/mall-feature.png)
-
-![功能图](/.image/common/mall-preview.png)
 
 ### 会员中心
 
@@ -263,26 +170,6 @@
 | 🚀  | 会员等级 | 对会员的等级、成长值进行管理，可用于订单折扣等会员权益      |
 | 🚀  | 会员分组 | 对会员进行分组，用于用户画像、内容推送等运营手段         |
 | 🚀  | 积分签到 | 回馈给签到、消费等行为的积分，会员可订单抵现、积分兑换等途径消耗 |
-
-### ERP 系统
-
-演示地址：<erp-preview/>
-
-![功能图](/.image/common/erp-feature.png)
-
-### CRM 系统
-
-演示地址：<crm-preview/>
-
-![功能图](/.image/common/crm-feature.png)
-
-### AI 大模型
-
-演示地址：<ai-preview/>
-
-![功能图](/.image/common/ai-feature.png)
-
-![功能图](/.image/common/ai-preview.gif)
 
 ## 🐨 技术栈
 
@@ -330,63 +217,3 @@
 | [JUnit](https://junit.org/junit5/)                                                          | Java 单元测试框架      | 5.12.2         | -                                                              |
 | [Mockito](https://github.com/mockito/mockito)                                               | Java Mock 框架     | 5.17.0         | -                                                              |
 
-## 🐷 演示图
-
-### 系统功能
-
-| 模块       | biu                         | biu                       | biu                      |
-|----------|-----------------------------|---------------------------|--------------------------|
-| 登录 & 首页  | ![登录](/.image/登录.jpg)       | ![首页](/.image/首页.jpg)     | ![个人中心](/.image/个人中心.jpg) |
-| 用户 & 应用  | ![用户管理](/.image/用户管理.jpg)   | ![令牌管理](/.image/令牌管理.jpg) | ![应用管理](/.image/应用管理.jpg) |
-| 租户 & 套餐  | ![租户管理](/.image/租户管理.jpg)   | ![租户套餐](/.image/租户套餐.png) | -                        |
-| 部门 & 岗位  | ![部门管理](/.image/部门管理.jpg)   | ![岗位管理](/.image/岗位管理.jpg) | -                        |
-| 菜单 & 角色  | ![菜单管理](/.image/菜单管理.jpg)   | ![角色管理](/.image/角色管理.jpg) | -                        |
-| 审计日志     | ![操作日志](/.image/操作日志.jpg)   | ![登录日志](/.image/登录日志.jpg) | -                        |
-| 短信       | ![短信渠道](/.image/短信渠道.jpg)   | ![短信模板](/.image/短信模板.jpg) | ![短信日志](/.image/短信日志.jpg) |
-| 字典 & 敏感词 | ![字典类型](/.image/字典类型.jpg)   | ![字典数据](/.image/字典数据.jpg) | ![敏感词](/.image/敏感词.jpg)  |
-| 错误码 & 通知 | ![错误码管理](/.image/错误码管理.jpg) | ![通知公告](/.image/通知公告.jpg) | -                        |
-
-### 工作流程
-
-| 模块      | biu                             | biu                             | biu                             |
-|---------|---------------------------------|---------------------------------|---------------------------------|
-| 流程模型    | ![流程模型-列表](/.image/流程模型-列表.jpg) | ![流程模型-设计](/.image/流程模型-设计.jpg) | ![流程模型-定义](/.image/流程模型-定义.jpg) |
-| 表单 & 分组 | ![流程表单](/.image/流程表单.jpg)       | ![用户分组](/.image/用户分组.jpg)       | -                               |
-| 我的流程    | ![我的流程-列表](/.image/我的流程-列表.jpg) | ![我的流程-发起](/.image/我的流程-发起.jpg) | ![我的流程-详情](/.image/我的流程-详情.jpg) |
-| 待办 & 已办 | ![任务列表-审批](/.image/任务列表-审批.jpg) | ![任务列表-待办](/.image/任务列表-待办.jpg) | ![任务列表-已办](/.image/任务列表-已办.jpg) |
-| OA 请假   | ![OA请假-列表](/.image/OA请假-列表.jpg) | ![OA请假-发起](/.image/OA请假-发起.jpg) | ![OA请假-详情](/.image/OA请假-详情.jpg) |
-
-### 基础设施
-
-| 模块            | biu                           | biu                         | biu                       |
-|---------------|-------------------------------|-----------------------------|---------------------------|
-| 代码生成          | ![代码生成](/.image/代码生成.jpg)     | ![生成效果](/.image/生成效果.jpg)   | -                         |
-| 文档            | ![系统接口](/.image/系统接口.jpg)     | ![数据库文档](/.image/数据库文档.jpg) | -                         |
-| 文件 & 配置       | ![文件配置](/.image/文件配置.jpg)     | ![文件管理](/.image/文件管理2.jpg)  | ![配置管理](/.image/配置管理.jpg) |
-| 定时任务          | ![定时任务](/.image/定时任务.jpg)     | ![任务日志](/.image/任务日志.jpg)   | -                         |
-| API 日志        | ![访问日志](/.image/访问日志.jpg)     | ![错误日志](/.image/错误日志.jpg)   | -                         |
-| MySQL & Redis | ![MySQL](/.image/MySQL.jpg)   | ![Redis](/.image/Redis.jpg) | -                         |
-| 监控平台          | ![Java监控](/.image/Java监控.jpg) | ![链路追踪](/.image/链路追踪.jpg)   | ![日志中心](/.image/日志中心.jpg) |
-
-### 支付系统
-
-| 模块      | biu                       | biu                             | biu                             |
-|---------|---------------------------|---------------------------------|---------------------------------|
-| 商家 & 应用 | ![商户信息](/.image/商户信息.jpg) | ![应用信息-列表](/.image/应用信息-列表.jpg) | ![应用信息-编辑](/.image/应用信息-编辑.jpg) |
-| 支付 & 退款 | ![支付订单](/.image/支付订单.jpg) | ![退款订单](/.image/退款订单.jpg)       | ---                             |
-### 数据报表
-
-| 模块    | biu                             | biu                             | biu                                   |
-|-------|---------------------------------|---------------------------------|---------------------------------------|
-| 报表设计器 | ![数据报表](/.image/报表设计器-数据报表.jpg) | ![图形报表](/.image/报表设计器-图形报表.jpg) | ![报表设计器-打印设计](/.image/报表设计器-打印设计.jpg) |
-| 大屏设计器 | ![大屏列表](/.image/大屏设计器-列表.jpg)   | ![大屏预览](/.image/大屏设计器-预览.jpg)   | ![大屏编辑](/.image/大屏设计器-编辑.jpg)         |
-
-### 移动端（管理后台）
-
-| biu                              | biu                              | biu                              |
-|----------------------------------|----------------------------------|----------------------------------|
-| ![](/.image/admin-uniapp/01.png) | ![](/.image/admin-uniapp/02.png) | ![](/.image/admin-uniapp/03.png) |
-| ![](/.image/admin-uniapp/04.png) | ![](/.image/admin-uniapp/05.png) | ![](/.image/admin-uniapp/06.png) |
-| ![](/.image/admin-uniapp/07.png) | ![](/.image/admin-uniapp/08.png) | ![](/.image/admin-uniapp/09.png) |
-
-目前已经实现登录、我的、工作台、编辑资料、头像修改、密码修改、常见问题、关于我们等基础功能。

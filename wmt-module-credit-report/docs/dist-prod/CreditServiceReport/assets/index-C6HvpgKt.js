@@ -1,0 +1,1 @@
+import{X as e}from"./index-DT4sM4a5.js";const t=()=>e.get({url:"/system/menu/simple-list"}),m=s=>e.get({url:"/system/menu/list",params:s}),a=s=>e.get({url:"/system/menu/get?id="+s}),u=s=>e.post({url:"/system/menu/create",data:s}),r=s=>e.post({url:"/system/menu/update",data:s}),l=s=>e.post({url:"/system/menu/delete?id="+s});export{a,m as b,u as c,l as d,t as g,r as u};

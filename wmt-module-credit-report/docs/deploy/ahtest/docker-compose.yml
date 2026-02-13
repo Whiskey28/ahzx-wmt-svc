@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ahzx
+      POSTGRES_PASSWORD: ahzx123456
+      POSTGRES_DB: tdc-wmt
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ahzx" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+    networks:
+      - ahc_net
+
+  ahzx-wmt-svc:
+    image: wmtserver:v1-6
+    container_name: ahzx-wmt-svc
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      TZ: Asia/Shanghai
+      JAVA_OPTS: "-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
+      # 使用 application-ahtest 专属配置，并通过命令行参数覆盖验证查询
+      ARGS: "--spring.profiles.active=ahtest --spring.datasource.dynamic.druid.validation-query=SELECT 1"
+    ports:
+      - "48080:48080"
+    volumes:
+      - /data/ahc/logs:/root/logs
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:48080/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10  # 增加重试次数
+      start_period: 180s  # 增加启动等待时间到 3 分钟，给应用足够的启动时间
+    networks:
+      - ahc_net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  ahc_net:
+    driver: bridge

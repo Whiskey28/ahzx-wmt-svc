@@ -328,46 +328,52 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
 
     @Override
     public JmReportInfoUserTreeRespVO getInfoUserTree() {
-        // 1. 根节点：产品与服务提供情况
-        final String rootId = "root_product_service_info_user";
-        JmReportInfoUserTreeNodeRespVO rootNode = new JmReportInfoUserTreeNodeRespVO();
-        rootNode.setId(rootId);
-        rootNode.setParentId("");
-        rootNode.setDepartName("产品与服务提供情况");
-        rootNode.setIsLeaf(0);
-
-        List<JmReportInfoUserTreeNodeRespVO> nodes = new ArrayList<>();
-        nodes.add(rootNode);
-
-        // 2. 行业字典（第二级节点）
+        // 1. 行业字典（第一级节点）
         List<JimuDictItemDO> dictItems = jimuDictItemMapper.selectEnabledListByDictId(INDUSTRY_CODE_DICT_ID);
         if (CollUtil.isEmpty(dictItems)) {
             throw exception(GlobalErrorCodeConstants.NOT_FOUND, "产品与服务提供情况字典未配置或未启用");
         }
 
-        // 3. 查询机构明细和政府明细（全表）
+        // 2. 查询机构明细和政府明细（全表）
         List<ReportFillInfoUserOrgItemDO> orgItems = reportFillInfoUserOrgItemMapper.selectAll();
         List<ReportFillInfoUserGovItemDO> govItems = reportFillInfoUserGovItemMapper.selectAll();
 
-        // 4. 按行业分组 orgItems，过滤掉没有行业编码的记录
+        // 3. 按行业分组 orgItems，过滤掉没有行业编码的记录
         Map<String, List<ReportFillInfoUserOrgItemDO>> orgGroupMap = orgItems.stream()
                 .filter(item -> item.getIndustryCode() != null && !item.getIndustryCode().trim().isEmpty())
                 .collect(Collectors.groupingBy(ReportFillInfoUserOrgItemDO::getIndustryCode));
 
-        // 5. 组装行业节点和机构名称节点
+        List<JmReportInfoUserTreeNodeRespVO> nodes = new ArrayList<>();
+
+        // 4. 组装行业节点（第一级）和机构名称节点（第二级）
         for (JimuDictItemDO dictItem : dictItems) {
             String industryCode = dictItem.getItemValue();
             String industryName = dictItem.getItemText();
 
-            // 二级行业节点
+            // 统计该行业下的机构数量，用于判断是否为叶子节点
+            int orgCount = 0;
+            if ("government".equals(industryCode)) {
+                orgCount = (int) govItems.stream()
+                        .filter(item -> item.getGovOrgName() != null && !item.getGovOrgName().trim().isEmpty())
+                        .count();
+            } else {
+                List<ReportFillInfoUserOrgItemDO> list = orgGroupMap.get(industryCode);
+                if (list != null) {
+                    orgCount = (int) list.stream()
+                            .filter(item -> item.getOrgName() != null && !item.getOrgName().trim().isEmpty())
+                            .count();
+                }
+            }
+
+            // 第一级：行业节点（parentId 为空字符串，表示根节点）
             JmReportInfoUserTreeNodeRespVO industryNode = new JmReportInfoUserTreeNodeRespVO();
             industryNode.setId(industryCode);
-            industryNode.setParentId(rootId);
+            industryNode.setParentId("");
             industryNode.setDepartName(industryName);
-            industryNode.setIsLeaf(0);
+            industryNode.setIsLeaf(orgCount == 0 ? 1 : 0); // 如果没有机构则为叶子节点，否则为非叶子节点
             nodes.add(industryNode);
 
-            // 三级机构名称节点
+            // 第二级：机构名称节点（parentId 为行业 code）
             if ("government".equals(industryCode)) {
                 // 政府：全部 govItems，按 sortNo 排序
                 govItems.stream()
@@ -390,27 +396,26 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
                         });
             } else {
                 List<ReportFillInfoUserOrgItemDO> list = orgGroupMap.get(industryCode);
-                if (CollUtil.isEmpty(list)) {
-                    continue;
+                if (CollUtil.isNotEmpty(list)) {
+                    list.stream()
+                            .filter(item -> item.getOrgName() != null && !item.getOrgName().trim().isEmpty())
+                            .sorted((a, b) -> {
+                                String sa = a.getSortNo();
+                                String sb = b.getSortNo();
+                                if (sa == null && sb == null) return 0;
+                                if (sa == null) return 1;
+                                if (sb == null) return -1;
+                                return sa.compareTo(sb);
+                            })
+                            .forEach(item -> {
+                                JmReportInfoUserTreeNodeRespVO leaf = new JmReportInfoUserTreeNodeRespVO();
+                                leaf.setId(item.getId());
+                                leaf.setParentId(industryCode);
+                                leaf.setDepartName(item.getOrgName());
+                                leaf.setIsLeaf(1);
+                                nodes.add(leaf);
+                            });
                 }
-                list.stream()
-                        .filter(item -> item.getOrgName() != null && !item.getOrgName().trim().isEmpty())
-                        .sorted((a, b) -> {
-                            String sa = a.getSortNo();
-                            String sb = b.getSortNo();
-                            if (sa == null && sb == null) return 0;
-                            if (sa == null) return 1;
-                            if (sb == null) return -1;
-                            return sa.compareTo(sb);
-                        })
-                        .forEach(item -> {
-                            JmReportInfoUserTreeNodeRespVO leaf = new JmReportInfoUserTreeNodeRespVO();
-                            leaf.setId(item.getId());
-                            leaf.setParentId(industryCode);
-                            leaf.setDepartName(item.getOrgName());
-                            leaf.setIsLeaf(1);
-                            nodes.add(leaf);
-                        });
             }
         }
 
@@ -490,30 +495,30 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
         }
 
         // 3. 确定要聚合的记录ID列表（只统计创新研发中心+企信部+普惠部的数据）
-        List<String> productRecordIds = resolveRecordIdsByRolesForProduct(reqVO, 
+        List<String> productRecordIds = resolveRecordIdsByRolesForProduct(reqVO,
                 List.of(ROLE_ID_RD_CENTER, ROLE_ID_ENTERPRISE_CREDIT, ROLE_ID_INCLUSIVE_CREDIT));
 
         // 4. 查询所有记录并聚合固定字段（表结构已改为固定字段：report_year_count, credit_year_count, anti_year_count）
         List<ReportFillProductStatDO> productStatList = reportFillProductStatMapper.selectListByRecordIds(productRecordIds);
-        
+
         // 按固定字段聚合（三个字段分别对应字典的前三项）
         BigDecimal reportYearTotal = productStatList.stream()
                 .map(ReportFillProductStatDO::getReportYearCount)
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        
+
         BigDecimal creditYearTotal = productStatList.stream()
                 .map(ReportFillProductStatDO::getCreditYearCount)
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        
+
         BigDecimal antiYearTotal = productStatList.stream()
                 .map(ReportFillProductStatDO::getAntiYearCount)
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         // 5. 统计总计次数（从 service_by_industry，数据管理部+普惠部+企信部）
-        List<String> serviceRecordIds = resolveRecordIdsByRolesForProduct(reqVO, 
+        List<String> serviceRecordIds = resolveRecordIdsByRolesForProduct(reqVO,
                 List.of(ROLE_ID_DATA_CENTER, ROLE_ID_INCLUSIVE_CREDIT, ROLE_ID_ENTERPRISE_CREDIT));
         BigDecimal totalYearServiceCount = reportFillServiceByIndustryMapper.selectTotalYearServiceCount(serviceRecordIds);
 
@@ -663,7 +668,7 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
     /**
      * 从 periodId 中解析月份数字
      * 支持格式：YYYY-MM 或 YYYY-MM-DD
-     * 
+     *
      * @param periodId 填报周期，如 "2026-01" 或 "2026-01-15"
      * @return 月份数字（1-12）
      * @throws ServiceException 如果格式不正确
@@ -672,19 +677,19 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
         if (StringUtils.isBlank(periodId)) {
             throw exception(GlobalErrorCodeConstants.BAD_REQUEST, "填报周期不能为空");
         }
-        
+
         try {
             // 尝试解析 YYYY-MM 或 YYYY-MM-DD 格式
             String[] parts = periodId.split("-");
             if (parts.length < 2) {
                 throw exception(GlobalErrorCodeConstants.BAD_REQUEST, "填报周期格式不正确，应为 YYYY-MM 或 YYYY-MM-DD");
             }
-            
+
             int month = Integer.parseInt(parts[1]);
             if (month < 1 || month > 12) {
                 throw exception(GlobalErrorCodeConstants.BAD_REQUEST, "填报周期中的月份必须在 1-12 之间");
             }
-            
+
             return month;
         } catch (NumberFormatException e) {
             throw exception(GlobalErrorCodeConstants.BAD_REQUEST, "填报周期格式不正确，无法解析月份");

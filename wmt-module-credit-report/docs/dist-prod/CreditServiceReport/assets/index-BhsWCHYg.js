@@ -1,0 +1,1 @@
+import{p as e,_ as s}from"./index-DT4sM4a5.js";import{l as t,F as r}from"./form-create-D_toYIVM.js";const a=s(t({name:"DocAlert",__name:"index",props:{title:e.string,url:e.string},setup:o=>(p,i)=>r("",!0)}),[["__scopeId","data-v-35410eed"]]);export{a as _};

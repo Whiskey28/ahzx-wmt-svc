@@ -1,0 +1,1 @@
+import{X as a}from"./index-DT4sM4a5.js";const t=async s=>await a.get({url:"/system/social-user/page",params:s}),e=async s=>await a.get({url:"/system/social-user/get?id="+s}),i=async()=>await a.get({url:"/system/social-user/get-bind-list"});export{e as a,t as b,i as g};

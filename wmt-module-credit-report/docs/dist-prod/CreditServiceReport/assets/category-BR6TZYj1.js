@@ -1,0 +1,1 @@
+import{X as a}from"./index-DT4sM4a5.js";const r=t=>a.post({url:"/product/category/create",data:t}),o=t=>a.post({url:"/product/category/update",data:t}),e=t=>a.post({url:`/product/category/delete?id=${t}`}),c=t=>a.get({url:`/product/category/get?id=${t}`}),d=t=>a.get({url:"/product/category/list",params:t});export{c as a,r as c,e as d,d as g,o as u};
