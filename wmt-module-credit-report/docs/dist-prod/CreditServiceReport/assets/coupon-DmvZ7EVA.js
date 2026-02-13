@@ -1,1 +1,0 @@
-import{X as s}from"./index-DT4sM4a5.js";const a=async o=>s.post({url:`/promotion/coupon/delete?id=${o}`}),n=async o=>s.get({url:"/promotion/coupon/page",params:o}),p=async o=>s.post({url:"/promotion/coupon/send",data:o});export{a as d,n as g,p as s};

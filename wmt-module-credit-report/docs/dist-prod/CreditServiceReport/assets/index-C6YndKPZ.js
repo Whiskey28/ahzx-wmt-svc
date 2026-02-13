@@ -1,1 +1,0 @@
-import{X as t}from"./index-DT4sM4a5.js";const s={getOtaTaskPage:async a=>await t.get({url:"/iot/ota/task/page",params:a}),getOtaTask:async a=>await t.get({url:"/iot/ota/task/get?id="+a}),createOtaTask:async a=>await t.post({url:"/iot/ota/task/create",data:a}),cancelOtaTask:async a=>await t.post({url:"/iot/ota/task/cancel?id="+a})};export{s as I};

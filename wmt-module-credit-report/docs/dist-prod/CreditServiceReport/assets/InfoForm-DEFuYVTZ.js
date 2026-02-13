@@ -1,1 +1,0 @@
-import{_ as r}from"./InfoForm.vue_vue_type_script_setup_true_lang-BelEYkjJ.js";import"./index-DT4sM4a5.js";import"./form-designer-DBKh_XjC.js";import"./form-create-D_toYIVM.js";import"./tree-z7HkrWVC.js";import"./category-BR6TZYj1.js";import"./brand-DlXUKMEO.js";import"./formRules-D5Uzygjw.js";export{r as default};

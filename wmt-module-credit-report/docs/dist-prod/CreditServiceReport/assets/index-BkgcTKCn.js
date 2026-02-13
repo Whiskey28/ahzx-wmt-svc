@@ -1,1 +1,0 @@
-import{X as a}from"./index-DT4sM4a5.js";const r=s=>a.post({url:"/mp/user/update",data:s}),p=s=>a.get({url:"/mp/user/get?id="+s}),e=s=>a.get({url:"/mp/user/page",params:s}),t=s=>a.post({url:"/mp/user/sync?accountId="+s});export{e as a,p as g,t as s,r as u};

@@ -1,1 +1,0 @@
-import{X as t}from"./index-DT4sM4a5.js";const r=(a,p)=>{const e={appId:a,code:p};return t.get({url:"/pay/channel/get",params:e})},n=a=>t.post({url:"/pay/channel/create",data:a}),s=a=>t.post({url:"/pay/channel/update",data:a});export{n as c,r as g,s as u};

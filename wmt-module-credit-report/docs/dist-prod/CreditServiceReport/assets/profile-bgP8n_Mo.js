@@ -1,1 +1,0 @@
-import{X as e}from"./index-DT4sM4a5.js";const t=()=>e.get({url:"/system/user/profile/get"}),a=s=>e.post({url:"/system/user/profile/update",data:s}),o=(s,r)=>e.post({url:"/system/user/profile/update-password",data:{oldPassword:s,newPassword:r}});export{o as a,t as g,a as u};

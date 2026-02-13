@@ -1,1 +1,0 @@
-import{_ as a}from"./index-DT4sM4a5.js";import{ag as o}from"./form-designer-DBKh_XjC.js";import{m as r,q as t,K as m}from"./form-create-D_toYIVM.js";const n={class:"p-30px"},e=a({},[["render",function(i,p){const s=o;return t(),r("div",n,[m(s,{animated:""})])}]]);export{e as default};

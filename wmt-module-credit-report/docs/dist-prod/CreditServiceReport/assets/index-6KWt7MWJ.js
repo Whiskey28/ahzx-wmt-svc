@@ -1,1 +1,0 @@
-import{X as t}from"./index-DT4sM4a5.js";const s=async a=>await t.get({url:"/pay/wallet/get",params:a}),e=async a=>await t.get({url:"/pay/wallet/page",params:a}),l=async a=>await t.post({url:"/pay/wallet/update-balance",data:a});export{e as a,s as g,l as u};

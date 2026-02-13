@@ -1,1 +1,0 @@
-import{X as e}from"./index-DT4sM4a5.js";const t=()=>e.get({url:"/credit/report-fill/category/list"}),l=r=>e.get({url:"/credit/report-fill/template/list",params:r}),a=r=>e.get({url:"/credit/report-fill/record/page",params:r}),o=r=>e.post({url:`/credit/report-fill/record/delete/${r}`});export{l as a,a as b,o as d,t as g};

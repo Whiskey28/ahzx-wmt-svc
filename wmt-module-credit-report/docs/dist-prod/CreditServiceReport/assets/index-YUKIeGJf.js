@@ -1,1 +1,0 @@
-import{X as p}from"./index-DT4sM4a5.js";const a=e=>p.get({url:"/mp/free-publish/page",params:e}),r=(e,s)=>p.post({url:"/mp/free-publish/delete?accountId="+e+"&articleId="+s}),t=(e,s)=>p.post({url:"/mp/free-publish/submit?accountId="+e+"&mediaId="+s});export{r as d,a as g,t as s};

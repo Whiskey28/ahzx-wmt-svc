@@ -1,1 +1,0 @@
-import{U as e}from"./constants-C3gLHYOK.js";import{l as m,m as p,q as t,v as r,y as o,u as a}from"./form-create-D_toYIVM.js";const l=m({name:"MessageItem",__name:"MessageItem",props:{message:{}},setup:d=>(s,g)=>(t(),p("div",{class:o([s.message.senderType===a(e).MEMBER?"ml-10px":s.message.senderType===a(e).ADMIN?"mr-10px":""])},[r(s.$slots,"default")],2))});export{l as default};
