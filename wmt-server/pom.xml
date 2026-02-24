@@ -135,6 +135,7 @@
             <artifactId>wmt-spring-boot-starter-protection</artifactId>
         </dependency>
 
+
     </dependencies>
 
     <build>

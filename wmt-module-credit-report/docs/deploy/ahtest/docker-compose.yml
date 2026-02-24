@@ -24,7 +24,7 @@ services:
 
   ahzx-wmt-svc:
     image: wmtserver:v1-6
-    container_name: ahzx-wmt-svc
+    container_name: ahzx-wmt-svcspring-boot-starter-actuator
     restart: unless-stopped
     depends_on:
       postgres:
@@ -38,12 +38,12 @@ services:
       - "48080:48080"
     volumes:
       - /data/ahc/logs:/root/logs
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:48080/actuator/health || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 10  # 增加重试次数
-      start_period: 180s  # 增加启动等待时间到 3 分钟，给应用足够的启动时间
+#    healthcheck:
+#      test: [ "CMD-SHELL", "curl -f http://localhost:48080/actuator/health || exit 1" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 10  # 增加重试次数
+#      start_period: 180s  # 增加启动等待时间到 3 分钟，给应用足够的启动时间
     networks:
       - ahc_net
 
