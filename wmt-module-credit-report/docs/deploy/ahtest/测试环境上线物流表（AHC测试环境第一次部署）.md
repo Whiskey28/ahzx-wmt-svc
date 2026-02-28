@@ -185,16 +185,17 @@
 ## 六、上线前最后自查（Checklist 简版）
 
 - **外网 U 盘内容**
-  - [ ] `ahc-deploy-bundle.tgz`
-  - [ ] `sql-init/`（所有需要执行的 SQL）
-  - [ ] 上述脚本与账号/文档清单
+  - `ahc-deploy-bundle.tgz`
+  - `sql-init/`（所有需要执行的 SQL）
+  - 上述脚本与账号/文档清单
 - **DB 机**
-  - [ ] `192.168.18.112` 上 DB/Redis 正常可用（端口可连通）
-  - [ ] DB 初始化完成，`tdc-credit` 可用（手工执行 SQL）
+  - `192.168.18.112` 上 DB/Redis 正常可用（端口可连通）
+  - DB 初始化完成，`tdc-credit` 可用（手工执行 SQL）
 - **应用机**
-  - [ ] `ahzx-wmt-svc` 容器 `Up`，端口 48080 打开
-  - [ ] 能连上 DB/Redis，健康检查正常
+  - `ahzx-wmt-svc` 容器 `Up`，端口 48080 打开
+  - 能连上 DB/Redis，健康检查正常
 - **Web 机**
-  - [ ] Nginx 监听 7080
-  - [ ] `/CreditServiceReport/` 页面可访问
-  - [ ] `/admin-api/**` 接口返回正常业务响应
+  - Nginx 监听 7080
+  - `/CreditServiceReport/` 页面可访问
+  - `/admin-api/`** 接口返回正常业务响应
+

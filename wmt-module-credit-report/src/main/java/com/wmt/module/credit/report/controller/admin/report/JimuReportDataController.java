@@ -76,4 +76,10 @@ public class JimuReportDataController {
     public JmReportInfoUserTreeRespVO getInfoUserTree() {
         return jimuReportDataService.getInfoUserTree();
     }
+
+    @GetMapping("/info-user/tree-test")
+    @Operation(summary = "信息使用者机构下拉树数据集（测试：数字 ID/parentId）")
+    public JmReportInfoUserTreeRespVO getInfoUserTreeTest() {
+        return jimuReportDataService.getInfoUserTreeTest();
+    }
 }

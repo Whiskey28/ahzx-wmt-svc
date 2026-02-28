@@ -10,7 +10,7 @@ import lombok.Data;
  * - id：节点唯一标识
  * - parentId：父节点标识
  * - departName：显示名称
- * - isLeaf：是否叶子节点（0-否，1-是）
+ * - izLeaf：是否叶子节点（0-否，1-是）
  *
  * @author Auto
  */
@@ -28,6 +28,6 @@ public class JmReportInfoUserTreeNodeRespVO {
     private String departName;
 
     @Schema(description = "是否叶子节点（0-否，1-是）", example = "0")
-    private Integer isLeaf;
+    private Integer izLeaf;
 }
 

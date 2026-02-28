@@ -328,7 +328,7 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
 
     @Override
     public JmReportInfoUserTreeRespVO getInfoUserTree() {
-        // 1. 行业字典（第一级节点）
+        // 1. 行业字典（后续作为第二级节点）
         List<JimuDictItemDO> dictItems = jimuDictItemMapper.selectEnabledListByDictId(INDUSTRY_CODE_DICT_ID);
         if (CollUtil.isEmpty(dictItems)) {
             throw exception(GlobalErrorCodeConstants.NOT_FOUND, "产品与服务提供情况字典未配置或未启用");
@@ -345,10 +345,15 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
 
         List<JmReportInfoUserTreeNodeRespVO> nodes = new ArrayList<>();
 
-        // 4. 组装行业节点（第一级）和机构名称节点（第二级）
+        // 4. 组装行业节点（根节点）和机构名称节点（子节点）
         for (JimuDictItemDO dictItem : dictItems) {
             String industryCode = dictItem.getItemValue();
             String industryName = dictItem.getItemText();
+
+            // “产品与服务调用情况”只是表头标题，不参与下拉树数据
+            if ("product_service_usage".equals(industryCode)) {
+                continue;
+            }
 
             // 统计该行业下的机构数量，用于判断是否为叶子节点
             int orgCount = 0;
@@ -365,15 +370,15 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
                 }
             }
 
-            // 第一级：行业节点（parentId 为空字符串，表示根节点）
+            // 行业节点：作为根节点（parentId 为空字符串，必然还有子节点，所以 izLeaf 固定为 0）
             JmReportInfoUserTreeNodeRespVO industryNode = new JmReportInfoUserTreeNodeRespVO();
             industryNode.setId(industryCode);
             industryNode.setParentId("");
             industryNode.setDepartName(industryName);
-            industryNode.setIsLeaf(orgCount == 0 ? 1 : 0); // 如果没有机构则为叶子节点，否则为非叶子节点
+            industryNode.setIzLeaf(0);
             nodes.add(industryNode);
 
-            // 第二级：机构名称节点（parentId 为行业 code）
+            // 机构名称节点（parentId 为行业 code）
             if ("government".equals(industryCode)) {
                 // 政府：全部 govItems，按 sortNo 排序
                 govItems.stream()
@@ -391,7 +396,7 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
                             leaf.setId(item.getId());
                             leaf.setParentId(industryCode);
                             leaf.setDepartName(item.getGovOrgName());
-                            leaf.setIsLeaf(1);
+                            leaf.setIzLeaf(1);
                             nodes.add(leaf);
                         });
             } else {
@@ -412,12 +417,70 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
                                 leaf.setId(item.getId());
                                 leaf.setParentId(industryCode);
                                 leaf.setDepartName(item.getOrgName());
-                                leaf.setIsLeaf(1);
+                            leaf.setIzLeaf(1);
                                 nodes.add(leaf);
                             });
                 }
             }
         }
+
+        JmReportInfoUserTreeRespVO respVO = new JmReportInfoUserTreeRespVO();
+        respVO.setData(nodes);
+        respVO.setTotal(null);
+        return respVO;
+    }
+
+    @Override
+    public JmReportInfoUserTreeRespVO getInfoUserTreeTest() {
+        // 使用纯数字 ID / parentId 构造一棵简单的三层树：
+        // 1  根：产品与服务调用情况
+        // 11 二级：银行
+        // 12 二级：政府
+        // 111 三级：交通银行
+        // 121 三级：合肥市金融局
+        List<JmReportInfoUserTreeNodeRespVO> nodes = new ArrayList<>();
+
+        // 根节点
+//        JmReportInfoUserTreeNodeRespVO root = new JmReportInfoUserTreeNodeRespVO();
+//        root.setId("1");
+//        root.setParentId("");
+//        root.setDepartName("产品与服务调用情况（测试数字ID）");
+//        root.setIzLeaf(0);
+//        nodes.add(root);
+
+        // 二级：银行
+        JmReportInfoUserTreeNodeRespVO bank = new JmReportInfoUserTreeNodeRespVO();
+        bank.setId("11");
+        bank.setParentId("");
+        bank.setDepartName("银行");
+        bank.setIzLeaf(0);
+        nodes.add(bank);
+
+        // 三级：交通银行
+        JmReportInfoUserTreeNodeRespVO bankChild = new JmReportInfoUserTreeNodeRespVO();
+        bankChild.setId("111");
+        bankChild.setParentId("11");
+        bankChild.setDepartName("交通银行（测试数字ID）");
+        bankChild.setIzLeaf(1);
+        nodes.add(bankChild);
+
+        // 二级：政府
+        JmReportInfoUserTreeNodeRespVO gov = new JmReportInfoUserTreeNodeRespVO();
+        gov.setId("12");
+        gov.setParentId("");
+        gov.setDepartName("政府");
+        gov.setIzLeaf(0);
+        nodes.add(gov);
+
+
+
+        // 三级：合肥市金融局
+        JmReportInfoUserTreeNodeRespVO govChild = new JmReportInfoUserTreeNodeRespVO();
+        govChild.setId("121");
+        govChild.setParentId("12");
+        govChild.setDepartName("合肥市金融局（测试数字ID）");
+        govChild.setIzLeaf(1);
+        nodes.add(govChild);
 
         JmReportInfoUserTreeRespVO respVO = new JmReportInfoUserTreeRespVO();
         respVO.setData(nodes);

@@ -61,6 +61,14 @@ public interface JimuReportDataService {
     JmReportInfoUserTreeRespVO getInfoUserTree();
 
     /**
+     * 信息使用者机构下拉树数据集（测试版）：
+     * 使用纯数字 ID 与 parentId，验证积木报表下拉树组件在数字主键场景下的兼容性。
+     *
+     * @return 下拉树测试数据
+     */
+    JmReportInfoUserTreeRespVO getInfoUserTreeTest();
+
+    /**
      * 产品与服务提供情况 - 下半部分（提供的征信产品/服务次数）三项合计
      *
      * 统计规则：

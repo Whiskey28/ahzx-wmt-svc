@@ -2,6 +2,7 @@ package com.wmt.module.credit.report.controller.admin.report.vo;
 
 import com.wmt.framework.common.pojo.SortablePageParam;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -17,6 +18,7 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ReportFillRecordPageReqVO extends SortablePageParam {
 
+    @NotEmpty(message = "报表分类必需要选择")
     @Schema(description = "报表分类id（jimu_report_category.id）", example = "1011126161407836160")
     private String categoryId;
 
