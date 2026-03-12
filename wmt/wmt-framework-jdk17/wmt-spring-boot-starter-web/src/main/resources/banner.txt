@@ -1,4 +1,4 @@
-wmt http://www.iocoder.cn
+wmt http://www.wmt.cn
 Application Version: ${wmt.info.version}
 Spring Boot Version: ${spring-boot.version}
 

@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/Kafka/?wmt>
+<http://www.wmt.cn/Spring-Boot/Kafka/?wmt>

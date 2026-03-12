@@ -1,1 +1,1 @@
-<https://www.iocoder.cn/Spring-Boot/Unit-Test/?wmt>
+<https://www.wmt.cn/Spring-Boot/Unit-Test/?wmt>

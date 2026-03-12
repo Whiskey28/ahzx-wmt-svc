@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/Async-Job/?wmt>
+<http://www.wmt.cn/Spring-Boot/Async-Job/?wmt>

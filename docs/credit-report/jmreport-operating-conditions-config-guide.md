@@ -23,6 +23,52 @@
 | 从事征信业务员工数 | report_fill_biz_stat_hr | employee_credit_biz | 人 |
 | 企业参与行业、地方信用体系建设项目数 | report_fill_biz_stat_credit_build | project_count | 个 |
 | 企业参与行业、地方信用体系建设收入 | report_fill_biz_stat_credit_build | income_amount | 人民币元 |
+| 银行-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_bank | 家 |
+| 银行-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_bank | 家 |
+| 证券-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_securities | 家 |
+| 证券-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_securities | 家 |
+| 保险-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_insurance | 家 |
+| 保险-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_insurance | 家 |
+| 信托-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_trust | 家 |
+| 信托-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_trust | 家 |
+| P2P网络借贷中介-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_p2p_lending_intermediary | 家 |
+| P2P网络借贷中介-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_p2p_lending_intermediary | 家 |
+| 支付机构-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_payment_institution | 家 |
+| 支付机构-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_payment_institution | 家 |
+| 融资租赁及担保类公司-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_financing_leasing_guarantee | 家 |
+| 融资租赁及担保类公司-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_financing_leasing_guarantee | 家 |
+| 小额贷款公司-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_micro_loan_company | 家 |
+| 小额贷款公司-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_micro_loan_company | 家 |
+| 消费金融公司-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_consumer_finance_company | 家 |
+| 消费金融公司-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_consumer_finance_company | 家 |
+| 资产管理公司-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_asset_management_company | 家 |
+| 资产管理公司-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_asset_management_company | 家 |
+| 汽车金融公司-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_auto_finance_company | 家 |
+| 汽车金融公司-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_auto_finance_company | 家 |
+| 商业保理公司-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_commercial_factoring_company | 家 |
+| 商业保理公司-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_commercial_factoring_company | 家 |
+| 政府-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_government | 家 |
+| 政府-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_government | 家 |
+| 公用事业单位（水、电、气、通讯等）-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_public_utility | 家 |
+| 公用事业单位（水、电、气、通讯等）-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_public_utility | 家 |
+| 行业协会-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_industry_association | 家 |
+| 行业协会-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_industry_association | 家 |
+| 法院-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_court | 家 |
+| 法院-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_court | 家 |
+| 电子商务平台-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_ecommerce_platform | 家 |
+| 电子商务平台-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_ecommerce_platform | 家 |
+| 涉农企业-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_agriculture_related_enterprise | 家 |
+| 涉农企业-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_agriculture_related_enterprise | 家 |
+| 其他征信机构-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_other_credit_reporting_agency | 家 |
+| 其他征信机构-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_other_credit_reporting_agency | 家 |
+| 数据服务商-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_data_service_provider | 家 |
+| 数据服务商-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_data_service_provider | 家 |
+| 交易对手方-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_trading_counterparty | 家 |
+| 交易对手方-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_trading_counterparty | 家 |
+| 信息主体自身-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_information_subject_self | 家 |
+| 信息主体自身-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_information_subject_self | 家 |
+| 其他-信息使用者机构总累计数 | report_fill_biz_stat_credit_build | user_org_total_other | 家 |
+| 其他-当前使用服务的信息使用者机构数 | report_fill_biz_stat_credit_build | user_org_current_other | 家 |
 
 ## 二、SQL数据集配置
 
@@ -39,7 +85,53 @@ SELECT
     COALESCE(h.employee_total, 0) AS employee_total,
     COALESCE(h.employee_credit_biz, 0) AS employee_credit_biz,
     COALESCE(c.project_count, 0) AS project_count,
-    COALESCE(c.income_amount, 0) AS income_amount
+    COALESCE(c.income_amount, 0) AS income_amount,
+    COALESCE(c.user_org_total_bank, 0) AS user_org_total_bank,
+    COALESCE(c.user_org_current_bank, 0) AS user_org_current_bank,
+    COALESCE(c.user_org_total_securities, 0) AS user_org_total_securities,
+    COALESCE(c.user_org_current_securities, 0) AS user_org_current_securities,
+    COALESCE(c.user_org_total_insurance, 0) AS user_org_total_insurance,
+    COALESCE(c.user_org_current_insurance, 0) AS user_org_current_insurance,
+    COALESCE(c.user_org_total_trust, 0) AS user_org_total_trust,
+    COALESCE(c.user_org_current_trust, 0) AS user_org_current_trust,
+    COALESCE(c.user_org_total_p2p_lending_intermediary, 0) AS user_org_total_p2p_lending_intermediary,
+    COALESCE(c.user_org_current_p2p_lending_intermediary, 0) AS user_org_current_p2p_lending_intermediary,
+    COALESCE(c.user_org_total_payment_institution, 0) AS user_org_total_payment_institution,
+    COALESCE(c.user_org_current_payment_institution, 0) AS user_org_current_payment_institution,
+    COALESCE(c.user_org_total_financing_leasing_guarantee, 0) AS user_org_total_financing_leasing_guarantee,
+    COALESCE(c.user_org_current_financing_leasing_guarantee, 0) AS user_org_current_financing_leasing_guarantee,
+    COALESCE(c.user_org_total_micro_loan_company, 0) AS user_org_total_micro_loan_company,
+    COALESCE(c.user_org_current_micro_loan_company, 0) AS user_org_current_micro_loan_company,
+    COALESCE(c.user_org_total_consumer_finance_company, 0) AS user_org_total_consumer_finance_company,
+    COALESCE(c.user_org_current_consumer_finance_company, 0) AS user_org_current_consumer_finance_company,
+    COALESCE(c.user_org_total_asset_management_company, 0) AS user_org_total_asset_management_company,
+    COALESCE(c.user_org_current_asset_management_company, 0) AS user_org_current_asset_management_company,
+    COALESCE(c.user_org_total_auto_finance_company, 0) AS user_org_total_auto_finance_company,
+    COALESCE(c.user_org_current_auto_finance_company, 0) AS user_org_current_auto_finance_company,
+    COALESCE(c.user_org_total_commercial_factoring_company, 0) AS user_org_total_commercial_factoring_company,
+    COALESCE(c.user_org_current_commercial_factoring_company, 0) AS user_org_current_commercial_factoring_company,
+    COALESCE(c.user_org_total_government, 0) AS user_org_total_government,
+    COALESCE(c.user_org_current_government, 0) AS user_org_current_government,
+    COALESCE(c.user_org_total_public_utility, 0) AS user_org_total_public_utility,
+    COALESCE(c.user_org_current_public_utility, 0) AS user_org_current_public_utility,
+    COALESCE(c.user_org_total_industry_association, 0) AS user_org_total_industry_association,
+    COALESCE(c.user_org_current_industry_association, 0) AS user_org_current_industry_association,
+    COALESCE(c.user_org_total_court, 0) AS user_org_total_court,
+    COALESCE(c.user_org_current_court, 0) AS user_org_current_court,
+    COALESCE(c.user_org_total_ecommerce_platform, 0) AS user_org_total_ecommerce_platform,
+    COALESCE(c.user_org_current_ecommerce_platform, 0) AS user_org_current_ecommerce_platform,
+    COALESCE(c.user_org_total_agriculture_related_enterprise, 0) AS user_org_total_agriculture_related_enterprise,
+    COALESCE(c.user_org_current_agriculture_related_enterprise, 0) AS user_org_current_agriculture_related_enterprise,
+    COALESCE(c.user_org_total_other_credit_reporting_agency, 0) AS user_org_total_other_credit_reporting_agency,
+    COALESCE(c.user_org_current_other_credit_reporting_agency, 0) AS user_org_current_other_credit_reporting_agency,
+    COALESCE(c.user_org_total_data_service_provider, 0) AS user_org_total_data_service_provider,
+    COALESCE(c.user_org_current_data_service_provider, 0) AS user_org_current_data_service_provider,
+    COALESCE(c.user_org_total_trading_counterparty, 0) AS user_org_total_trading_counterparty,
+    COALESCE(c.user_org_current_trading_counterparty, 0) AS user_org_current_trading_counterparty,
+    COALESCE(c.user_org_total_information_subject_self, 0) AS user_org_total_information_subject_self,
+    COALESCE(c.user_org_current_information_subject_self, 0) AS user_org_current_information_subject_self,
+    COALESCE(c.user_org_total_other, 0) AS user_org_total_other,
+    COALESCE(c.user_org_current_other, 0) AS user_org_current_other
 FROM (
     SELECT r.period_id,
            f.asset_amount,
@@ -70,7 +162,53 @@ LEFT JOIN (
 LEFT JOIN (
     SELECT r.period_id,
            c.project_count,
-           c.income_amount
+           c.income_amount,
+           c.user_org_total_bank,
+           c.user_org_current_bank,
+           c.user_org_total_securities,
+           c.user_org_current_securities,
+           c.user_org_total_insurance,
+           c.user_org_current_insurance,
+           c.user_org_total_trust,
+           c.user_org_current_trust,
+           c.user_org_total_p2p_lending_intermediary,
+           c.user_org_current_p2p_lending_intermediary,
+           c.user_org_total_payment_institution,
+           c.user_org_current_payment_institution,
+           c.user_org_total_financing_leasing_guarantee,
+           c.user_org_current_financing_leasing_guarantee,
+           c.user_org_total_micro_loan_company,
+           c.user_org_current_micro_loan_company,
+           c.user_org_total_consumer_finance_company,
+           c.user_org_current_consumer_finance_company,
+           c.user_org_total_asset_management_company,
+           c.user_org_current_asset_management_company,
+           c.user_org_total_auto_finance_company,
+           c.user_org_current_auto_finance_company,
+           c.user_org_total_commercial_factoring_company,
+           c.user_org_current_commercial_factoring_company,
+           c.user_org_total_government,
+           c.user_org_current_government,
+           c.user_org_total_public_utility,
+           c.user_org_current_public_utility,
+           c.user_org_total_industry_association,
+           c.user_org_current_industry_association,
+           c.user_org_total_court,
+           c.user_org_current_court,
+           c.user_org_total_ecommerce_platform,
+           c.user_org_current_ecommerce_platform,
+           c.user_org_total_agriculture_related_enterprise,
+           c.user_org_current_agriculture_related_enterprise,
+           c.user_org_total_other_credit_reporting_agency,
+           c.user_org_current_other_credit_reporting_agency,
+           c.user_org_total_data_service_provider,
+           c.user_org_current_data_service_provider,
+           c.user_org_total_trading_counterparty,
+           c.user_org_current_trading_counterparty,
+           c.user_org_total_information_subject_self,
+           c.user_org_current_information_subject_self,
+           c.user_org_total_other,
+           c.user_org_current_other
     FROM report_fill_basic_info r
     JOIN report_fill_biz_stat_credit_build c ON c.parent_id = r.id AND c.deleted = 0
     WHERE r.deleted = 0

@@ -159,6 +159,10 @@ CREATE TABLE report_fill_service_by_industry (
   information_subject_itself_year_service_count NUMERIC(18, 0),
   other_year_service_count               NUMERIC(18, 0),
 
+  -- 政府（机构明细统计字段，供报表展示用）
+  user_org_total_government              NUMERIC(18, 0),
+  user_org_current_government            NUMERIC(18, 0),
+
   create_time                            TIMESTAMP,
   update_time                            TIMESTAMP,
   creator                                VARCHAR(64),
@@ -199,6 +203,9 @@ COMMENT ON COLUMN report_fill_service_by_industry.data_service_provider_year_ser
 COMMENT ON COLUMN report_fill_service_by_industry.counterparty_year_service_count IS '交易对手方：当年提供次数（industry_code.counterparty）';
 COMMENT ON COLUMN report_fill_service_by_industry.information_subject_itself_year_service_count IS '信息主体自身：当年提供次数（industry_code.information_subject_itself）';
 COMMENT ON COLUMN report_fill_service_by_industry.other_year_service_count IS '其他（数量多请附说明）：当年提供次数（industry_code.other）';
+
+COMMENT ON COLUMN report_fill_service_by_industry.user_org_total_government IS '政府-信息使用者机构总累计数';
+COMMENT ON COLUMN report_fill_service_by_industry.user_org_current_government IS '政府-当前使用服务的信息使用者机构数';
 
 -- ============================
 -- report_fill_product_stat（提供的征信产品/服务次数：固定字段，1:1）

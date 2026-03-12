@@ -61,5 +61,15 @@ public class ReportFillServiceByIndustryDO extends BaseDO {
     private BigDecimal informationSubjectItselfYearServiceCount;
     private BigDecimal otherYearServiceCount;
 
+    /**
+     * 政府-信息使用者机构总累计数
+     */
+    private BigDecimal userOrgTotalGovernment;
+
+    /**
+     * 政府-当前使用服务的信息使用者机构数
+     */
+    private BigDecimal userOrgCurrentGovernment;
+
 }
 

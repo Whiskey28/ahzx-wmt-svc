@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/Job/?wmt>
+<http://www.wmt.cn/Spring-Boot/Job/?wmt>

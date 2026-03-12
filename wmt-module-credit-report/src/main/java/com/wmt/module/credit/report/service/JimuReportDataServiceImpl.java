@@ -10,17 +10,20 @@ import com.wmt.framework.mybatis.core.query.LambdaQueryWrapperX;
 import com.wmt.module.credit.report.controller.admin.report.vo.*;
 import com.wmt.module.credit.report.dal.dataobject.JimuDictItemDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillBasicInfoDO;
+import com.wmt.module.credit.report.dal.dataobject.ReportFillBizStatCreditBuildDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillInfoSourceByIndustryDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillInfoUserOrgItemDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillInfoUserGovItemDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillProductStatDO;
 import com.wmt.module.credit.report.dal.mysql.JimuDictItemMapper;
 import com.wmt.module.credit.report.dal.mysql.ReportFillBasicInfoMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillBizStatCreditBuildMapper;
 import com.wmt.module.credit.report.dal.mysql.ReportFillInfoSourceByIndustryMapper;
 import com.wmt.module.credit.report.dal.mysql.ReportFillInfoUserOrgItemMapper;
 import com.wmt.module.credit.report.dal.mysql.ReportFillInfoUserGovItemMapper;
 import com.wmt.module.credit.report.dal.mysql.ReportFillServiceByIndustryMapper;
 import com.wmt.module.credit.report.dal.mysql.ReportFillProductStatMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillYangtzeCreditChainMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -99,11 +103,20 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
     private static final String ROLE_ID_INCLUSIVE_CREDIT = "207";         // 普惠信用部填报人
     private static final String ROLE_ID_RD_CENTER = "203";                // 创新研发中心填报人
 
+    /**
+     * “经营情况-信用体系建设”报表模板ID（用于获取信息使用者机构总累计数/当前使用服务数）
+     * 说明：该模板由市场部填报；政府口径由数据管理中心填报。
+     */
+    private static final String OPERATING_CREDIT_BUILD_REPORT_ID = "1178489730218569728";
+
     @Resource
     private JimuDictItemMapper jimuDictItemMapper;
 
     @Resource
     private ReportFillBasicInfoMapper reportFillBasicInfoMapper;
+
+    @Resource
+    private ReportFillBizStatCreditBuildMapper reportFillBizStatCreditBuildMapper;
 
     @Resource
     private ReportFillInfoSourceByIndustryMapper reportFillInfoSourceByIndustryMapper;
@@ -119,6 +132,9 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
 
     @Resource
     private ReportFillProductStatMapper reportFillProductStatMapper;
+
+    @Resource
+    private ReportFillYangtzeCreditChainMapper reportFillYangtzeCreditChainMapper;
 
     @Override
     public JmReportInfoSourceStatusRespVO getInfoSourceStatus(JmReportInfoSourceStatusReqVO reqVO) {
@@ -230,7 +246,8 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
         List<ReportFillInfoUserGovItemDO> govItems = reportFillInfoUserGovItemMapper.selectAll();
 
         // 3. 当年提供产品(服务)次数：按指定 3 个报表模板 + 数据管理部+普惠部+企信部角色聚合
-        List<String> serviceRecordIds = reportFillBasicInfoMapper.selectRecordIdsByPeriodAndReportsAndRoles(
+        // 说明：与 form-stat 保持一致 —— 每个角色只取在这 3 个模板中最新一条记录，再进行求和
+        List<String> serviceRecordIds = resolveLatestRecordIdsByPeriodAndReportsAndRoles(
                 reqVO.getPeriodId(),
                 SERVICE_REPORT_IDS,
                 List.of(ROLE_ID_DATA_CENTER, ROLE_ID_INCLUSIVE_CREDIT, ROLE_ID_ENTERPRISE_CREDIT)
@@ -324,6 +341,282 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
         respVO.setTotalYearServiceCount(totalYearServiceCount);
         respVO.setItems(items);
         return respVO;
+    }
+
+    @Override
+    public JmReportServiceByIndustryYearCountFieldsRespVO getServiceByIndustryYearCountFields(JmReportServiceByIndustryReqVO reqVO) {
+        // 统计口径：与 getServiceByIndustry 的“当年提供产品(服务)次数”一致
+        // 但这里必须按请求的 periodId + reportId +（数据管理中心/普惠/企信）角色聚合，不再使用固定 SERVICE_REPORT_IDS
+
+        String periodId = reqVO.getPeriodId();
+        String reportId = reqVO.getReportId();
+
+        List<String> serviceRecordIds = resolveLatestRecordIdsByPeriodAndReportAndRoles(
+                periodId, reportId,
+                List.of(ROLE_ID_DATA_CENTER, ROLE_ID_INCLUSIVE_CREDIT, ROLE_ID_ENTERPRISE_CREDIT)
+        );
+
+        Map<String, BigDecimal> serviceCountMap = reportFillServiceByIndustryMapper.selectYearServiceCountByIndustryCode(serviceRecordIds);
+        BigDecimal totalYearServiceCount = reportFillServiceByIndustryMapper.selectTotalYearServiceCount(serviceRecordIds);
+
+        JmReportServiceByIndustryYearCountFieldsRespVO respVO = new JmReportServiceByIndustryYearCountFieldsRespVO();
+        respVO.setPeriodId(periodId);
+        respVO.setReportId(reportId);
+        respVO.setTotalYearServiceCount(totalYearServiceCount);
+
+        respVO.setBank(serviceCountMap.getOrDefault("bank", BigDecimal.ZERO));
+        respVO.setSecurity(serviceCountMap.getOrDefault("security", BigDecimal.ZERO));
+        respVO.setInsurance(serviceCountMap.getOrDefault("insurance", BigDecimal.ZERO));
+        respVO.setTrust(serviceCountMap.getOrDefault("trust", BigDecimal.ZERO));
+        respVO.setP2pLending(serviceCountMap.getOrDefault("p2p_lending", BigDecimal.ZERO));
+        respVO.setPaymentInstitution(serviceCountMap.getOrDefault("payment_institution", BigDecimal.ZERO));
+        respVO.setFinancialLeasingGuarantee(serviceCountMap.getOrDefault("financial_leasing_guarantee", BigDecimal.ZERO));
+        respVO.setMicroLoanCompany(serviceCountMap.getOrDefault("micro_loan_company", BigDecimal.ZERO));
+        respVO.setConsumerFinanceCompany(serviceCountMap.getOrDefault("consumer_finance_company", BigDecimal.ZERO));
+        respVO.setAssetManagementCompany(serviceCountMap.getOrDefault("asset_management_company", BigDecimal.ZERO));
+        respVO.setAutoFinanceCompany(serviceCountMap.getOrDefault("auto_finance_company", BigDecimal.ZERO));
+        respVO.setCommercialFactoringCompany(serviceCountMap.getOrDefault("commercial_factoring_company", BigDecimal.ZERO));
+
+        respVO.setGovernment(serviceCountMap.getOrDefault("government", BigDecimal.ZERO));
+        respVO.setPublicUtilities(serviceCountMap.getOrDefault("public_utilities", BigDecimal.ZERO));
+        respVO.setIndustryAssociation(serviceCountMap.getOrDefault("industry_association", BigDecimal.ZERO));
+        respVO.setCourt(serviceCountMap.getOrDefault("court", BigDecimal.ZERO));
+        respVO.setEcommercePlatform(serviceCountMap.getOrDefault("ecommerce_platform", BigDecimal.ZERO));
+        respVO.setAgriculturalEnterprise(serviceCountMap.getOrDefault("agricultural_enterprise", BigDecimal.ZERO));
+        respVO.setOtherCreditAgency(serviceCountMap.getOrDefault("other_credit_agency", BigDecimal.ZERO));
+        respVO.setDataServiceProvider(serviceCountMap.getOrDefault("data_service_provider", BigDecimal.ZERO));
+        respVO.setCounterparty(serviceCountMap.getOrDefault("counterparty", BigDecimal.ZERO));
+        respVO.setInformationSubjectItself(serviceCountMap.getOrDefault("information_subject_itself", BigDecimal.ZERO));
+        respVO.setOther(serviceCountMap.getOrDefault("other", BigDecimal.ZERO));
+
+        return respVO;
+    }
+
+    @Override
+    public JmReportServiceByIndustryFormStatRespVO getServiceByIndustryFormStat(JmReportServiceByIndustryReqVO reqVO) {
+        // 1) 行业字典（23项，保证顺序；政府行最后）
+        List<JimuDictItemDO> dictItems = jimuDictItemMapper.selectEnabledListByDictId(INDUSTRY_CODE_DICT_ID);
+        if (CollUtil.isEmpty(dictItems)) {
+            throw exception(GlobalErrorCodeConstants.NOT_FOUND, "产品与服务提供情况字典未配置或未启用");
+        }
+
+        String periodId = reqVO.getPeriodId();
+        String reportId = reqVO.getReportId();
+
+        // 2) 当年提供次数：
+        //    - 若传入的 reportId 属于上半部分统计的 3 个模板（SERVICE_REPORT_IDS），则按这 3 个模板合并统计，
+        //      并且每个角色只取“这3个模板里最新的一条”记录再求和，避免漏算（例如企信部填在另一个模板上）
+        //    - 否则仅统计传入的单个 reportId
+        List<String> reportIdsToSum = SERVICE_REPORT_IDS.contains(reportId) ? SERVICE_REPORT_IDS : List.of(reportId);
+        List<String> serviceRecordIds = resolveLatestRecordIdsByPeriodAndReportsAndRoles(
+                periodId, reportIdsToSum,
+                List.of(ROLE_ID_DATA_CENTER, ROLE_ID_INCLUSIVE_CREDIT, ROLE_ID_ENTERPRISE_CREDIT)
+        );
+        Map<String, BigDecimal> serviceCountMap = reportFillServiceByIndustryMapper.selectYearServiceCountByIndustryCode(serviceRecordIds);
+
+        // 3) 机构总累计/当前使用：来自“经营情况-信用体系建设”表单
+        //    - 非政府：市场部最新填报
+        //    - 政府：数据管理中心最新填报
+        ReportFillBizStatCreditBuildDO marketCreditBuild = selectLatestCreditBuildByPeriodAndRole(periodId, ROLE_ID_MARKET_DEPT);
+        ReportFillBizStatCreditBuildDO dataCenterCreditBuild = selectLatestCreditBuildByPeriodAndRole(periodId, ROLE_ID_DATA_CENTER);
+
+        // 4) 组装 items（政府行最后）
+        List<JmReportServiceByIndustryItemRespVO> items = new ArrayList<>(dictItems.size());
+        JmReportServiceByIndustryItemRespVO govItem = null;
+        BigDecimal totalUserOrgTotal = BigDecimal.ZERO;
+        BigDecimal totalUserOrgCurrent = BigDecimal.ZERO;
+        BigDecimal totalYearServiceCount = BigDecimal.ZERO;
+
+        for (JimuDictItemDO dictItem : dictItems) {
+            String industryCode = dictItem.getItemValue();
+            // “产品与服务调用情况”只是表头标题，不参与明细
+            if ("product_service_usage".equals(industryCode)) {
+                continue;
+            }
+            boolean isGovernment = "government".equals(industryCode);
+
+            ReportFillBizStatCreditBuildDO source = isGovernment ? dataCenterCreditBuild : marketCreditBuild;
+            BigDecimal userOrgTotal = getUserOrgTotalByIndustryCode(source, industryCode);
+            BigDecimal userOrgCurrent = getUserOrgCurrentByIndustryCode(source, industryCode);
+            BigDecimal yearServiceCount = serviceCountMap.getOrDefault(industryCode, BigDecimal.ZERO);
+
+            totalUserOrgTotal = totalUserOrgTotal.add(userOrgTotal);
+            totalUserOrgCurrent = totalUserOrgCurrent.add(userOrgCurrent);
+            totalYearServiceCount = totalYearServiceCount.add(yearServiceCount);
+
+            JmReportServiceByIndustryItemRespVO itemVO = new JmReportServiceByIndustryItemRespVO();
+            itemVO.setIndustryCode(industryCode);
+            itemVO.setIndustryName(dictItem.getItemText());
+            itemVO.setUserOrgTotal(userOrgTotal);
+            itemVO.setUserOrgCurrent(userOrgCurrent);
+            itemVO.setYearServiceCount(yearServiceCount);
+
+            if (isGovernment) {
+                govItem = itemVO;
+            } else {
+                items.add(itemVO);
+            }
+        }
+        if (govItem != null) {
+            items.add(govItem);
+        }
+
+        // 5) 政府行之后追加总计行
+        JmReportServiceByIndustryItemRespVO totalItem = new JmReportServiceByIndustryItemRespVO();
+        totalItem.setIndustryCode("total");
+        totalItem.setIndustryName("总计");
+        totalItem.setUserOrgTotal(totalUserOrgTotal);
+        totalItem.setUserOrgCurrent(totalUserOrgCurrent);
+        totalItem.setYearServiceCount(totalYearServiceCount);
+        items.add(totalItem);
+
+        JmReportServiceByIndustryFormStatRespVO respVO = new JmReportServiceByIndustryFormStatRespVO();
+        respVO.setPeriodId(periodId);
+        respVO.setReportId(reportId);
+        respVO.setItems(items);
+        return respVO;
+    }
+
+    /**
+     * 解析“该周期 + 该报表 + 多角色”的最新记录ID列表：
+     * 每个角色只取最新一条（按 create_time 倒序）。
+     */
+    private List<String> resolveLatestRecordIdsByPeriodAndReportAndRoles(String periodId, String reportId, List<String> roleIds) {
+        if (StringUtils.isBlank(periodId) || StringUtils.isBlank(reportId) || CollUtil.isEmpty(roleIds)) {
+            return List.of();
+        }
+        SortablePageParam pageParam = new SortablePageParam();
+        pageParam.setPageNo(1);
+        pageParam.setPageSize(1);
+        pageParam.setSortingFields(List.of(new SortingField("create_time", SortingField.ORDER_DESC)));
+
+        List<String> recordIds = new ArrayList<>(roleIds.size());
+        for (String roleId : roleIds) {
+            LambdaQueryWrapperX<ReportFillBasicInfoDO> wrapper = new LambdaQueryWrapperX<ReportFillBasicInfoDO>()
+                    .eq(ReportFillBasicInfoDO::getPeriodId, periodId)
+                    .eq(ReportFillBasicInfoDO::getReportId, reportId)
+                    .eq(ReportFillBasicInfoDO::getRoleId, roleId);
+            PageResult<ReportFillBasicInfoDO> pageResult = reportFillBasicInfoMapper.selectPage(pageParam, pageParam.getSortingFields(), wrapper);
+            ReportFillBasicInfoDO record = CollUtil.getFirst(pageResult.getList());
+            if (record != null) {
+                recordIds.add(record.getId());
+            }
+        }
+        return recordIds;
+    }
+
+    /**
+     * 解析“该周期 + 多报表 + 多角色”的最新记录ID列表：
+     * 每个角色只取在这些报表中最新一条（按 create_time 倒序）。
+     */
+    private List<String> resolveLatestRecordIdsByPeriodAndReportsAndRoles(String periodId, List<String> reportIds, List<String> roleIds) {
+        if (StringUtils.isBlank(periodId) || CollUtil.isEmpty(reportIds) || CollUtil.isEmpty(roleIds)) {
+            return List.of();
+        }
+        SortablePageParam pageParam = new SortablePageParam();
+        pageParam.setPageNo(1);
+        pageParam.setPageSize(1);
+        pageParam.setSortingFields(List.of(new SortingField("create_time", SortingField.ORDER_DESC)));
+
+        List<String> recordIds = new ArrayList<>(roleIds.size());
+        for (String roleId : roleIds) {
+            LambdaQueryWrapperX<ReportFillBasicInfoDO> wrapper = new LambdaQueryWrapperX<ReportFillBasicInfoDO>()
+                    .eq(ReportFillBasicInfoDO::getPeriodId, periodId)
+                    .in(ReportFillBasicInfoDO::getReportId, reportIds)
+                    .eq(ReportFillBasicInfoDO::getRoleId, roleId);
+            PageResult<ReportFillBasicInfoDO> pageResult = reportFillBasicInfoMapper.selectPage(pageParam, pageParam.getSortingFields(), wrapper);
+            ReportFillBasicInfoDO record = CollUtil.getFirst(pageResult.getList());
+            if (record != null) {
+                recordIds.add(record.getId());
+            }
+        }
+        return recordIds;
+    }
+
+    /**
+     * 查询“经营情况-信用体系建设”最新填报记录（指定周期 + 指定角色）。
+     */
+    private ReportFillBizStatCreditBuildDO selectLatestCreditBuildByPeriodAndRole(String periodId, String roleId) {
+        SortablePageParam pageParam = new SortablePageParam();
+        pageParam.setPageNo(1);
+        pageParam.setPageSize(1);
+        pageParam.setSortingFields(List.of(new SortingField("create_time", SortingField.ORDER_DESC)));
+
+        LambdaQueryWrapperX<ReportFillBasicInfoDO> wrapper = new LambdaQueryWrapperX<ReportFillBasicInfoDO>()
+                .eq(ReportFillBasicInfoDO::getPeriodId, periodId)
+                .eq(ReportFillBasicInfoDO::getReportId, OPERATING_CREDIT_BUILD_REPORT_ID)
+                .eq(ReportFillBasicInfoDO::getRoleId, roleId);
+        PageResult<ReportFillBasicInfoDO> pageResult = reportFillBasicInfoMapper.selectPage(pageParam, pageParam.getSortingFields(), wrapper);
+        ReportFillBasicInfoDO record = CollUtil.getFirst(pageResult.getList());
+        if (record == null) {
+            return null;
+        }
+        return reportFillBizStatCreditBuildMapper.selectOne(new LambdaQueryWrapperX<ReportFillBizStatCreditBuildDO>()
+                .eq(ReportFillBizStatCreditBuildDO::getParentId, record.getId()));
+    }
+
+    private BigDecimal getUserOrgTotalByIndustryCode(ReportFillBizStatCreditBuildDO data, String industryCode) {
+        if (data == null) {
+            return BigDecimal.ZERO;
+        }
+        return Optional.ofNullable(switch (industryCode) {
+            case "bank" -> data.getUserOrgTotalBank();
+            case "security" -> data.getUserOrgTotalSecurities();
+            case "insurance" -> data.getUserOrgTotalInsurance();
+            case "trust" -> data.getUserOrgTotalTrust();
+            case "p2p_lending" -> data.getUserOrgTotalP2pLendingIntermediary();
+            case "payment_institution" -> data.getUserOrgTotalPaymentInstitution();
+            case "financial_leasing_guarantee" -> data.getUserOrgTotalFinancingLeasingGuarantee();
+            case "micro_loan_company" -> data.getUserOrgTotalMicroLoanCompany();
+            case "consumer_finance_company" -> data.getUserOrgTotalConsumerFinanceCompany();
+            case "asset_management_company" -> data.getUserOrgTotalAssetManagementCompany();
+            case "auto_finance_company" -> data.getUserOrgTotalAutoFinanceCompany();
+            case "commercial_factoring_company" -> data.getUserOrgTotalCommercialFactoringCompany();
+            case "government" -> data.getUserOrgTotalGovernment();
+            case "public_utilities" -> data.getUserOrgTotalPublicUtility();
+            case "industry_association" -> data.getUserOrgTotalIndustryAssociation();
+            case "court" -> data.getUserOrgTotalCourt();
+            case "ecommerce_platform" -> data.getUserOrgTotalEcommercePlatform();
+            case "agricultural_enterprise" -> data.getUserOrgTotalAgricultureRelatedEnterprise();
+            case "other_credit_agency" -> data.getUserOrgTotalOtherCreditReportingAgency();
+            case "data_service_provider" -> data.getUserOrgTotalDataServiceProvider();
+            case "counterparty" -> data.getUserOrgTotalTradingCounterparty();
+            case "information_subject_itself" -> data.getUserOrgTotalInformationSubjectSelf();
+            case "other" -> data.getUserOrgTotalOther();
+            default -> null;
+        }).orElse(BigDecimal.ZERO);
+    }
+
+    private BigDecimal getUserOrgCurrentByIndustryCode(ReportFillBizStatCreditBuildDO data, String industryCode) {
+        if (data == null) {
+            return BigDecimal.ZERO;
+        }
+        return Optional.ofNullable(switch (industryCode) {
+            case "bank" -> data.getUserOrgCurrentBank();
+            case "security" -> data.getUserOrgCurrentSecurities();
+            case "insurance" -> data.getUserOrgCurrentInsurance();
+            case "trust" -> data.getUserOrgCurrentTrust();
+            case "p2p_lending" -> data.getUserOrgCurrentP2pLendingIntermediary();
+            case "payment_institution" -> data.getUserOrgCurrentPaymentInstitution();
+            case "financial_leasing_guarantee" -> data.getUserOrgCurrentFinancingLeasingGuarantee();
+            case "micro_loan_company" -> data.getUserOrgCurrentMicroLoanCompany();
+            case "consumer_finance_company" -> data.getUserOrgCurrentConsumerFinanceCompany();
+            case "asset_management_company" -> data.getUserOrgCurrentAssetManagementCompany();
+            case "auto_finance_company" -> data.getUserOrgCurrentAutoFinanceCompany();
+            case "commercial_factoring_company" -> data.getUserOrgCurrentCommercialFactoringCompany();
+            case "government" -> data.getUserOrgCurrentGovernment();
+            case "public_utilities" -> data.getUserOrgCurrentPublicUtility();
+            case "industry_association" -> data.getUserOrgCurrentIndustryAssociation();
+            case "court" -> data.getUserOrgCurrentCourt();
+            case "ecommerce_platform" -> data.getUserOrgCurrentEcommercePlatform();
+            case "agricultural_enterprise" -> data.getUserOrgCurrentAgricultureRelatedEnterprise();
+            case "other_credit_agency" -> data.getUserOrgCurrentOtherCreditReportingAgency();
+            case "data_service_provider" -> data.getUserOrgCurrentDataServiceProvider();
+            case "counterparty" -> data.getUserOrgCurrentTradingCounterparty();
+            case "information_subject_itself" -> data.getUserOrgCurrentInformationSubjectSelf();
+            case "other" -> data.getUserOrgCurrentOther();
+            default -> null;
+        }).orElse(BigDecimal.ZERO);
     }
 
     @Override
@@ -519,12 +812,24 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
                 .filter(Objects::nonNull)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // 3. 按规则：汇总求和后 + 3000 × periodId 中的月数
+        // 3. 计算长三角征信链补充次数（仅数据管理中心 + 特定报表）
+        BigDecimal yangtzeExtra = BigDecimal.ZERO;
+        String reportId = reqVO.getReportId();
+        if (StringUtils.isNotBlank(reportId)) {
+            yangtzeExtra = reportFillYangtzeCreditChainMapper
+                    .selectTotalCountByPeriodAndReportAndRole(periodId, reportId, ROLE_ID_DATA_CENTER);
+            if (yangtzeExtra == null) {
+                yangtzeExtra = BigDecimal.ZERO;
+            }
+        }
+
+        // 4. 按规则：汇总求和后 + 3000 × periodId 中的月数
         int month = parseMonthFromPeriodId(periodId);
         BigDecimal monthDelta = BigDecimal.valueOf(3000L).multiply(BigDecimal.valueOf(month));
 
         JmReportProductServiceTotalRespVO respVO = new JmReportProductServiceTotalRespVO();
-        respVO.setReportYearTotal(reportSum.add(monthDelta));
+        // “当年信用报告产品提供次数” = 原统计结果 + 长三角征信链补充次数
+        respVO.setReportYearTotal(reportSum.add(monthDelta).add(yangtzeExtra));
         respVO.setCreditYearTotal(creditSum.add(monthDelta));
         respVO.setAntiYearTotal(antiSum.add(monthDelta));
         return respVO;

@@ -62,7 +62,7 @@ public class FileConfigServiceImplTest extends BaseDbUnitTest {
     public void testCreateFileConfig_success() {
         // 准备参数
         Map<String, Object> config = MapUtil.<String, Object>builder().put("basePath", "/yunai")
-                .put("domain", "https://www.iocoder.cn").build();
+                .put("domain", "https://www.wmt.cn").build();
         FileConfigSaveReqVO reqVO = randomPojo(FileConfigSaveReqVO.class,
                 o -> o.setStorage(FileStorageEnum.LOCAL.getStorage()).setConfig(config))
                 .setId(null); // 避免 id 被赋值
@@ -76,7 +76,7 @@ public class FileConfigServiceImplTest extends BaseDbUnitTest {
         assertPojoEquals(reqVO, fileConfig, "id", "config");
         assertFalse(fileConfig.getMaster());
         assertEquals("/yunai", ((LocalFileClientConfig) fileConfig.getConfig()).getBasePath());
-        assertEquals("https://www.iocoder.cn", ((LocalFileClientConfig) fileConfig.getConfig()).getDomain());
+        assertEquals("https://www.wmt.cn", ((LocalFileClientConfig) fileConfig.getConfig()).getDomain());
         // 验证 cache
         assertNull(fileConfigService.getClientCache().getIfPresent(fileConfigId));
     }
@@ -85,7 +85,7 @@ public class FileConfigServiceImplTest extends BaseDbUnitTest {
     public void testUpdateFileConfig_success() {
         // mock 数据
         FileConfigDO dbFileConfig = randomPojo(FileConfigDO.class, o -> o.setStorage(FileStorageEnum.LOCAL.getStorage())
-                .setConfig(new LocalFileClientConfig().setBasePath("/yunai").setDomain("https://www.iocoder.cn")));
+                .setConfig(new LocalFileClientConfig().setBasePath("/yunai").setDomain("https://www.wmt.cn")));
         fileConfigMapper.insert(dbFileConfig);// @Sql: 先插入出一条存在的数据
         // 准备参数
         FileConfigSaveReqVO reqVO = randomPojo(FileConfigSaveReqVO.class, o -> {
@@ -214,10 +214,10 @@ public class FileConfigServiceImplTest extends BaseDbUnitTest {
         // mock 获得 Client
         FileClient fileClient = mock(FileClient.class);
         when(fileClientFactory.getFileClient(eq(id))).thenReturn(fileClient);
-        when(fileClient.upload(any(), any(), any())).thenReturn("https://www.iocoder.cn");
+        when(fileClient.upload(any(), any(), any())).thenReturn("https://www.wmt.cn");
 
         // 调用，并断言
-        assertEquals("https://www.iocoder.cn", fileConfigService.testFileConfig(id));
+        assertEquals("https://www.wmt.cn", fileConfigService.testFileConfig(id));
     }
 
     @Test

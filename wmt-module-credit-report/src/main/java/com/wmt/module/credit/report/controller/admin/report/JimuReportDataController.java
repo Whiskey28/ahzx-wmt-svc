@@ -44,6 +44,20 @@ public class JimuReportDataController {
         return success(jimuReportDataService.getServiceByIndustry(reqVO));
     }
 
+    @GetMapping("/service-by-industry/year-count-fields")
+    @Operation(summary = "产品与服务提供情况（按行业）当年提供次数（字段展开）")
+    public CommonResult<JmReportServiceByIndustryYearCountFieldsRespVO> getServiceByIndustryYearCountFields(
+            @Valid JmReportServiceByIndustryReqVO reqVO) {
+        return success(jimuReportDataService.getServiceByIndustryYearCountFields(reqVO));
+    }
+
+    @GetMapping("/service-by-industry/form-stat")
+    @Operation(summary = "产品与服务提供情况（按行业）统计（来自表单填写）")
+    public CommonResult<JmReportServiceByIndustryFormStatRespVO> getServiceByIndustryFormStat(
+            @Valid JmReportServiceByIndustryReqVO reqVO) {
+        return success(jimuReportDataService.getServiceByIndustryFormStat(reqVO));
+    }
+
     @GetMapping("/service-by-industry/total")
     @Operation(summary = "产品与服务提供情况（按行业）总计")
     public CommonResult<JmReportServiceByIndustryTotalRespVO> getServiceByIndustryTotal(

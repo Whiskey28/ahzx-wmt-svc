@@ -28,6 +28,21 @@ public interface JimuReportDataService {
     JmReportServiceByIndustryRespVO getServiceByIndustry(JmReportServiceByIndustryReqVO reqVO);
 
     /**
+     * 产品与服务提供情况（按行业）当年提供次数（字段展开）
+     *
+     * 按 periodId + reportId +（数据管理中心/普惠/企信）角色聚合，返回 bank/security/.../other 等字段。
+     */
+    JmReportServiceByIndustryYearCountFieldsRespVO getServiceByIndustryYearCountFields(JmReportServiceByIndustryReqVO reqVO);
+
+    /**
+     * 产品与服务提供情况（按行业）统计（来自表单填写）
+     *
+     * - 机构总累计/当前使用：市场部表单（政府取数据部表单）
+     * - 当年提供次数：数据部+企信部+普惠部聚合
+     */
+    JmReportServiceByIndustryFormStatRespVO getServiceByIndustryFormStat(JmReportServiceByIndustryReqVO reqVO);
+
+    /**
      * 产品与服务提供情况（按行业）总计
      *
      * @param reqVO 查询条件
@@ -75,6 +90,7 @@ public interface JimuReportDataService {
      * 1) 从 report_fill_product_stat 聚合 report_year_count / credit_year_count / anti_year_count；
      * 2) 过滤条件：period_id + 报表ID集合 + 角色集合（创新研发中心 + 企业信用部 + 普惠信用部）；
      * 3) 每个字段的最终值 = 汇总求和 + 3000 × 当前月数。
+     * 4) report_year_count+长三角征信链补充次数
      */
     JmReportProductServiceTotalRespVO getProductServiceTotal(JmReportProductServiceReqVO reqVO);
 }

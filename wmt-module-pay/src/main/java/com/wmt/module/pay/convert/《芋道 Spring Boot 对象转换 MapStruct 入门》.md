@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/MapStruct/?wmt>
+<http://www.wmt.cn/Spring-Boot/MapStruct/?wmt>

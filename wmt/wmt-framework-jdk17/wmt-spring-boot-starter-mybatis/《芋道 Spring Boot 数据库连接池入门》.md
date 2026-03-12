@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/datasource-pool/?wmt>
+<http://www.wmt.cn/Spring-Boot/datasource-pool/?wmt>

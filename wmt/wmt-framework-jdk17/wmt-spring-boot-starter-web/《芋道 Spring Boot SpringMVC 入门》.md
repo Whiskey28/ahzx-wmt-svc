@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/SpringMVC/?wmt>
+<http://www.wmt.cn/Spring-Boot/SpringMVC/?wmt>

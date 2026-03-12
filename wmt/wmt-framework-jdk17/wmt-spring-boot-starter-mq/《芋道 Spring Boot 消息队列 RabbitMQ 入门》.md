@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/RabbitMQ/?wmt>
+<http://www.wmt.cn/Spring-Boot/RabbitMQ/?wmt>

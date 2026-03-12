@@ -5,6 +5,9 @@
     },
     "continual-learning": {
       "enabled": true
+    },
+    "supabase": {
+      "enabled": true
     }
   }
 }

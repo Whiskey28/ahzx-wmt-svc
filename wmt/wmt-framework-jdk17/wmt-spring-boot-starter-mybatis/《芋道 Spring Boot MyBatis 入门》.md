@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/MyBatis/?wmt>
+<http://www.wmt.cn/Spring-Boot/MyBatis/?wmt>

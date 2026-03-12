@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/SkyWalking/?wmt>
+<http://www.wmt.cn/Spring-Boot/SkyWalking/?wmt>

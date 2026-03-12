@@ -1,1 +1,1 @@
-<https://www.iocoder.cn/Spring-Boot/Actuator/?wmt>
+<https://www.wmt.cn/Spring-Boot/Actuator/?wmt>

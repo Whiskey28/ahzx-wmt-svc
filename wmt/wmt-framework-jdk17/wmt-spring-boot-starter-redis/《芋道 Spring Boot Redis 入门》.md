@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/Redis/?wmt>
+<http://www.wmt.cn/Spring-Boot/Redis/?wmt>

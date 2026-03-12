@@ -15,7 +15,7 @@ public class MemberLevelSimpleRespVO {
     @Schema(description = "等级名称", example = "芋艿")
     private String name;
 
-    @Schema(description = "等级图标", example = "https://www.iocoder.cn/wmt.jpg")
+    @Schema(description = "等级图标", example = "https://www.wmt.cn/wmt.jpg")
     private String icon;
 
 }

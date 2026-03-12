@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/Validation/?wmt>
+<http://www.wmt.cn/Spring-Boot/Validation/?wmt>

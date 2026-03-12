@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             targetNamespace="http://www.wmt.com/bpmn/finMainRiskApproval">
+
+  <process id="finMainRiskApproval" name="FinMain风险审批子流程" isExecutable="true">
+    <documentation>FinMain 提交→分配风险经理→风险经理审核→通过/拒绝。MVP 子流程，对应 STATUS 7/9/12/11 投影。</documentation>
+
+    <!-- 流程变量说明：businessNo, bizType, riskLeaderId, riskManagerId, passed, reason -->
+
+    <startEvent id="start" name="开始"/>
+
+    <!-- 提交到风险部门：业务侧调用 submit() 时启动流程，此处为自动节点，投影 STATUS=7 由监听器/业务在启动时回写 -->
+    <serviceTask id="submit_to_risk" name="提交到风险部门" flowable:async="false"/>
+
+    <!-- 风险负责人分配风险经理：userTask，候选人由 riskLeaderId 或候选组 ROLE_RISK_LEADER 配置 -->
+    <userTask id="risk_assign" name="分配风险经理"
+              flowable:candidateUsers="${riskLeaderId}"/>
+
+    <!-- 风险经理审核：办理人由上一节点完成时写入的 riskManagerId 指定 -->
+    <userTask id="risk_review" name="风险经理审核"
+              flowable:assignee="${riskManagerId}"/>
+
+    <!-- 通过/拒绝分支 -->
+    <exclusiveGateway id="approve_gateway" name="审批结果"/>
+
+    <endEvent id="approved" name="审批通过"/>
+    <endEvent id="rejected" name="审批拒绝"/>
+
+    <!-- 顺序流 -->
+    <sequenceFlow id="flow_start_to_submit" sourceRef="start" targetRef="submit_to_risk"/>
+    <sequenceFlow id="flow_submit_to_assign" sourceRef="submit_to_risk" targetRef="risk_assign"/>
+    <sequenceFlow id="flow_assign_to_review" sourceRef="risk_assign" targetRef="risk_review"/>
+    <sequenceFlow id="flow_review_to_gateway" sourceRef="risk_review" targetRef="approve_gateway"/>
+
+    <sequenceFlow id="flow_gateway_to_approved" sourceRef="approve_gateway" targetRef="approved">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passed == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow_gateway_to_rejected" sourceRef="approve_gateway" targetRef="rejected">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${passed == false}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+
+</definitions>

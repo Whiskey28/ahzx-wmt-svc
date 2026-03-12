@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/WebSocket/?wmt>
+<http://www.wmt.cn/Spring-Boot/WebSocket/?wmt>

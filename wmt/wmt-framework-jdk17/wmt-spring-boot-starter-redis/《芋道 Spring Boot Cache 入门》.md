@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/Cache/?wmt>
+<http://www.wmt.cn/Spring-Boot/Cache/?wmt>

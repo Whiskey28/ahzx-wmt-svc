@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/dynamic-datasource/?wmt>
+<http://www.wmt.cn/Spring-Boot/dynamic-datasource/?wmt>

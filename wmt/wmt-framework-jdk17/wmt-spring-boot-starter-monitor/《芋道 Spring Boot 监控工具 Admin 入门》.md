@@ -1,1 +1,1 @@
-<https://www.iocoder.cn/Spring-Boot/Admin/?wmt>
+<https://www.wmt.cn/Spring-Boot/Admin/?wmt>

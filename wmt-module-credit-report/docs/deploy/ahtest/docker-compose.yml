@@ -33,7 +33,7 @@ services:
       TZ: Asia/Shanghai
       JAVA_OPTS: "-Xms512m -Xmx512m -Djava.security.egd=file:/dev/./urandom"
       # 使用 application-ahtest 专属配置，并通过命令行参数覆盖验证查询
-      ARGS: "--spring.profiles.active=ahtest --spring.datasource.dynamic.druid.validation-query=SELECT 1"
+      ARGS: "--spring.profiles.active=creditahtest --spring.datasource.dynamic.druid.validation-query=SELECT 1"
     ports:
       - "48080:48080"
     volumes:

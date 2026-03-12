@@ -1,1 +1,1 @@
-<http://www.iocoder.cn/Spring-Boot/Swagger/?wmt>
+<http://www.wmt.cn/Spring-Boot/Swagger/?wmt>
