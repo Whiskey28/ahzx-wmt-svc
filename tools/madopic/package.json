@@ -1,0 +1,12 @@
+{
+  "name": "madopic-tools",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "export:readme": "node ./export-readme.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.55.0"
+  }
+}
+

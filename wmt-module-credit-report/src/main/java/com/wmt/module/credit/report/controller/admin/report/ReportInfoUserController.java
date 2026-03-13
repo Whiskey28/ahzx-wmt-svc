@@ -64,6 +64,10 @@ public class ReportInfoUserController {
         List<ReportInfoUserStatByIndustryItemRespVO> industryItems = Optional.ofNullable(reportInfoUserService.getStatByIndustry())
                 .map(ReportInfoUserStatByIndustryRespVO::getItems)
                 .orElse(List.of());
+        // 注意：政府机构在本导出中始终独立成列（步骤 3），因此需要剔除字典中 government 行业列，避免重复导出
+        industryItems = industryItems.stream()
+                .filter(item -> !"government".equals(item.getIndustryCode()))
+                .collect(Collectors.toList());
 
         // LinkedHashMap 保持列顺序：字典顺序 -> Excel 列顺序
         Map<String, List<String>> industryNameToOrgNames = new LinkedHashMap<>();
@@ -77,6 +81,10 @@ public class ReportInfoUserController {
                         ReportInfoUserStatByIndustryItemRespVO::getIndustryName, (v1, v2) -> v1));
 
         for (ReportInfoUserOrgRespVO org : orgList) {
+            // 过滤掉 org 明细里误录为 government 的机构；政府机构以 gov 表数据为准（步骤 3）
+            if ("government".equals(org.getIndustryCode())) {
+                continue;
+            }
             String industryName = industryCodeToName.getOrDefault(org.getIndustryCode(), org.getIndustryCode());
             industryNameToOrgNames.computeIfAbsent(industryName, k -> new ArrayList<>()).add(org.getOrgName());
         }

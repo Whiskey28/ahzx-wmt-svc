@@ -60,6 +60,29 @@ public interface ReportFillBasicInfoMapper extends BaseMapperX<ReportFillBasicIn
     }
 
     /**
+     * 查询指定周期、报表、角色的最新填报记录（按创建时间倒序取第一条）
+     *
+     * @param periodId 填报周期
+     * @param reportId 报表模板ID
+     * @param roleId 角色ID
+     * @return 最新的填报记录，若不存在则返回 null
+     */
+    default ReportFillBasicInfoDO selectLatestByPeriodAndReportAndRole(String periodId, String reportId, String roleId) {
+        SortablePageParam pageParam = new SortablePageParam();
+        pageParam.setPageNo(1);
+        pageParam.setPageSize(1);
+        pageParam.setSortingFields(List.of(new SortingField("create_time", SortingField.ORDER_DESC)));
+
+        LambdaQueryWrapperX<ReportFillBasicInfoDO> wrapper = new LambdaQueryWrapperX<ReportFillBasicInfoDO>()
+                .eqIfPresent(ReportFillBasicInfoDO::getPeriodId, periodId)
+                .eqIfPresent(ReportFillBasicInfoDO::getReportId, reportId)
+                .eqIfPresent(ReportFillBasicInfoDO::getRoleId, roleId);
+
+        PageResult<ReportFillBasicInfoDO> pageResult = selectPage(pageParam, pageParam.getSortingFields(), wrapper);
+        return CollUtil.getFirst(pageResult.getList());
+    }
+
+    /**
      * 查询指定周期和报表的所有记录ID（用于聚合）
      *
      * @param periodId 填报周期
