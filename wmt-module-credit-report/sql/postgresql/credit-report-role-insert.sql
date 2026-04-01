@@ -41,7 +41,8 @@ INSERT INTO system_users (id, username, password, nickname, remark, dept_id, pos
 (1001, 'chenjunya', '$2a$04$KljJDa/LK7QfDm0lF5OhuePhlPfjRH3tB2Wu351Uidz.oQGJXevPi', '陈俊雅', '征信报表填报人', NULL, '[]', '', '', 0, '', 0, '', NULL, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1),
 (1002, 'shenyingying', '$2a$04$KljJDa/LK7QfDm0lF5OhuePhlPfjRH3tB2Wu351Uidz.oQGJXevPi', '沈莹莹', '征信报表填报人', NULL, '[]', '', '', 0, '', 0, '', NULL, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1),
 (1003, 'wangyujia', '$2a$04$KljJDa/LK7QfDm0lF5OhuePhlPfjRH3tB2Wu351Uidz.oQGJXevPi', '汪雨佳', '征信报表填报人', NULL, '[]', '', '', 0, '', 0, '', NULL, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1),
-(1004, 'liyiming', '$2a$04$KljJDa/LK7QfDm0lF5OhuePhlPfjRH3tB2Wu351Uidz.oQGJXevPi', '李一鸣', '征信报表填报人', NULL, '[]', '', '', 0, '', 0, '', NULL, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1)
+(1004, 'liyiming', '$2a$04$KljJDa/LK7QfDm0lF5OhuePhlPfjRH3tB2Wu351Uidz.oQGJXevPi', '李一鸣', '征信报表填报人', NULL, '[]', '', '', 0, '', 0, '', NULL, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1),
+(1005, 'chiheng', '$2a$04$KljJDa/LK7QfDm0lF5OhuePhlPfjRH3tB2Wu351Uidz.oQGJXevPi', '迟珩', '征信报表填报人', NULL, '[]', '', '', 0, '', 0, '', NULL, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1)
 ON CONFLICT (id) DO UPDATE
 SET
   username = EXCLUDED.username,
@@ -74,7 +75,8 @@ INSERT INTO system_user_role (id, user_id, role_id, creator, create_time, update
 (2002, 1001, 206, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1),
 (2003, 1002, 203, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1),
 (2004, 1003, 208, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1),
-(2005, 1004, 204, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1)
+(2005, 1004, 204, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1),
+(2006, 1005, 203, '1', CURRENT_TIMESTAMP, '1', CURRENT_TIMESTAMP, 0, 1)
 ON CONFLICT (id) DO UPDATE
 SET
   user_id = EXCLUDED.user_id,

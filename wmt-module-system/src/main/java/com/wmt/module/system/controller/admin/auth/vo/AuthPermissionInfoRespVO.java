@@ -50,7 +50,7 @@ public class AuthPermissionInfoRespVO {
         @Schema(description = "用户账号", requiredMode = Schema.RequiredMode.REQUIRED, example = "wmt")
         private String username;
 
-        @Schema(description = "用户邮箱", example = "wmt@iocoder.cn")
+        @Schema(description = "用户邮箱", example = "wmt@cn")
         private String email;
 
     }

@@ -4,6 +4,8 @@ spring:
 
   profiles:
     active: creditlocal
+    #fianciallocal
+    #creditlocal
 
   main:
     allow-circular-references: true # 允许循环依赖，因为项目是三层架构，无法避免这个情况。
@@ -212,7 +214,7 @@ spring:
               url: http://127.0.0.1:8089
               sse-endpoint: /sse
         annotation-scanner:
-          enabled: false # TODO @芋艿：有 bug https://github.com/spring-projects/spring-ai/issues/4917 需要官方修复
+          enabled: false # TODO @wmt：有 bug https://github.com/spring-projects/spring-ai/issues/4917 需要官方修复
 
 wmt:
   ai:

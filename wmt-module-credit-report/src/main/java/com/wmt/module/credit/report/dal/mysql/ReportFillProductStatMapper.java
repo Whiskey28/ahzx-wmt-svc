@@ -3,7 +3,9 @@ package com.wmt.module.credit.report.dal.mysql;
 import com.wmt.framework.mybatis.core.mapper.BaseMapperX;
 import com.wmt.framework.mybatis.core.query.LambdaQueryWrapperX;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillProductStatDO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -18,6 +20,9 @@ import java.util.stream.Collectors;
  */
 @Mapper
 public interface ReportFillProductStatMapper extends BaseMapperX<ReportFillProductStatDO> {
+
+    @Delete("DELETE FROM report_fill_product_stat WHERE record_id = #{recordId}")
+    int deleteRealByRecordId(@Param("recordId") String recordId);
 
     default List<ReportFillProductStatDO> selectListByRecordId(String recordId) {
         return selectList(new LambdaQueryWrapperX<ReportFillProductStatDO>()

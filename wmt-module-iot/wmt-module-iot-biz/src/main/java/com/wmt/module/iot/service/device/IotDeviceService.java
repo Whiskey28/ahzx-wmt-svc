@@ -37,7 +37,7 @@ public interface IotDeviceService {
      */
     void updateDevice(@Valid IotDeviceSaveReqVO updateReqVO);
 
-    // TODO @芋艿：先这么实现。未来看情况，要不要自己实现
+    // TODO @wmt：先这么实现。未来看情况，要不要自己实现
 
     /**
      * 更新设备的所属网关

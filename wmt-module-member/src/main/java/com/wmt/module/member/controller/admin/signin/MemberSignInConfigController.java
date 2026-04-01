@@ -20,7 +20,7 @@ import java.util.List;
 
 import static com.wmt.framework.common.pojo.CommonResult.success;
 
-// TODO 芋艿：url
+// TODO wmt：url
 @Tag(name = "管理后台 - 签到规则")
 @RestController
 @RequestMapping("/member/sign-in/config")

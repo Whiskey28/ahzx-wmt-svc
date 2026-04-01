@@ -18,7 +18,6 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class ReportFillRecordPageReqVO extends SortablePageParam {
 
-    @NotEmpty(message = "报表分类必需要选择")
     @Schema(description = "报表分类id（jimu_report_category.id）", example = "1011126161407836160")
     private String categoryId;
 

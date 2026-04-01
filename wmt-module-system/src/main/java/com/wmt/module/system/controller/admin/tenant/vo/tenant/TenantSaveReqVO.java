@@ -24,7 +24,7 @@ public class TenantSaveReqVO {
     @NotNull(message = "租户名不能为空")
     private String name;
 
-    @Schema(description = "联系人", requiredMode = Schema.RequiredMode.REQUIRED, example = "芋艿")
+    @Schema(description = "联系人", requiredMode = Schema.RequiredMode.REQUIRED, example = "wmt")
     @NotNull(message = "联系人不能为空")
     private String contactName;
 

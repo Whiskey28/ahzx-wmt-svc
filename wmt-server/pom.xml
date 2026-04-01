@@ -26,6 +26,11 @@
             <artifactId>wmt-module-credit-report</artifactId>
             <version>${revision}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.wmt</groupId>-->
+<!--            <artifactId>wmt-module-ticket</artifactId>-->
+<!--            <version>${revision}</version>-->
+<!--        </dependency>-->
 
 
         <dependency>

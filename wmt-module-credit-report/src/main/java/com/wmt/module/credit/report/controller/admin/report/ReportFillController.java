@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -50,6 +51,14 @@ public class ReportFillController {
     @Operation(summary = "分页查询填报记录")
 //    @PreAuthorize("@ss.hasPermission('credit:report-fill:query')")
     public CommonResult<PageResult<ReportFillRecordRespVO>> getFillRecordPage(@Valid ReportFillRecordPageReqVO pageReqVO) {
+        if (pageReqVO == null
+                || (!StringUtils.hasText(pageReqVO.getCategoryId())
+                && !StringUtils.hasText(pageReqVO.getReportId())
+                && !StringUtils.hasText(pageReqVO.getReportName())
+                && !StringUtils.hasText(pageReqVO.getPeriodId())
+                && !StringUtils.hasText(pageReqVO.getRoleId()))) {
+            return success(PageResult.empty());
+        }
         PageResult<ReportFillRecordRespVO> pageResult = reportFillService.getFillRecordPage(pageReqVO);
         return success(pageResult);
     }
@@ -64,7 +73,7 @@ public class ReportFillController {
     }
 
     @PostMapping("/record/delete/{id}")
-    @Operation(summary = "逻辑删除填报记录")
+    @Operation(summary = "物理删除填报记录")
     @Parameter(name = "id", description = "记录id", required = true, example = "1")
 //    @PreAuthorize("@ss.hasPermission('credit:report-fill:delete')")
     public CommonResult<Boolean> deleteFillRecord(@PathVariable("id") @NotNull(message = "记录id不能为空") String id) {

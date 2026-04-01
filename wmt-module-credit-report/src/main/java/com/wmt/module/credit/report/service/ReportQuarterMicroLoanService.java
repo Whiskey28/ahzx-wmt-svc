@@ -23,8 +23,13 @@ public interface ReportQuarterMicroLoanService {
     ReportQuarterMicroLoanStatRespVO stat(ReportQuarterMicroLoanStatReqVO reqVO);
 
     /**
-     * 季报额外两项指标统计（字段全展开）：小微企业户数、征信服务次数
+     * 数据库收录小微企业户数统计（当季/累计/同比增长量/同比增长率）
      */
-    ReportQuarterMicroLoanExtraStatRespVO statPlus(ReportQuarterMicroLoanStatReqVO reqVO);
+    ReportQuarterMicroLoanCollectMicroSmeStatRespVO statCollectMicroSme(ReportQuarterMicroLoanCollectMicroSmeStatReqVO reqVO);
+
+    /**
+     * 为放贷机构提供小微企业征信服务次数统计（当季/累计/同比增长量/同比增长率）
+     */
+    ReportQuarterMicroLoanServiceCountStatRespVO statServiceCountTotal(ReportQuarterMicroLoanServiceCountStatReqVO reqVO);
 }
 

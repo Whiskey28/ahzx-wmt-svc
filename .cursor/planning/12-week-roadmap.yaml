@@ -1,0 +1,114 @@
+meta:
+  based_on_profile: ".cursor/planning/wmt-profile.yaml"
+  generated_at: "2026-03-24"
+  duration_weeks: 12
+  scenario: "skill_roadmap"
+
+roadmap:
+  strategy:
+    objective: "把AI学习稳定转化为可复用资产与业务结果，避免只学习不沉淀"
+    role_balance:
+      ai_engineering: 50
+      ai_content_business: 50
+    weekly_time_ratio:
+      main_job_dev: 35
+      side_business_paper: 25
+      ai_learning_build: 25
+      mba_study: 10
+      planning_review_system: 5
+
+  phase_1_weeks_1_4:
+    objective: "建立最小闭环：学习 -> 实践 -> 资产化 -> 周复盘"
+    weekly_deliverables:
+      - week: 1
+        learning_focus: "统一AI学习主题筛选标准（只选可迁移、可落地主题）"
+        practice_task: "用当前规划体系跑完一周并记录偏差"
+        asset_output: "《AI主题筛选清单》v1 + 《周复盘模板》v1"
+        business_value: "减少无效学习与临时任务插队"
+      - week: 2
+        learning_focus: "Prompt结构化与任务分解模式"
+        practice_task: "将1个副业任务按模板拆解并执行"
+        asset_output: "《副业任务拆解模板》v1"
+        business_value: "提升副业交付稳定性"
+      - week: 3
+        learning_focus: "个人知识沉淀规范（输入-判断-行动）"
+        practice_task: "连续5天输出“3条判断+1条行动”"
+        asset_output: "《信息摄入转行动模板》v1"
+        business_value: "降低信息焦虑，提升独立判断"
+      - week: 4
+        learning_focus: "流程自动化基础（文件模板+固定字段）"
+        practice_task: "把本月高频流程标准化为YAML模板"
+        asset_output: "《个人执行YAML模板包》v1"
+        business_value: "后续技能化开发效率提升"
+
+  phase_2_weeks_5_8:
+    objective: "强化迁移：在主业与副业都跑出可见结果"
+    weekly_deliverables:
+      - week: 5
+        learning_focus: "AI辅助开发最小闭环（需求->实现->验证）"
+        practice_task: "主业选1个小需求做端到端交付"
+        asset_output: "《开发任务最小交付SOP》v1"
+        business_value: "提升主业可交付效率"
+      - week: 6
+        learning_focus: "副业流程化与协作分工"
+        practice_task: "定义1个可委托岗位并发布试任务"
+        asset_output: "《协作者岗位说明+试任务标准》v1"
+        business_value: "推进副业可委托化"
+      - week: 7
+        learning_focus: "质量控制与验收机制设计"
+        practice_task: "完成1次协作者试跑并质检"
+        asset_output: "《副业质检清单》v1 + 试跑记录"
+        business_value: "减少返工与交付波动"
+      - week: 8
+        learning_focus: "复盘驱动优化（删减/简化/委托/自动化）"
+        practice_task: "对前7周流程做一次系统减负"
+        asset_output: "《流程优化决策表》v1"
+        business_value: "释放时间给高杠杆事项"
+
+  phase_3_weeks_9_12:
+    objective: "沉淀复用体系：形成可持续的个人AI操作系统"
+    weekly_deliverables:
+      - week: 9
+        learning_focus: "技能打包与文档化规范"
+        practice_task: "梳理现有流程并形成统一入口指引"
+        asset_output: "《WMT Life Work OS 使用手册》v1"
+        business_value: "降低使用门槛，减少切换成本"
+      - week: 10
+        learning_focus: "业务结果导向的指标体系"
+        practice_task: "为主业/副业/学习建立周度指标看板"
+        asset_output: "《周度指标看板模板》v1"
+        business_value: "用数据替代主观焦虑"
+      - week: 11
+        learning_focus: "案例复用与对外展示"
+        practice_task: "整理2个可复用案例（技术+副业各1）"
+        asset_output: "《案例库》v1"
+        business_value: "形成个人竞争力证明材料"
+      - week: 12
+        learning_focus: "季度收敛与下阶段规划"
+        practice_task: "完成季度总复盘与下季度目标设计"
+        asset_output: "《季度复盘报告》+《下季度路线图》"
+        business_value: "持续进化，不在原地踏步"
+
+execution_rules:
+  weekly_non_negotiables:
+    - "每周至少1个可见产出（文档/资产/小功能/SOP）"
+    - "每周至少1个业务结果导向任务"
+    - "每周日20:30进行周复盘与下周计划"
+  daily_non_negotiables:
+    - "至少完成1段深度块，优先06:20-07:20"
+    - "完成当日Top3中的2项"
+  anti_stagnation_guardrails:
+    - "不以新闻摄入替代结论输出"
+    - "不以工具制作替代业务结果"
+    - "不以学习替代实践验证"
+
+value_validation:
+  business_metrics:
+    - "副业：12周内完成1个可委托环节落地（岗位+质检+试跑）"
+    - "主业：至少完成2个端到端小型交付闭环"
+  learning_metrics:
+    - "每周1份结构化复盘，累计12份"
+    - "每周至少1个学习转实践动作，累计>=12次"
+  reuse_metrics:
+    - "每2周至少1个可复用资产，累计>=6个"
+    - "形成统一YAML模板与流程库，后续可直接复用"

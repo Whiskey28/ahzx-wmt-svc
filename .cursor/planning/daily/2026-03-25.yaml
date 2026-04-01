@@ -1,0 +1,72 @@
+meta:
+  based_on_profile: ".cursor/planning/wmt-profile.yaml"
+  generated_at: "2026-03-25"
+  scenario: "daily_plan"
+
+daily_plan:
+  date: "2026-03-25"
+
+  top3:
+    - "论文写作 multi-agent 雏形：角色定义、主流程、输入输出与一次试跑说明（落盘为单文件 spec）"
+    - "全栈交付 multi-agent 雏形：需求→系统设计→前后端→自动化测试 流水线与验收点（落盘为单文件 spec）"
+    - "晚间 10 分钟：更新明日风险 + 确认两份雏形是否满足「可复用资产」最低标准"
+
+  deliverables:
+    paper_writing_multi_agent:
+      path_suggestion: "docs/personal/multi-agent-paper-writing-v0.md"
+      must_include:
+        - "至少 3 个 Agent 角色（含职责边界）"
+        - "主流程顺序（含人机协作节点）"
+        - "每步输入/输出契约（可空但字段名固定）"
+        - "失败与人工介入策略 1 条"
+      timebox_hours: 3
+
+    fullstack_delivery_multi_agent:
+      path_suggestion: "docs/personal/multi-agent-fullstack-delivery-v0.md"
+      must_include:
+        - "阶段：需求澄清 → 系统设计 → 前后端任务拆分 → 实现 → 自动化测试"
+        - "每阶段产出物定义（如 PRD 摘要、接口契约、测试门禁）"
+        - "测试阶段：单测/E2E/CI 至少说明一种落地方式"
+        - "与决策门 alignment：如何拒绝范围蔓延"
+      timebox_hours: 4
+
+  schedule:
+    - block: "06:20-07:20"
+      task: "深度块1：论文写作 multi-agent — 定角色+主流程+IO 契约草稿（可手写大纲）"
+      type: "deep_work"
+    - block: "07:30-08:30"
+      task: "不可用（通勤/上班准备，按 profile）"
+      type: "blocked"
+    - block: "12:30-13:00"
+      task: "微深度：论文雏形补全「失败/人工介入」+ 文件名与落盘路径确定"
+      type: "micro_deep_work"
+    - block: "晚间优先段（建议 20:00-21:30 或你固定副业块）"
+      task: "全栈 multi-agent — 画阶段流水线 + 各阶段产出物 + 测试门禁"
+      type: "deep_work"
+    - block: "21:30-22:00"
+      task: "收尾：两份 spec 自检清单勾选 + 明日 Top3 + 风险一行"
+      type: "close_loop"
+
+  admin_tasks:
+    - "主业例行（会议/沟通）；新需求一律先过 decision_gate 再插队"
+    - "若白天无整块时间，全栈雏形允许拆到晚间，但早晨块必须保住论文雏形主线"
+
+  done_criteria:
+    - "两份 deliverables 均在仓库或 docs 中有落盘路径（或明确待创建路径）"
+    - "每个 multi-agent 雏形满足各自 must_include 全部项"
+    - "深度块至少完成 1 段（优先 06:20-07:20）"
+
+  risks:
+    - "两项都是大任务，易拖到晚间只写标题不写契约"
+    - "全栈链路过长，易写成泛泛而谈而无阶段产出物"
+
+  fallback_plan:
+    - "若晚间只能完成一项：优先保证「论文写作雏形」契约完整，全栈雏形可只完成前 3 阶段+测试一节占位"
+    - "若时间严重不足：两篇都压缩为「YAML 结构 + 每字段一句话」，次日再扩写"
+    - "运动若冲突：按 profile 降至 60 分钟，不断训"
+
+  anti_stagnation_check:
+    news_without_output: false
+    tools_without_business_result: false
+    learning_without_practice: false
+    note: "今日产出为两份可复用 spec，不是刷资讯"

@@ -1,0 +1,53 @@
+unit_id: "U-20260326-001-ticket-module-v1"
+artifact_type: "gate_report"
+version: "1.1"
+status: "blocked"
+owner_agent: "gate_agent"
+reviewer: ""
+updated_at: "2026-03-28T00:35:00Z"
+depends_on: ["test_plan.yaml", "impl_plan.yaml"]
+policy_ref: "framework_policy.yaml@1.0"
+trace:
+  request_id: "REQ-20260326-ticket-v1"
+  sources:
+    - "docs/pipeline/units/U-20260326-001-ticket-module-v1/test_plan.yaml"
+    - "mvn -B test \"-Dtest=*Test\" (cwd: wmt-module-ticket)"
+    - "mvn -B test \"-Dtest=*ApiTest\" (cwd: wmt-module-ticket)"
+    - "mvn -B test \"-Dtest=*IntegrationTest\" (cwd: wmt-module-ticket)"
+  notes: |
+    test_plan 已收敛：仅在 wmt-module-ticket 目录执行 surefire，不再使用 -pl -am，避免误跑 wmt-module-infra 等模块测试。
+    本仓库需 JDK 17；本地 ~/.m2 需已有 com.wmt 依赖，或先在仓库根执行 mvn -pl wmt-module-ticket -am -DskipTests install。
+    在 Cursor Agent 沙箱中重跑 gate：JAVA_HOME 指向 JDK 8，导致 reactor install 在 wmt-module-system 编译阶段失败（无效的目标发行版 17），三套命令未能在该环境内完成执行，故 gate 仍为 blocked。
+    请在开发者本机（JDK 17）按 test_plan 三条命令复跑以得到 pass/fail 的最终结论。
+
+unit_status_current: "implemented"
+unit_status_next_suggested: "ready_for_gate"
+
+test_runs:
+  - suite_name: "unit"
+    command: "mvn -B test \"-Dtest=*Test\"  (work_dir: wmt-module-ticket)"
+    pass: false
+    failure_summary: "Agent 环境 JDK 8，无法编译/测试需 Java 17 的模块；未在本机完成执行。"
+    coverage_summary:
+      provided: false
+      detail: "not_provided"
+  - suite_name: "api"
+    command: "mvn -B test \"-Dtest=*ApiTest\"  (work_dir: wmt-module-ticket)"
+    pass: false
+    failure_summary: "同上（JDK 版本与本地依赖前提）。"
+    coverage_summary:
+      provided: false
+      detail: "not_provided"
+  - suite_name: "e2e_or_integration"
+    command: "mvn -B test \"-Dtest=*IntegrationTest\"  (work_dir: wmt-module-ticket)"
+    pass: false
+    failure_summary: "同上（JDK 版本与本地依赖前提）。"
+    coverage_summary:
+      provided: false
+      detail: "not_provided"
+
+historical_runs:
+  - note: "2026-03-27 使用 mvn -pl wmt-module-ticket -am 导致 reactor 执行 wmt-module-infra 等模块测试失败或 No tests matching；根因是 -am 范围过大，已由 test_plan work_dir 修正。"
+
+gate_decision: "blocked"
+unit_status_next_on_merge: "merged"

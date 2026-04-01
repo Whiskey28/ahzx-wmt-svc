@@ -9,7 +9,7 @@ tenant-id: {{adminTenantId}}
 
 {
   "name": "AHC",
-  "contactName": "芋艿",
+  "contactName": "wmt",
   "contactMobile": "15601691300",
   "status": 0,
   "domain": "https://www.wmt.cn",

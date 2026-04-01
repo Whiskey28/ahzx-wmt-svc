@@ -46,10 +46,18 @@ public class ReportQuarterMicroLoanController {
         return success(reportQuarterMicroLoanService.stat(reqVO));
     }
 
-    @GetMapping("/stat-plus")
-    @Operation(summary = "展示统计（扩展版：补充小微企业户数、征信服务次数）")
-    public CommonResult<ReportQuarterMicroLoanExtraStatRespVO> statPlus(@Valid ReportQuarterMicroLoanStatReqVO reqVO) {
-        return success(reportQuarterMicroLoanService.statPlus(reqVO));
+    @GetMapping("/stat-collect-micro-sme")
+    @Operation(summary = "数据库收录小微企业户数统计（当季/累计/同比增量/同比增速）")
+    public CommonResult<ReportQuarterMicroLoanCollectMicroSmeStatRespVO> statCollectMicroSme(
+            @Valid ReportQuarterMicroLoanCollectMicroSmeStatReqVO reqVO) {
+        return success(reportQuarterMicroLoanService.statCollectMicroSme(reqVO));
+    }
+
+    @GetMapping("/stat-service-count-total")
+    @Operation(summary = "为放贷机构提供小微企业征信服务次数统计（当季/累计/同比增量/同比增速）")
+    public CommonResult<ReportQuarterMicroLoanServiceCountStatRespVO> statServiceCountTotal(
+            @Valid ReportQuarterMicroLoanServiceCountStatReqVO reqVO) {
+        return success(reportQuarterMicroLoanService.statServiceCountTotal(reqVO));
     }
 }
 

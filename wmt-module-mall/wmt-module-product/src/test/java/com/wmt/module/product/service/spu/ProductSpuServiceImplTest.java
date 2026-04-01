@@ -41,14 +41,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
-// TODO @芋艿：review 下单元测试
+// TODO @wmt：review 下单元测试
 
 /**
  * {@link ProductSpuServiceImpl} 的单元测试类
  *
  * @author AHC源码
  */
-@Disabled // TODO 芋艿：后续 fix 补充的单测
+@Disabled // TODO wmt：后续 fix 补充的单测
 @Import(ProductSpuServiceImpl.class)
 public class ProductSpuServiceImplTest extends BaseDbUnitTest {
 
@@ -79,7 +79,7 @@ public class ProductSpuServiceImplTest extends BaseDbUnitTest {
 
     public int generaInt(){return RandomUtil.randomInt(1,9999999);}
 
-    // TODO @芋艿：单测后续 review 哈
+    // TODO @wmt：单测后续 review 哈
 
     @Test
     public void testCreateSpu_success() {

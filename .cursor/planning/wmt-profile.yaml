@@ -1,0 +1,124 @@
+meta:
+  version: "1.0"
+  owner_id: "wmt-user"
+  timezone: "Asia/Shanghai"
+  language: "zh-CN"
+  created_at: "2026-03-24"
+  updated_at: "2026-03-24"
+
+identity:
+  strategic_theme: "跟上AI时代并将能力迁移到工作与生活"
+  long_term_positioning: "复合型整合者（AI工程化 + AI内容商业化）"
+  positioning_ratio:
+    ai_engineering: 50
+    ai_content_business: 50
+
+roles:
+  - name: "main_job_dev"
+    description: "主业开发（国企）"
+    role_type: "stability_and_time_window"
+    priority: "high"
+  - name: "side_business_paper"
+    description: "论文辅导相关（营销/渠道/辅助写作）"
+    role_type: "cashflow_engine"
+    priority: "high"
+  - name: "ai_learning_build"
+    description: "AI应用与开发能力强化"
+    role_type: "compound_engine"
+    priority: "high"
+  - name: "mba_study"
+    description: "中科大非全MBA（研一下）"
+    role_type: "long_term_management_upgrade"
+    priority: "medium"
+
+north_star:
+  quarter_goal: "构建AI+全栈+副业产品化个人操作系统，并形成稳定周产出"
+  success_criteria:
+    - "每周输出1份结构化周复盘与下周计划"
+    - "每周至少完成1个可见产出（文档/资产/小功能/SOP）"
+    - "副业至少推进1个可委托环节（找人+标准+质检）"
+
+constraints:
+  fixed_unavailable_blocks:
+    - "07:30-08:30"
+  preferred_deep_work_blocks:
+    - "06:20-07:20"
+    - "12:30-13:00"
+    - "21:30-22:00"
+  min_daily_deep_work_minutes: 120
+  workout_policy:
+    times_per_week: 4
+    min_minutes_each: 60
+    target_minutes_each: 120
+  if_time_conflict:
+    fallback_order:
+      - "保留早晨60分钟深度块"
+      - "保留当日Top3中的前2项"
+      - "运动降至60分钟但不断"
+
+allocation:
+  weekly_ratio_percent:
+    main_job_dev: 35
+    side_business_paper: 25
+    ai_learning_build: 25
+    mba_study: 10
+    planning_review_system: 5
+
+decision_gate:
+  mandatory_checks:
+    - key: "aligns_quarter_goal"
+      question: "是否服务季度主线？"
+    - key: "has_72h_visible_output"
+      question: "72小时内是否可见产出？"
+    - key: "can_be_reusable_asset"
+      question: "是否能沉淀为可复用资产？"
+    - key: "must_be_done_by_self"
+      question: "是否必须我亲自做？"
+  default_rule: "至少通过3项才accept，否则defer或reject"
+
+anti_stagnation:
+  leading_risks:
+    - "只看新闻不产出独立结论"
+    - "只做工具不做业务结果"
+    - "只学习不实践或只实践无收益"
+  mandatory_corrections:
+    - "每次信息摄入后输出3条判断+1条行动"
+    - "每周至少1个业务结果导向任务"
+
+review_rhythm:
+  weekly_review:
+    day: "Sunday"
+    time: "20:30-21:30"
+    required_outputs:
+      - "wins"
+      - "misses"
+      - "root_causes"
+      - "delete_simplify_delegate_automate"
+      - "next_week_top3"
+  daily_shutdown:
+    required_outputs:
+      - "today_done"
+      - "blockers"
+      - "tomorrow_top3"
+
+output_contract:
+  format: "yaml"
+  explanation_style: "short_cn_summary"
+  required_sections:
+    - "top3"
+    - "schedule"
+    - "done_criteria"
+    - "risks"
+    - "fallback_plan"
+  date_format: "YYYY-MM-DD"
+
+skill_integration:
+  profile_readonly: true
+  derive_files_only: true
+  derive_file_paths:
+    quarter_plan: ".cursor/planning/quarter-plan.yaml"
+    month_plan: ".cursor/planning/month-plan.yaml"
+    weekly_plan: ".cursor/planning/weekly/{year}-W{week}.yaml"
+    daily_plan: ".cursor/planning/daily/{date}.yaml"
+    weekly_review: ".cursor/planning/reviews/{year}-W{week}-review.yaml"
+    decision_result: ".cursor/planning/decisions/{date}-{task_slug}.yaml"

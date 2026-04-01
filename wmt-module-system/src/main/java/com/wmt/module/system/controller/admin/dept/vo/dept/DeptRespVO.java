@@ -27,7 +27,7 @@ public class DeptRespVO {
     @Schema(description = "联系电话", example = "15601691000")
     private String phone;
 
-    @Schema(description = "邮箱", example = "wmt@iocoder.cn")
+    @Schema(description = "邮箱", example = "wmt@cn")
     private String email;
 
     @Schema(description = "状态,见 CommonStatusEnum 枚举", requiredMode = Schema.RequiredMode.REQUIRED, example = "1")

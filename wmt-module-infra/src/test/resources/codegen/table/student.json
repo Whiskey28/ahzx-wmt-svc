@@ -28,7 +28,7 @@
     "columnComment" : "名字",
     "javaType" : "String",
     "javaField" : "name",
-    "example" : "芋头",
+    "example" : "wmt",
     "createOperation" : true,
     "updateOperation" : true,
     "listOperation" : true,

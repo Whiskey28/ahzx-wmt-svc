@@ -93,7 +93,7 @@ public class ReportFillInfoCollectStatDO extends BaseDO {
     /**
      * 收录自然人股东信息：公司董事、监事、高管人员人数（口径扩展备用）
      */
-    private BigDecimal collectKeyPersonTotal;
+//    private BigDecimal collectKeyPersonTotal;
 
 }
 

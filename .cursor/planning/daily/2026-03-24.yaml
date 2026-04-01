@@ -1,0 +1,39 @@
+meta:
+  based_on_profile: ".cursor/planning/wmt-profile.yaml"
+  generated_at: "2026-03-24"
+
+daily_plan:
+  date: "2026-03-24"
+  top3:
+    - "完成第一版季度与月度规划文件并做10分钟自检"
+    - "整理副业可委托岗位草案（职责/输入输出/验收）"
+    - "AI学习输出1页结构化结论（不是新闻摘抄）"
+
+  schedule:
+    - block: "06:20-07:20"
+      task: "深度块1：完成规划文件和主线校准"
+      type: "deep_work"
+    - block: "12:30-13:00"
+      task: "深度块2：副业可委托岗位草案初稿"
+      type: "micro_deep_work"
+    - block: "21:30-22:00"
+      task: "深度块3：AI学习结论输出 + 明日Top3"
+      type: "close_loop"
+
+  admin_tasks:
+    - "主业必要沟通与会议（避开07:30-08:30不可用段）"
+    - "晚间5分钟更新明日风险点"
+
+  done_criteria:
+    - "Top3至少完成2项"
+    - "深度块至少完成1段（优先早晨）"
+    - "晚间输出 tomorrow_top3"
+
+  risks:
+    - "白天会议打断导致午间块被侵占"
+    - "晚间精力下降导致只输入不输出"
+
+  fallback_plan:
+    - "若午间块失效，晚间增加到21:20-22:00补齐"
+    - "若晚间块失效，次日06:20先补‘AI学习结论输出’"
+    - "任何新增任务先过decision_gate，不直接插队"

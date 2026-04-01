@@ -17,7 +17,7 @@ public class MpUserUpdateReqVO {
     @Schema(description = "昵称", example = "AHC")
     private String nickname;
 
-    @Schema(description = "备注", example = "你是一个芋头嘛")
+    @Schema(description = "备注", example = "你是一个wmt嘛")
     private String remark;
 
     @Schema(description = "标签编号数组", example = "1,2,3")

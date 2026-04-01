@@ -435,7 +435,7 @@ public class SocialClientServiceImplTest extends BaseDbUnitTest {
     public void testGetSocialClientPage() {
         // mock 数据
         SocialClientDO dbSocialClient = randomPojo(SocialClientDO.class, o -> { // 等会查询到
-            o.setName("芋头");
+            o.setName("wmt");
             o.setSocialType(SocialTypeEnum.GITEE.getType());
             o.setUserType(UserTypeEnum.ADMIN.getValue());
             o.setClientId("wmt");

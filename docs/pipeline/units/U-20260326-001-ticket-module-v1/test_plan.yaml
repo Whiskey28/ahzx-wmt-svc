@@ -1,0 +1,79 @@
+unit_id: "U-20260326-001-ticket-module-v1"
+artifact_type: "test_plan"
+version: "1.0"
+status: "tests_ready"
+owner_agent: "test_agent"
+reviewer: ""
+updated_at: "2026-03-26T11:53:00Z"
+depends_on: ["impl_plan.yaml", "api_contract.yaml", "unit_definition.yaml"]
+policy_ref: "framework_policy.yaml@1.0"
+trace:
+  request_id: "REQ-20260326-ticket-v1"
+  sources:
+    - "docs/pipeline/units/U-20260326-001-ticket-module-v1/impl_plan.yaml"
+    - "docs/pipeline/units/U-20260326-001-ticket-module-v1/api_contract.yaml"
+  notes: "在 wmt-module-ticket 目录内执行 mvn，避免 -am 触发其他模块测试失败；三类 suite 与 surefire -Dtest 模式一致。"
+
+no_tests_matched_policy: "blocked"
+
+prerequisites:
+  jdk: "17"
+  local_repo_note: "若单独在 wmt-module-ticket 下执行失败，请先在仓库根目录执行 mvn -pl wmt-module-ticket -am -DskipTests install，将 com.wmt 模块安装到本地仓库。"
+
+test_suites:
+  - suite_name: "unit"
+    test_selector:
+      test_glob: ["**/*Test.java"]
+      class_pattern: "*Test"
+      package_pattern: "com.wmt.module.ticket"
+    build_tools_ref:
+      tool_name: "maven"
+      toolchain_ref: "maven_jdk17"
+      work_dir: "wmt-module-ticket"
+    commands:
+      - command: "mvn -B test \"-Dtest=*Test\""
+        work_dir: "wmt-module-ticket"
+        timeout_seconds: 900
+    test_cases:
+      - test_case_id: "T-U-20260326-001-001"
+        related_criterion_ids: ["C-U-20260326-001-APP-CREATE-PAGE"]
+      - test_case_id: "T-U-20260326-001-002"
+        related_criterion_ids: ["C-U-20260326-001-APP-OWNERSHIP"]
+
+  - suite_name: "api"
+    test_selector:
+      test_glob: ["**/*ApiTest.java"]
+      class_pattern: "*ApiTest"
+      package_pattern: "com.wmt.module.ticket"
+    build_tools_ref:
+      tool_name: "maven"
+      toolchain_ref: "maven_jdk17"
+      work_dir: "wmt-module-ticket"
+    commands:
+      - command: "mvn -B test \"-Dtest=*ApiTest\""
+        work_dir: "wmt-module-ticket"
+        timeout_seconds: 900
+    test_cases:
+      - test_case_id: "T-U-20260326-001-003"
+        related_criterion_ids: ["C-U-20260326-001-ADMIN-HANDLING"]
+      - test_case_id: "T-U-20260326-001-004"
+        related_criterion_ids: ["C-U-20260326-001-REPLY-CLOSED"]
+
+  - suite_name: "e2e_or_integration"
+    test_selector:
+      test_glob: ["**/*IntegrationTest.java"]
+      class_pattern: "*IntegrationTest"
+      package_pattern: "com.wmt.module.ticket"
+    build_tools_ref:
+      tool_name: "maven"
+      toolchain_ref: "maven_jdk17"
+      work_dir: "wmt-module-ticket"
+    commands:
+      - command: "mvn -B test \"-Dtest=*IntegrationTest\""
+        work_dir: "wmt-module-ticket"
+        timeout_seconds: 1200
+    test_cases:
+      - test_case_id: "T-U-20260326-001-005"
+        related_criterion_ids: ["C-U-20260326-001-ADMIN-HANDLING"]
+      - test_case_id: "T-U-20260326-001-006"
+        related_criterion_ids: ["C-U-20260326-001-APP-CREATE-PAGE"]

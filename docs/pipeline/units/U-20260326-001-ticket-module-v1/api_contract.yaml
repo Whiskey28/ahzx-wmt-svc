@@ -1,0 +1,104 @@
+unit_id: "U-20260326-001-ticket-module-v1"
+artifact_type: "api_contract"
+version: "1.0"
+status: "contract_reviewed"
+owner_agent: "system_design_agent"
+reviewer: ""
+updated_at: "2026-03-26T11:40:00Z"
+depends_on: ["framework_policy.yaml@1.0", "unit_definition.yaml"]
+policy_ref: "framework_policy.yaml@1.0"
+trace:
+  request_id: "REQ-20260326-ticket-v1"
+  sources:
+    - "docs/pipeline/units/U-20260326-001-ticket-module-v1/unit_definition.yaml"
+    - "wmt-module-ticket controller endpoints"
+  notes: "依据已落地第一版接口回填契约。"
+
+interfaces:
+  - interface_id: "I-U-20260326-001-APP-CATEGORY-LIST"
+    method: "GET"
+    path: "/ticket/category/list"
+    input_schema: { dto: "none" }
+    output_schema: { vo: "CommonResult<List<AppTicketCategoryRespVO>>" }
+    related_criterion_ids: ["C-U-20260326-001-APP-CREATE-PAGE"]
+  - interface_id: "I-U-20260326-001-APP-CREATE"
+    method: "POST"
+    path: "/ticket/create"
+    input_schema: { dto: "AppTicketCreateReqVO" }
+    output_schema: { vo: "CommonResult<Long>" }
+    related_criterion_ids: ["C-U-20260326-001-APP-CREATE-PAGE"]
+  - interface_id: "I-U-20260326-001-APP-PAGE"
+    method: "GET"
+    path: "/ticket/page"
+    input_schema: { dto: "AppTicketPageReqVO" }
+    output_schema: { vo: "CommonResult<PageResult<AppTicketRespVO>>" }
+    related_criterion_ids: ["C-U-20260326-001-APP-CREATE-PAGE"]
+  - interface_id: "I-U-20260326-001-APP-GET"
+    method: "GET"
+    path: "/ticket/get"
+    input_schema: { dto: "id:Long" }
+    output_schema: { vo: "CommonResult<AppTicketDetailRespVO>" }
+    related_criterion_ids: ["C-U-20260326-001-APP-OWNERSHIP"]
+  - interface_id: "I-U-20260326-001-APP-REPLY"
+    method: "POST"
+    path: "/ticket/reply"
+    input_schema: { dto: "AppTicketReplyReqVO" }
+    output_schema: { vo: "CommonResult<Boolean>" }
+    related_criterion_ids: ["C-U-20260326-001-REPLY-CLOSED"]
+  - interface_id: "I-U-20260326-001-ADMIN-PAGE"
+    method: "GET"
+    path: "/ticket/admin/page"
+    input_schema: { dto: "AdminTicketPageReqVO" }
+    output_schema: { vo: "CommonResult<PageResult<AdminTicketRespVO>>" }
+    related_criterion_ids: ["C-U-20260326-001-ADMIN-HANDLING"]
+  - interface_id: "I-U-20260326-001-ADMIN-GET"
+    method: "GET"
+    path: "/ticket/admin/get"
+    input_schema: { dto: "id:Long" }
+    output_schema: { vo: "CommonResult<AdminTicketDetailRespVO>" }
+    related_criterion_ids: ["C-U-20260326-001-ADMIN-HANDLING"]
+  - interface_id: "I-U-20260326-001-ADMIN-ASSIGN"
+    method: "POST"
+    path: "/ticket/admin/assign"
+    input_schema: { dto: "AdminTicketAssignReqVO" }
+    output_schema: { vo: "CommonResult<Boolean>" }
+    related_criterion_ids: ["C-U-20260326-001-ADMIN-HANDLING"]
+  - interface_id: "I-U-20260326-001-ADMIN-UPDATE-STATUS"
+    method: "POST"
+    path: "/ticket/admin/update-status"
+    input_schema: { dto: "AdminTicketUpdateStatusReqVO" }
+    output_schema: { vo: "CommonResult<Boolean>" }
+    related_criterion_ids: ["C-U-20260326-001-ADMIN-HANDLING"]
+  - interface_id: "I-U-20260326-001-ADMIN-REPLY"
+    method: "POST"
+    path: "/ticket/admin/reply"
+    input_schema: { dto: "AdminTicketReplyReqVO" }
+    output_schema: { vo: "CommonResult<Boolean>" }
+    related_criterion_ids: ["C-U-20260326-001-REPLY-CLOSED"]
+
+cases:
+  - case_id: "CA-U-20260326-001-APP-CREATE-OK"
+    summary: "用户创建工单并在我的工单分页可见"
+    input_schema: { request: "AppTicketCreateReqVO + AppTicketPageReqVO" }
+    output_schema: { response: "create=CommonResult<Long>, page=CommonResult<PageResult<AppTicketRespVO>>" }
+    related_criterion_ids: ["C-U-20260326-001-APP-CREATE-PAGE"]
+  - case_id: "CA-U-20260326-001-APP-OWNERSHIP-CHECK"
+    summary: "非工单所有者访问详情被拒绝"
+    input_schema: { request: "GET /ticket/get?id=xxx by non-owner" }
+    output_schema: { response: "CommonResult<error>" }
+    related_criterion_ids: ["C-U-20260326-001-APP-OWNERSHIP"]
+  - case_id: "CA-U-20260326-001-ADMIN-ASSIGN-OK"
+    summary: "管理员可指派工单并查询到指派人"
+    input_schema: { request: "AdminTicketAssignReqVO" }
+    output_schema: { response: "CommonResult<Boolean>" }
+    related_criterion_ids: ["C-U-20260326-001-ADMIN-HANDLING"]
+  - case_id: "CA-U-20260326-001-ADMIN-STATUS-CLOSED"
+    summary: "管理员可将工单状态更新为 CLOSED"
+    input_schema: { request: "AdminTicketUpdateStatusReqVO" }
+    output_schema: { response: "CommonResult<Boolean>" }
+    related_criterion_ids: ["C-U-20260326-001-ADMIN-HANDLING"]
+  - case_id: "CA-U-20260326-001-REPLY-CLOSED-BLOCKED"
+    summary: "已关闭工单禁止继续回复"
+    input_schema: { request: "AppTicketReplyReqVO/AdminTicketReplyReqVO on CLOSED ticket" }
+    output_schema: { response: "CommonResult<error>" }
+    related_criterion_ids: ["C-U-20260326-001-REPLY-CLOSED"]

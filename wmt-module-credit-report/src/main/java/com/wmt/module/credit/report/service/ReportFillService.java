@@ -47,7 +47,7 @@ public interface ReportFillService {
     ReportFillRecordEditUrlRespVO getEditUrlByRecordId(String recordId);
 
     /**
-     * 逻辑删除填报记录
+     * 物理删除填报记录
      *
      * @param id 记录id
      * @return 是否删除成功

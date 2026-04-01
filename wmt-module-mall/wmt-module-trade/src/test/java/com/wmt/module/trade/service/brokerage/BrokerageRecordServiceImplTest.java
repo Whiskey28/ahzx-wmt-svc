@@ -24,13 +24,13 @@ import static com.wmt.framework.test.core.util.RandomUtils.randomInteger;
 import static com.wmt.framework.test.core.util.RandomUtils.randomPojo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-// TODO @芋艿：单测后续看看
+// TODO @wmt：单测后续看看
 /**
  * {@link BrokerageRecordServiceImpl} 的单元测试类
  *
  * @author owen
  */
-@Disabled // TODO 芋艿：后续 fix 补充的单测
+@Disabled // TODO wmt：后续 fix 补充的单测
 @Import(BrokerageRecordServiceImpl.class)
 public class BrokerageRecordServiceImplTest extends BaseDbUnitTest {
 

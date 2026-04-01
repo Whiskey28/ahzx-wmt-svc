@@ -2,6 +2,7 @@ package com.wmt.module.credit.report.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.wmt.framework.common.pojo.PageResult;
+import com.wmt.framework.common.pojo.SortingField;
 import com.wmt.framework.common.util.collection.CollectionUtils;
 import com.wmt.framework.common.util.object.BeanUtils;
 import com.wmt.module.credit.report.controller.admin.report.vo.JimuReportCategoryRespVO;
@@ -14,10 +15,22 @@ import com.wmt.module.credit.report.dal.dataobject.JimuReportDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillBasicInfoDO;
 import com.wmt.module.credit.report.dal.mysql.JimuReportCategoryMapper;
 import com.wmt.module.credit.report.dal.mysql.JimuReportMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillBizStatCreditBuildMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillBizStatFinanceMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillBizStatHrMapper;
 import com.wmt.module.credit.report.dal.mysql.ReportFillBasicInfoMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillComplaintSecurityStatMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillInfoCollectStatMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillInfoSourceByIndustryMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillProductStatMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillQuarterMicroLoanMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillServiceByIndustryMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillYangtzeCreditChainMapper;
+import com.wmt.module.credit.report.dal.mysql.ReportFillEnterpriseBasicMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -42,6 +55,39 @@ public class ReportFillServiceImpl implements ReportFillService {
     @Resource
     private ReportFillBasicInfoMapper reportFillBasicInfoMapper;
 
+    @Resource
+    private ReportFillQuarterMicroLoanMapper reportFillQuarterMicroLoanMapper;
+
+    @Resource
+    private ReportFillInfoCollectStatMapper reportFillInfoCollectStatMapper;
+
+    @Resource
+    private ReportFillServiceByIndustryMapper reportFillServiceByIndustryMapper;
+
+    @Resource
+    private ReportFillBizStatHrMapper reportFillBizStatHrMapper;
+
+    @Resource
+    private ReportFillEnterpriseBasicMapper reportFillEnterpriseBasicMapper;
+
+    @Resource
+    private ReportFillComplaintSecurityStatMapper reportFillComplaintSecurityStatMapper;
+
+    @Resource
+    private ReportFillBizStatCreditBuildMapper reportFillBizStatCreditBuildMapper;
+
+    @Resource
+    private ReportFillBizStatFinanceMapper reportFillBizStatFinanceMapper;
+
+    @Resource
+    private ReportFillYangtzeCreditChainMapper reportFillYangtzeCreditChainMapper;
+
+    @Resource
+    private ReportFillProductStatMapper reportFillProductStatMapper;
+
+    @Resource
+    private ReportFillInfoSourceByIndustryMapper reportFillInfoSourceByIndustryMapper;
+
     @Override
     public List<JimuReportCategoryRespVO> getCategoryList() {
         List<JimuReportCategoryDO> list = jimuReportCategoryMapper.selectList(
@@ -63,6 +109,9 @@ public class ReportFillServiceImpl implements ReportFillService {
 
     @Override
     public PageResult<ReportFillRecordRespVO> getFillRecordPage(ReportFillRecordPageReqVO pageReqVO) {
+        // 固定按周期倒序返回
+        pageReqVO.setSortingFields(List.of(new SortingField("period_id", SortingField.ORDER_DESC)));
+
         // 1. 处理报表ID查询条件（分类ID、报表ID、报表名称的组合逻辑）
         List<String> reportIds = null;
         
@@ -207,6 +256,7 @@ public class ReportFillServiceImpl implements ReportFillService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteFillRecord(String id) {
         // 1. 校验记录是否存在
         ReportFillBasicInfoDO record = reportFillBasicInfoMapper.selectById(id);
@@ -215,8 +265,22 @@ public class ReportFillServiceImpl implements ReportFillService {
                     "填报记录不存在");
         }
 
-        // 2. 逻辑删除主记录（MyBatis-Plus 会自动处理 deleted 字段）
-        return reportFillBasicInfoMapper.deleteById(id) > 0;
+        // 2. 物理删除子表（避免留下孤儿数据）
+        reportFillQuarterMicroLoanMapper.deleteRealByParentId(id);
+        reportFillInfoCollectStatMapper.deleteRealByParentId(id);
+        reportFillBizStatHrMapper.deleteRealByParentId(id);
+        reportFillEnterpriseBasicMapper.deleteRealByParentId(id);
+        reportFillComplaintSecurityStatMapper.deleteRealByParentId(id);
+        reportFillBizStatCreditBuildMapper.deleteRealByParentId(id);
+        reportFillBizStatFinanceMapper.deleteRealByParentId(id);
+
+        reportFillServiceByIndustryMapper.deleteRealByRecordId(id);
+        reportFillYangtzeCreditChainMapper.deleteRealByRecordId(id);
+        reportFillProductStatMapper.deleteRealByRecordId(id);
+        reportFillInfoSourceByIndustryMapper.deleteRealByRecordId(id);
+
+        // 3. 物理删除主表
+        return reportFillBasicInfoMapper.deleteRealById(id) > 0;
     }
 
 }

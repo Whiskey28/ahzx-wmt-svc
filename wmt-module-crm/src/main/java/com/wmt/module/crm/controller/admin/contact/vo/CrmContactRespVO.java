@@ -20,7 +20,7 @@ public class CrmContactRespVO {
     @Schema(description = "主键", requiredMode = Schema.RequiredMode.REQUIRED, example = "3167")
     private Long id;
 
-    @Schema(description = "联系人姓名", example = "芋艿")
+    @Schema(description = "联系人姓名", example = "wmt")
     @ExcelProperty(value = "联系人姓名", order = 1)
     private String name;
 
@@ -97,7 +97,7 @@ public class CrmContactRespVO {
 
     @Schema(description = "直属上级", example = "23457")
     private Long parentId;
-    @Schema(description = "直属上级名", example = "芋头")
+    @Schema(description = "直属上级名", example = "wmt")
     @ExcelProperty(value = "直属上级", order = 4)
     private String parentName;
 

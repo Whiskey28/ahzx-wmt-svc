@@ -8,7 +8,9 @@ import com.wmt.framework.mybatis.core.mapper.BaseMapperX;
 import com.wmt.framework.mybatis.core.query.LambdaQueryWrapperX;
 import com.wmt.module.credit.report.controller.admin.report.vo.ReportFillRecordPageReqVO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillBasicInfoDO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.Collection;
 import java.util.List;
@@ -141,5 +143,11 @@ public interface ReportFillBasicInfoMapper extends BaseMapperX<ReportFillBasicIn
                 .map(ReportFillBasicInfoDO::getId)
                 .collect(java.util.stream.Collectors.toList());
     }
+
+    /**
+     * 物理删除主记录（绕过逻辑删除）
+     */
+    @Delete("DELETE FROM report_fill_basic_info WHERE id = #{id}")
+    int deleteRealById(@Param("id") String id);
 
 }

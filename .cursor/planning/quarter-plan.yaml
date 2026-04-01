@@ -1,0 +1,44 @@
+meta:
+  based_on_profile: ".cursor/planning/wmt-profile.yaml"
+  generated_at: "2026-03-24"
+  planning_window: "2026-Q2"
+
+quarter:
+  theme: "AI赋能的工作生活一体化执行系统"
+  north_star_goal: "构建AI+全栈+副业产品化个人操作系统，并形成稳定周产出"
+  key_results:
+    - id: "KR1"
+      metric: "结构化周复盘与下周计划产出数"
+      target: ">= 12份（每周1份）"
+      deadline: "2026-06-30"
+    - id: "KR2"
+      metric: "可见产出数（文档/资产/小功能/SOP）"
+      target: ">= 12个（每周至少1个）"
+      deadline: "2026-06-30"
+    - id: "KR3"
+      metric: "副业可委托环节推进"
+      target: "完成1个可委托岗位定义+1份质检SOP+1位候选协作者试跑"
+      deadline: "2026-06-30"
+
+execution_principles:
+  must_keep:
+    - "每日至少完成1段深度块，优先06:20-07:20"
+    - "每周至少1个业务结果导向任务，避免只做工具"
+    - "新任务必须先过decision_gate"
+  must_avoid:
+    - "新闻摄入后无输出结论"
+    - "学习无实践或实践无收益验证"
+    - "临时任务直接插队破坏Top3"
+  decision_gate_rule: "mandatory_checks 至少通过3项才accept"
+
+weekly_focus_framework:
+  fixed_top3_domains:
+    - "主业/技术复利（AI工程化）"
+    - "副业现金流与可委托化"
+    - "学业/系统复盘"
+  time_budget_ratio:
+    main_job_dev: 35
+    side_business_paper: 25
+    ai_learning_build: 25
+    mba_study: 10
+    planning_review_system: 5

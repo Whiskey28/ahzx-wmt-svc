@@ -1,0 +1,1342 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WMT 代码解读课程（含 wmt-module-bpm）</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400;1,9..40,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* --- BACKGROUNDS --- */
+      --color-bg:             #FAF7F2;
+      --color-bg-warm:        #F5F0E8;
+      --color-bg-code:        #1E1E2E;
+      --color-text:           #2C2A28;
+      --color-text-secondary: #6B6560;
+      --color-text-muted:     #9E9790;
+      --color-border:         #E5DFD6;
+      --color-border-light:   #EEEBE5;
+      --color-surface:        #FFFFFF;
+      --color-surface-warm:   #FDF9F3;
+
+      /* --- ACCENT (pick ONE bold color) --- */
+      --color-accent:         #D94F30;
+      --color-accent-hover:   #C4432A;
+      --color-accent-light:  #FDEEE9;
+      --color-accent-muted:  #E8836C;
+
+      /* --- SEMANTIC --- */
+      --color-success:        #2D8B55;
+      --color-success-light:  #E8F5EE;
+      --color-error:          #C93B3B;
+      --color-error-light:    #FDE8E8;
+      --color-info:           #2A7B9B;
+      --color-info-light:     #E4F2F7;
+
+      /* --- ACTOR COLORS --- */
+      --color-actor-1:        #D94F30;
+      --color-actor-2:        #2A7B9B;
+      --color-actor-3:        #7B6DAA;
+      --color-actor-4:        #D4A843;
+      --color-actor-5:        #2D8B55;
+
+      --font-display:  'Bricolage Grotesque', Georgia, serif;
+      --font-body:     'DM Sans', -apple-system, sans-serif;
+      --font-mono:     'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+
+      --text-xs:   0.75rem;
+      --text-sm:   0.875rem;
+      --text-base: 1rem;
+      --text-lg:   1.125rem;
+      --text-xl:   1.25rem;
+      --text-2xl:  1.5rem;
+      --text-3xl:  1.875rem;
+      --text-4xl:  2.25rem;
+      --text-5xl:  3rem;
+      --text-6xl:  3.75rem;
+
+      --leading-tight:  1.15;
+      --leading-snug:   1.3;
+      --leading-normal: 1.6;
+      --leading-loose:  1.8;
+
+      --space-1:  0.25rem;
+      --space-2:  0.5rem;
+      --space-3:  0.75rem;
+      --space-4:  1rem;
+      --space-5:  1.25rem;
+      --space-6:  1.5rem;
+      --space-8:  2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+      --space-16: 4rem;
+      --space-20: 5rem;
+      --space-24: 6rem;
+
+      --content-width:     800px;
+      --content-width-wide: 1000px;
+      --nav-height:        50px;
+
+      --radius-sm:  8px;
+      --radius-md:  12px;
+      --radius-lg:  16px;
+      --radius-full: 9999px;
+
+      --shadow-sm:  0 1px 2px rgba(44, 42, 40, 0.05);
+      --shadow-md:  0 4px 12px rgba(44, 42, 40, 0.08);
+      --shadow-lg:  0 8px 24px rgba(44, 42, 40, 0.1);
+      --shadow-xl:  0 16px 48px rgba(44, 42, 40, 0.12);
+
+      --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --duration-fast:   150ms;
+      --duration-normal: 300ms;
+      --duration-slow:   500ms;
+      --stagger-delay:   120ms;
+    }
+
+    html { scroll-snap-type: y proximity; scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: var(--font-body);
+      color: var(--color-text);
+      background: var(--color-bg);
+      background-image: radial-gradient(ellipse at 20% 50%, rgba(217, 79, 48, 0.03) 0%, transparent 50%);
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb {
+      background: var(--color-border);
+      border-radius: var(--radius-full);
+    }
+
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      background: rgba(250, 247, 242, 0.75);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(229, 223, 214, 0.7);
+      z-index: 1000;
+    }
+
+    .progress-bar {
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(217, 79, 48, 0.75), rgba(217, 79, 48, 0.25));
+      transition: width var(--duration-fast);
+      pointer-events: none;
+    }
+
+    .nav-inner {
+      width: min(980px, 94vw);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      padding: 0 var(--space-4);
+    }
+    .nav-title {
+      font-family: var(--font-display);
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      font-size: var(--text-base);
+      opacity: 0.95;
+    }
+
+    .nav-dots { display: flex; gap: var(--space-2); }
+    .nav-dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: transparent;
+      border: 2px solid var(--color-text-muted);
+      cursor: pointer;
+      transition: transform var(--duration-fast), border-color var(--duration-fast), background var(--duration-fast), box-shadow var(--duration-fast);
+    }
+    .nav-dot.active {
+      border-color: var(--color-accent);
+      background: var(--color-accent);
+      box-shadow: 0 0 0 4px rgba(217, 79, 48, 0.18);
+      transform: scale(1.07);
+    }
+
+    .module {
+      min-height: 100dvh;
+      scroll-snap-align: start;
+      padding: var(--space-16) var(--space-6);
+      padding-top: calc(var(--nav-height) + var(--space-12));
+      box-sizing: border-box;
+    }
+    .module-content { max-width: var(--content-width); margin: 0 auto; }
+
+    .animate-in { opacity: 0; transform: translateY(18px); transition: opacity var(--duration-slow) var(--ease-out), transform var(--duration-slow) var(--ease-out); }
+    .animate-in.visible { opacity: 1; transform: translateY(0); }
+
+    .module-header { display: grid; gap: var(--space-4); }
+    .module-number {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: var(--text-6xl);
+      color: rgba(217, 79, 48, 0.15);
+      letter-spacing: -0.02em;
+    }
+    .module-title { margin: 0; font-family: var(--font-display); font-weight: 700; font-size: var(--text-4xl); line-height: var(--leading-tight); }
+    .module-subtitle { margin: 0; color: var(--color-text-secondary); font-size: var(--text-lg); line-height: var(--leading-snug); }
+
+    .screen { margin-top: var(--space-12); }
+    .screen-heading { margin: 0 0 var(--space-6); font-family: var(--font-display); font-weight: 600; font-size: var(--text-2xl); }
+
+    pre, code { white-space: pre-wrap; word-break: break-word; overflow-x: hidden; }
+    .translation-code pre::-webkit-scrollbar, .translation-code::-webkit-scrollbar { display: none; }
+
+    .translation-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin: var(--space-8) 0;
+    }
+    .translation-code {
+      background: var(--color-bg-code);
+      color: #CDD6F4;
+      padding: var(--space-6);
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .translation-code pre { margin: 0; }
+    .translation-english {
+      background: var(--color-surface-warm);
+      padding: var(--space-6);
+      font-size: var(--text-sm);
+      line-height: 1.7;
+      border-left: 3px solid var(--color-accent);
+    }
+    .translation-label {
+      position: absolute;
+      top: var(--space-2);
+      right: var(--space-3);
+      font-size: var(--text-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.55;
+      font-family: var(--font-mono);
+    }
+
+    .translation-english .translation-label { color: var(--color-text-muted); }
+    .translation-lines p { margin: var(--space-2) 0; }
+
+    @media (max-width: 768px) {
+      .translation-block { grid-template-columns: 1fr; }
+      .translation-english { border-left: none; border-top: 3px solid var(--color-accent); }
+      .module { padding: var(--space-8) var(--space-4); }
+    }
+
+    /* Glossary tooltips */
+    .term {
+      border-bottom: 1.5px dashed var(--color-accent-muted);
+      cursor: pointer;
+      position: relative;
+    }
+    .term:hover, .term.active {
+      border-bottom-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+    .term-tooltip {
+      position: fixed;
+      background: var(--color-bg-code);
+      color: #CDD6F4;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      font-size: var(--text-sm);
+      font-family: var(--font-body);
+      line-height: var(--leading-normal);
+      width: max(200px, min(320px, 80vw));
+      box-shadow: var(--shadow-lg);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--duration-fast);
+      z-index: 10000;
+    }
+    .term-tooltip::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-top-color: var(--color-bg-code);
+    }
+    .term-tooltip.visible { opacity: 1; }
+    .term-tooltip.flip { bottom: auto; top: calc(100% + 8px); }
+    .term-tooltip.flip::after {
+      top: auto; bottom: 100%;
+      border-top-color: transparent;
+      border-bottom-color: var(--color-bg-code);
+    }
+
+    /* Quizzes */
+    .quiz-container { background: var(--color-surface); border: 1px solid var(--color-border-light); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: var(--space-6); }
+    .quiz-question-block { margin: var(--space-6) 0; }
+    .quiz-question { margin: 0 0 var(--space-4); font-size: var(--text-lg); font-weight: 600; color: var(--color-text); }
+    .quiz-options { display: grid; grid-template-columns: 1fr; gap: var(--space-3); }
+    .quiz-option {
+      display: flex; align-items: center; gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      border: 2px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      background: var(--color-surface);
+      cursor: pointer;
+      transition: border-color var(--duration-fast), background var(--duration-fast), transform var(--duration-fast);
+      text-align: left;
+    }
+    .quiz-option:hover { border-color: var(--color-accent-muted); }
+    .quiz-option.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
+    .quiz-option.correct { border-color: var(--color-success); background: var(--color-success-light); }
+    .quiz-option.incorrect { border-color: var(--color-error); background: var(--color-error-light); }
+    .quiz-option:disabled { cursor: not-allowed; opacity: 0.95; }
+    .quiz-option-radio {
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border);
+      background: transparent;
+      flex-shrink: 0;
+      transition: all var(--duration-fast);
+    }
+    .quiz-option.selected .quiz-option-radio { border-color: var(--color-accent); background: var(--color-accent); box-shadow: inset 0 0 0 3px #fff; }
+    .quiz-feedback {
+      margin-top: var(--space-3);
+      max-height: 0; overflow: hidden;
+      opacity: 0;
+      transition: max-height var(--duration-normal), opacity var(--duration-normal);
+      border-radius: var(--radius-sm);
+      padding: 0 var(--space-3);
+    }
+    .quiz-feedback.show { max-height: 220px; opacity: 1; padding: var(--space-3); }
+    .quiz-feedback.show.warning { background: rgba(212, 168, 67, 0.12); border: 1px solid rgba(212, 168, 67, 0.35); }
+    .quiz-feedback.show.success { background: rgba(45, 139, 85, 0.12); border: 1px solid rgba(45, 139, 85, 0.35); }
+    .quiz-feedback.show.error { background: rgba(201, 59, 59, 0.12); border: 1px solid rgba(201, 59, 59, 0.35); }
+
+    .quiz-controls { display: flex; gap: var(--space-3); align-items: center; margin-top: var(--space-6); flex-wrap: wrap; }
+    .quiz-check-btn, .quiz-reset-btn {
+      border: 0;
+      background: var(--color-accent);
+      color: white;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      transition: background var(--duration-fast), transform var(--duration-fast);
+    }
+    .quiz-reset-btn { background: var(--color-text-secondary); }
+    .quiz-check-btn:hover, .quiz-reset-btn:hover { transform: translateY(-1px); background: var(--color-accent-hover); }
+    .quiz-overall { color: var(--color-text-secondary); }
+
+    /* Group chat */
+    .chat-window { background: var(--color-surface); border: 1px solid var(--color-border-light); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); padding: var(--space-6); }
+    .chat-messages { display: flex; flex-direction: column; gap: var(--space-4); }
+    .chat-message { display: none; align-items: flex-start; gap: var(--space-3); }
+    .chat-avatar {
+      width: 40px; height: 40px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 900;
+      flex-shrink: 0;
+    }
+    .chat-bubble {
+      padding: var(--space-4);
+      background: var(--color-surface-warm);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(229, 223, 214, 0.8);
+      box-shadow: var(--shadow-sm);
+      max-width: 92%;
+    }
+    .chat-sender { display: block; font-weight: 800; margin-bottom: var(--space-2); }
+    .chat-bubble p { margin: 0; color: var(--color-text-secondary); line-height: 1.6; }
+
+    .chat-typing { display: none; align-items: flex-start; gap: var(--space-3); margin-top: var(--space-4); }
+    .chat-typing-dots { display: flex; gap: 6px; padding-top: 10px; }
+    .typing-dot {
+      width: 9px; height: 9px;
+      border-radius: 50%;
+      background: var(--color-text-muted);
+      animation: typingBounce 1.2s infinite;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes typingBounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-6px); }
+    }
+
+    .chat-controls { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; margin-top: var(--space-6); }
+    .chat-controls button {
+      border: 0;
+      background: var(--color-accent);
+      color: white;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+    .chat-controls button.secondary { background: var(--color-text-secondary); }
+    .chat-progress { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--text-sm); }
+
+    @keyframes fadeSlideUp {
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Data flow animation */
+    .flow-animation {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border-light);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      padding: var(--space-6);
+    }
+    .flow-actors { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+    .flow-actor {
+      padding: var(--space-4);
+      border: 1px solid rgba(229, 223, 214, 0.9);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-warm);
+      min-width: 160px;
+      display: grid;
+      grid-template-columns: 44px 1fr;
+      gap: var(--space-3);
+      align-items: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .flow-actor-icon {
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 900;
+      background: var(--color-accent);
+    }
+    .flow-actor.active {
+      box-shadow: 0 0 0 3px var(--color-accent), 0 0 20px rgba(217, 79, 48, 0.2);
+      transform: scale(1.02);
+      transition: all var(--duration-normal) var(--ease-out);
+    }
+    .flow-packet {
+      margin: var(--space-6) 0;
+      height: 26px;
+      border-radius: var(--radius-full);
+      background: rgba(217, 79, 48, 0.08);
+      border: 1px dashed rgba(217, 79, 48, 0.28);
+      position: relative;
+      overflow: hidden;
+    }
+    .flow-packet-inner {
+      position: absolute;
+      left: -30%;
+      top: 50%;
+      width: 30%;
+      height: 10px;
+      background: linear-gradient(90deg, rgba(217, 79, 48, 0.05), rgba(217, 79, 48, 0.65), rgba(217, 79, 48, 0.05));
+      border-radius: var(--radius-full);
+      transform: translateY(-50%);
+      opacity: 0;
+    }
+    @keyframes packetMove {
+      0% { transform: translate(-10%, -50%); opacity: 0.9; }
+      100% { transform: translate(420%, -50%); opacity: 0.95; }
+    }
+    .flow-step-label { color: var(--color-text-secondary); margin-top: var(--space-4); line-height: 1.6; }
+    .flow-controls { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; margin-top: var(--space-6); }
+    .flow-controls button {
+      border: 0;
+      background: var(--color-accent);
+      color: white;
+      font-weight: 700;
+      border-radius: var(--radius-full);
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+    }
+    .flow-controls button.secondary { background: var(--color-text-secondary); }
+    .flow-progress { color: var(--color-text-secondary); font-family: var(--font-mono); font-size: var(--text-sm); }
+
+    @media (max-width: 520px) {
+      .flow-actor { min-width: auto; width: 100%; }
+    }
+
+  </style>
+</head>
+<body>
+  <nav class="nav" aria-label="Course navigation">
+    <div class="progress-bar" id="progressBar" aria-hidden="true"></div>
+    <div class="nav-inner">
+      <span class="nav-title">WMT 代码解读课程（含 wmt-module-bpm）</span>
+      <div class="nav-dots" role="tablist" aria-label="Modules">
+        <button class="nav-dot" data-target="module-1" role="tab" aria-label="Module 1"></button>
+        <button class="nav-dot" data-target="module-2" role="tab" aria-label="Module 2"></button>
+        <button class="nav-dot" data-target="module-3" role="tab" aria-label="Module 3"></button>
+        <button class="nav-dot" data-target="module-4" role="tab" aria-label="Module 4"></button>
+        <button class="nav-dot" data-target="module-5" role="tab" aria-label="Module 5"></button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Module 1 -->
+  <section class="module" id="module-1" style="background: var(--color-bg-warm);">
+    <div class="module-content">
+      <header class="module-header animate-in">
+        <div class="module-number">01</div>
+        <h1 class="module-title">当模块没开：为什么你会看到“禁用”</h1>
+        <p class="module-subtitle">把启动开关逻辑读懂，先定位问题再继续追代码</p>
+      </header>
+
+      <div class="screen">
+        <h2 class="screen-heading">从一次请求开始</h2>
+        <p>
+          你调用了 <span class="term" data-definition="Controller：后端接收 HTTP 请求的类，负责把请求转给 Service。">Controller</span> 里的
+          <span class="term" data-definition="RESTful API：用 HTTP 直观表示资源操作的接口风格，例如 GET/POST。">接口</span> 时，
+          如果 <span class="term" data-definition="wmt-module-bpm：工作流相关的业务模块，默认可能不编译/不注入。">wmt-module-bpm</span> 没启用，系统不会继续执行业务，而是直接返回一个“已禁用”的响应。
+          把它当成“电源开关”：没通电就不让你运行。
+        </p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code>    @RequestMapping("/admin-api/bpm/**")
+    public CommonResult&lt;Boolean&gt; bpm404() {
+        return CommonResult.error(NOT_IMPLEMENTED.getCode(),
+                "[工作流模块 wmt-module-bpm - 已禁用]bpm/ 开启]");
+    }</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p>这个默认 <span class="term" data-definition="Controller：接收请求并做路由分发的后端组件。">Controller</span> 专门在模块没开启时兜底，避免你看到“404 找不到接口”。</p>
+              <p>当请求路径匹配 <code>/admin-api/bpm/**</code> 时，直接返回一个错误响应，提示你“请开启 bpm/”。</p>
+              <p>返回类型是 <code>CommonResult&lt;Boolean&gt;</code>，表示“统一响应格式 + 错误码 + 信息”。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-container animate-in" id="quiz-m1" data-quiz="m1">
+          <div class="quiz-question-block" data-question="m1q1" data-correct="b" data-feedback-correct="对！兜底 Controller 会把“找不到接口”替换成“提示模块没启用”。" data-feedback-wrong="不对。这个类的职责不是处理业务，而是模块没开时的兜底提示。">
+            <h3 class="quiz-question">你请求了 `/admin-api/bpm/**`，但 BPM 不启用。系统最可能做什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 直接进入 BPM 的业务 Service</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 返回“已禁用/请开启 bpm/”的统一错误</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 尝试连接数据库后再报错</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-question="m1q2" data-correct="a" data-feedback-correct="对！Banner 在启动后检查关键配置类是否存在，用提示引导你开启模块。" data-feedback-wrong="不对。启动时的提示来自 Banner 的“类是否存在”检查，而不是运行时调用链。">
+            <h3 class="quiz-question">你想确认“BPM 是否启用”，更应该先看哪里？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 启动日志里的 Banner 输出（按类是否存在判断）</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 从数据库里找流程实例表</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 直接看前端页面是否渲染</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-controls">
+            <button class="quiz-check-btn" onclick="checkQuiz('quiz-m1')">检查答案</button>
+            <button class="quiz-reset-btn" onclick="resetQuiz('quiz-m1')">再试一次</button>
+            <span class="quiz-overall" id="quiz-m1-overall" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 2 -->
+  <section class="module" id="module-2" style="background: var(--color-bg);">
+    <div class="module-content">
+      <header class="module-header animate-in">
+        <div class="module-number">02</div>
+        <h1 class="module-title">把流程引擎“接管”：BPM 的 Flowable 配置</h1>
+        <p class="module-subtitle">知道配置在哪儿，就能更快判断“为什么审批人/事件/执行方式不对”</p>
+      </header>
+
+      <div class="screen">
+        <h2 class="screen-heading">配置就是“装配说明书”</h2>
+        <p>
+          你可以把 <span class="term" data-definition="Flowable：工作流引擎，负责流程实例、任务流转、历史数据等。">Flowable</span> 看成“发动机”，
+          而 <span class="term" data-definition="BpmFlowableConfiguration：BPM 模块里负责配置 Flowable 行为与监听器的 Spring 配置类。">BpmFlowableConfiguration</span> 就是“说明书”：
+          它告诉引擎哪些事件要监听、哪些“审核人候选人策略”要生效。
+        </p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code>@Bean(name = "applicationTaskExecutor")
+@ConditionalOnMissingBean(name = "applicationTaskExecutor")
+public AsyncListenableTaskExecutor taskExecutor() {
+    ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    executor.setCorePoolSize(8);
+    executor.setMaxPoolSize(8);
+    executor.setQueueCapacity(100);
+    executor.setThreadNamePrefix("flowable-task-Executor-");
+    executor.setAwaitTerminationSeconds(30);
+    executor.setWaitForTasksToCompleteOnShutdown(true);
+    executor.setAllowCoreThreadTimeOut(true);
+    executor.initialize();
+    return executor;
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p>这里声明了 Flowable 需要的 <span class="term" data-definition="Task Executor：把任务丢到线程池里并发执行的“调度器”。">任务执行器</span>，避免引擎启动时因为缺少 Bean 而报错。</p>
+              <p>设置核心/最大线程数、队列容量、线程命名前缀，让后续排查“慢/卡住”的问题更可定位。</p>
+              <p>最后把 executor 初始化好并返回，提供给 Spring 容器托管使用。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-container animate-in" id="quiz-m2">
+          <div class="quiz-question-block" data-question="m2q1" data-correct="c" data-feedback-correct="对！这个方法就是提供 Flowable 的任务执行器（线程池），防止启动异常。" data-feedback-wrong="不对。它的重点不是“创建审批人规则”，而是提供引擎需要的任务执行器 Bean。">
+            <h3 class="quiz-question">为什么这个 `taskExecutor()` 方法这么重要？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 用来查询 BPMN XML 内容</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 用来决定模型分类分页条件</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 提供引擎需要的任务执行器 Bean，避免启动错误</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-question="m2q2" data-correct="b" data-feedback-correct="对！`@ConditionalOnMissingBean` 表示：如果容器里已经有同名 Bean，就不会重复创建。" data-feedback-wrong="不对。`ConditionalOnMissingBean` 是“缺失时才创建”，不是“永远创建”。">
+            <h3 class="quiz-question">`@ConditionalOnMissingBean(name = "applicationTaskExecutor")` 的含义更接近？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 无条件创建（不管有没有）</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 如果已存在就不创建；不存在才创建</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 只有开发环境才创建</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-controls">
+            <button class="quiz-check-btn" onclick="checkQuiz('quiz-m2')">检查答案</button>
+            <button class="quiz-reset-btn" onclick="resetQuiz('quiz-m2')">再试一次</button>
+            <span class="quiz-overall" id="quiz-m2-overall" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 3 -->
+  <section class="module" id="module-3" style="background: var(--color-bg-warm);">
+    <div class="module-content">
+      <header class="module-header animate-in">
+        <div class="module-number">03</div>
+        <h1 class="module-title">获得模型列表：Controller 拉起 Service，再由引擎查询</h1>
+        <p class="module-subtitle">你会从“接口返回什么”快速推回“数据怎么来的”</p>
+      </header>
+
+      <div class="screen">
+        <h2 class="screen-heading">让数据像寄信一样走“路径”</h2>
+        <p>
+          读代码时别急着全看完：先抓住 <span class="term" data-definition="Controller：入口层，接收 HTTP 请求并调用 Service。">入口</span> 调 Service 的那两三行，
+          它们往往就是数据流的“起点”。本项目里获取 BPM 模型列表时，先让 <span class="term" data-definition="modelService：BPM 的业务 Service，用于操作流程模型。">modelService</span> 查出 Flowable 的 <code>Model</code> 列表，再进一步把表单/分类/部署信息拼成返回值。
+        </p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code>@GetMapping("/list")
+@Operation(summary = "获得模型分页")
+@Parameter(name = "name", description = "模型名称", example = "wmt")
+public CommonResult&lt;List&lt;BpmModelRespVO&gt;&gt; getModelList(@RequestParam(value = "name", required = false) String name) {
+    List&lt;Model&gt; list = modelService.getModelList(name);
+    if (CollUtil.isEmpty(list)) {
+        return success(Collections.emptyList());
+    }
+
+    // 获得 Form 表单
+    Set&lt;Long&gt; formIds = convertSet(list, model -&gt; {
+        BpmModelMetaInfoVO metaInfo = BpmModelConvert.INSTANCE.parseMetaInfo(model);
+        return metaInfo != null ? metaInfo.getFormId() : null;
+    });
+    Map&lt;Long, BpmFormDO&gt; formMap = formService.getFormMap(formIds);</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p>这是一个 <span class="term" data-definition="GET：用于读取数据、不修改服务端状态的 HTTP 方法。">GET</span> 接口：客户端要一个“模型列表”。</p>
+              <p>先调用 <code>modelService.getModelList(name)</code>：让 Service 去查询引擎里的模型。</p>
+              <p>如果没查到，就直接返回空列表，避免前端再猜“是不是接口报错”。</p>
+              <p>接着从模型元信息里解析出表单 ID，然后让 <code>formService</code> 批量取表单数据，拼装返回。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-container animate-in" id="quiz-m3">
+          <div class="quiz-question-block" data-question="m3q1" data-correct="a" data-feedback-correct="对！`modelService.getModelList(name)` 就是数据从“接口”走向“业务/引擎”的第一步。" data-feedback-wrong="不对。`formService.getFormMap` 是拼装步骤，不是查询 Model 的起点。">
+            <h3 class="quiz-question">在获取模型列表的代码里，哪个调用更像“数据流的起点”？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. `modelService.getModelList(name)`</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. `formService.getFormMap(formIds)`</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. `BpmModelConvert.INSTANCE.parseMetaInfo(model)`</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-question="m3q2" data-correct="c" data-feedback-correct="对！它把“无结果”变成“空列表”，这是前端最友好的返回策略。" data-feedback-wrong="不对。它没有返回 null，而是显式返回空列表。">
+            <h3 class="quiz-question">如果 `list` 为空，这段代码更倾向于怎么返回？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 返回 `null` 让前端自己判断</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 抛出异常进入全局异常处理</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 返回 `Collections.emptyList()`（空列表）</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-controls">
+            <button class="quiz-check-btn" onclick="checkQuiz('quiz-m3')">检查答案</button>
+            <button class="quiz-reset-btn" onclick="resetQuiz('quiz-m3')">再试一次</button>
+            <span class="quiz-overall" id="quiz-m3-overall" aria-live="polite"></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 4 -->
+  <section class="module" id="module-4" style="background: var(--color-bg);">
+    <div class="module-content">
+      <header class="module-header animate-in">
+        <div class="module-number">04</div>
+        <h1 class="module-title">部署模型：先校验，再把模型变成流程定义</h1>
+        <p class="module-subtitle">理解 deploy 这一步，就能快速定位“为什么部署失败/审批候选人不对”</p>
+      </header>
+
+      <div class="screen">
+        <h2 class="screen-heading">草图进施工前要过关</h2>
+        <p>
+          把“部署（deploy）”想成：你要把一份流程设计稿提交到引擎里真正执行。
+          所以 <span class="term" data-definition="deployModel：把流程模型部署成流程定义的业务方法。">deployModel</span> 不是直接“保存就完事”，而是做一连串校验：模型存在、BPMN 图没问题、表单配置已完成、任务候选人策略已配置。
+        </p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code>@Override
+@Transactional(rollbackFor = Exception.class) // 因为进行多个操作，所以开启事务
+public void deployModel(Long userId, String id) {
+    // 1.1 校验流程模型存在
+    Model model = validateModelManager(id, userId);
+    BpmModelMetaInfoVO metaInfo = BpmModelConvert.INSTANCE.parseMetaInfo(model);
+    // 1.2 校验流程图
+    byte[] bpmnBytes = getModelBpmnXML(model.getId());
+    validateBpmnXml(bpmnBytes, metaInfo.getType());
+    // 1.3 校验表单已配
+    BpmFormDO form = validateFormConfig(metaInfo);</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p>部署方法开启 <span class="term" data-definition="事务（Transaction）：一组数据库/引擎操作要么全成功要么全回滚。">事务</span>，避免“部署一半失败导致状态脏”。</p>
+              <p>先用 <code>validateModelManager</code> 确认模型存在且当前用户有管理权限。</p>
+              <p>再取出 BPMN XML 字节并做校验，确保流程图能被引擎正确理解。</p>
+              <p>最后检查表单配置是否已经准备好，因为流程节点往往需要表单数据来运行。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-container animate-in" id="quiz-m4">
+          <div class="quiz-question-block" data-question="m4q1" data-correct="b" data-feedback-correct="对！事务用于保护“一连串部署步骤”的一致性。" data-feedback-wrong="不对。事务不是为了缓存，而是为了部署过程中多步操作的原子性。">
+            <h3 class="quiz-question">`@Transactional(rollbackFor = Exception.class)` 在部署里主要保护什么？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 提高查询速度（缓存命中）</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 多步部署操作的“一致性/回滚”</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 让 Flowable 自动忽略错误</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-question="m4q2" data-correct="c" data-feedback-correct="对！先校验 BPMN，再校验表单，最后才做部署相关的创建/挂起等步骤。" data-feedback-wrong="不对。代码先做 `validateBpmnXml`，表单校验在后面。">
+            <h3 class="quiz-question">在这段部署代码中，校验的顺序最接近？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 先校验表单，再校验 BPMN</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 只校验权限，不校验 BPMN</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 先校验模型/权限，再校验 BPMN，再校验表单</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-controls">
+            <button class="quiz-check-btn" onclick="checkQuiz('quiz-m4')">检查答案</button>
+            <button class="quiz-reset-btn" onclick="resetQuiz('quiz-m4')">再试一次</button>
+            <span class="quiz-overall" id="quiz-m4-overall" aria-live="polite"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Module 5 -->
+  <section class="module" id="module-5" style="background: var(--color-bg-warm);">
+    <div class="module-content">
+      <header class="module-header animate-in">
+        <div class="module-number">05</div>
+        <h1 class="module-title">落库与定位：分类/分页 + 全链路数据流动画</h1>
+        <p class="module-subtitle">把“为什么不生效”拆成可追踪的步骤</p>
+      </header>
+
+      <div class="screen">
+        <h2 class="screen-heading">先把“业务表”当作文件夹</h2>
+        <p>
+          BPM 模块里不仅有引擎层（Flowable），还有业务层表结构（例如分类、表单等）。
+          <span class="term" data-definition="Mapper：MyBatis 的数据访问层，负责把条件拼成 SQL 并执行。">Mapper</span> 和 <span class="term" data-definition="MyBatis-Plus：基于 MyBatis 的增强工具，提供分页/条件构造等能力。">MyBatis-Plus</span> 让“分类分页”和“落库校验”更清晰。
+          你可以把分类当成文件夹：先确保文件夹不重复，再决定翻哪一页。
+        </p>
+
+        <div class="translation-block animate-in">
+          <div class="translation-code">
+            <span class="translation-label">CODE</span>
+            <pre><code>@Override
+public Long createCategory(BpmCategorySaveReqVO createReqVO) {
+    // 校验唯一
+    validateCategoryNameUnique(createReqVO);
+    validateCategoryCodeUnique(createReqVO);
+    // 插入
+    BpmCategoryDO category = BeanUtils.toBean(createReqVO, BpmCategoryDO.class);
+    bpmCategoryMapper.insert(category);
+    return category.getId();
+}</code></pre>
+          </div>
+          <div class="translation-english">
+            <span class="translation-label">PLAIN ENGLISH</span>
+            <div class="translation-lines">
+              <p>创建分类时先做唯一性校验：名字不能重复、编码不能重复。</p>
+              <p>通过 <span class="term" data-definition="insert：向数据库表插入一行新记录。">insert</span> 把业务对象写入表。</p>
+              <p>最后返回新分类的 <code>id</code>，供前端继续发起后续操作（例如创建模型时选择分类）。</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="quiz-container animate-in" id="quiz-m5">
+          <div class="quiz-question-block" data-question="m5q1" data-correct="b" data-feedback-correct="对！分类创建就是先校验唯一，再插入数据。"> 
+            <h3 class="quiz-question">你要排查“分类创建失败”，最优先检查哪类逻辑？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 只看前端表单字段格式</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 先看唯一性校验（名字/编码）是否触发异常</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 只看 Flowable 是否部署过</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-question-block" data-question="m5q2" data-correct="a" data-feedback-correct="对！当模块没启用时，先看兜底 DefaultController 的路径映射，而不是从数据库开始查。"
+               data-feedback-wrong="不对。当前症状更像是模块/配置没启用，应该先追启动开关与控制器映射。">
+            <h3 class="quiz-question">如果你访问 BPM 的接口直接报“已禁用”，更像是哪个层的问题？</h3>
+            <div class="quiz-options">
+              <button class="quiz-option" data-value="a" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>A. 模块装配/启用层（Spring 注入/类是否存在）</span>
+              </button>
+              <button class="quiz-option" data-value="b" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>B. 只有数据库层（SQL）</span>
+              </button>
+              <button class="quiz-option" data-value="c" onclick="selectOption(this)">
+                <div class="quiz-option-radio"></div><span>C. 只有 Flowable 引擎层</span>
+              </button>
+            </div>
+            <div class="quiz-feedback"></div>
+          </div>
+
+          <div class="quiz-controls">
+            <button class="quiz-check-btn" onclick="checkQuiz('quiz-m5')">检查答案</button>
+            <button class="quiz-reset-btn" onclick="resetQuiz('quiz-m5')">再试一次</button>
+            <span class="quiz-overall" id="quiz-m5-overall" aria-live="polite"></span>
+          </div>
+        </div>
+
+        <div class="chat-window animate-in" style="margin-top: var(--space-12)">
+          <h2 class="screen-heading" style="margin-top:0">群聊：谁在把部署一步步做完？</h2>
+
+          <div class="chat-messages" id="chat-messages">
+            <div class="chat-message" data-msg="0" data-sender="actor-1" style="display:none">
+              <div class="chat-avatar" style="background: var(--color-actor-1)">C</div>
+              <div class="chat-bubble">
+                <span class="chat-sender" style="color: var(--color-actor-1)">BpmModelController</span>
+                <p>我收到了部署请求，准备把参数交给 Service。</p>
+              </div>
+            </div>
+            <div class="chat-message" data-msg="1" data-sender="actor-2" style="display:none">
+              <div class="chat-avatar" style="background: var(--color-actor-2)">S</div>
+              <div class="chat-bubble">
+                <span class="chat-sender" style="color: var(--color-actor-2)">BpmModelServiceImpl</span>
+                <p>我先校验：模型/权限、BPMN XML、表单配置，然后才开始部署流程定义。</p>
+              </div>
+            </div>
+            <div class="chat-message" data-msg="2" data-sender="actor-3" style="display:none">
+              <div class="chat-avatar" style="background: var(--color-actor-3)">F</div>
+              <div class="chat-bubble">
+                <span class="chat-sender" style="color: var(--color-actor-3)">Flowable 引擎</span>
+                <p>收到部署指令后生成流程定义，并让后续任务按配置流转。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="chat-typing" id="chat-typing">
+            <div class="chat-avatar" id="typing-avatar" style="background: var(--color-actor-2)">?</div>
+            <div class="chat-typing-dots" aria-hidden="true">
+              <span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>
+            </div>
+          </div>
+
+          <div class="chat-controls">
+            <button onclick="playChatNext()">Next Message</button>
+            <button class="secondary" onclick="playChatAll()">Play All</button>
+            <button class="secondary" onclick="resetChat()">Replay</button>
+            <span class="chat-progress" id="chat-progress">0 / 3 messages</span>
+          </div>
+        </div>
+
+        <div class="flow-animation animate-in" style="margin-top: var(--space-12)">
+          <h2 class="screen-heading" style="margin-top:0">数据流动画：从请求到流程定义</h2>
+          <div class="flow-actors">
+            <div class="flow-actor" id="flow-actor-browser">
+              <div class="flow-actor-icon" style="background: var(--color-actor-4)">U</div>
+              <span>浏览器/前端</span>
+            </div>
+            <div class="flow-actor" id="flow-actor-controller">
+              <div class="flow-actor-icon" style="background: var(--color-actor-1)">C</div>
+              <span>BpmModelController</span>
+            </div>
+            <div class="flow-actor" id="flow-actor-service">
+              <div class="flow-actor-icon" style="background: var(--color-actor-2)">S</div>
+              <span>BpmModelServiceImpl</span>
+            </div>
+            <div class="flow-actor" id="flow-actor-engine">
+              <div class="flow-actor-icon" style="background: var(--color-actor-3)">F</div>
+              <span>Flowable 引擎</span>
+            </div>
+            <div class="flow-actor" id="flow-actor-db">
+              <div class="flow-actor-icon" style="background: var(--color-actor-5)">D</div>
+              <span>业务表/引擎表（MySQL + ACT_*）</span>
+            </div>
+          </div>
+
+          <div class="flow-packet" id="flow-packet" aria-hidden="true">
+            <span class="flow-packet-inner" id="flow-packet-inner"></span>
+          </div>
+          <div class="flow-step-label" id="flow-label">点击 “Next Step” 开始追踪。</div>
+
+          <div class="flow-controls">
+            <button onclick="flowNext()">Next Step</button>
+            <button class="secondary" onclick="flowReset()">Restart</button>
+            <span class="flow-progress" id="flow-progress">Step 0 / 6</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script>
+    (function () {
+      // Scroll-based module reveal
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+
+      document.querySelectorAll('.animate-in').forEach(el => observer.observe(el));
+
+      // Progress bar
+      const progressBar = document.getElementById('progressBar');
+      const updateProgressBar = function () {
+        const scrollTop = window.scrollY;
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = scrollHeight <= 0 ? 0 : (scrollTop / scrollHeight) * 100;
+        progressBar.style.width = progress + '%';
+      };
+      window.addEventListener('scroll', () => requestAnimationFrame(updateProgressBar), { passive: true });
+      updateProgressBar();
+
+      // Nav active dot
+      const sectionIds = ['module-1','module-2','module-3','module-4','module-5'];
+      const dots = Array.from(document.querySelectorAll('.nav-dot'));
+      const navObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          dots.forEach(d => d.classList.toggle('active', d.dataset.target === id));
+        });
+      }, { threshold: 0.35 });
+      sectionIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) navObserver.observe(el);
+      });
+      // fallback: mark first
+      if (dots[0]) dots[0].classList.add('active');
+
+      // Keyboard navigation
+      function scrollToModule(idx) {
+        const id = sectionIds[idx];
+        const el = document.getElementById(id);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      let currentIndex = 0;
+      const sectionEls = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+      const updateCurrentIndex = () => {
+        const y = window.scrollY + 120;
+        for (let i = 0; i < sectionEls.length; i++) {
+          const rect = sectionEls[i].getBoundingClientRect();
+          const top = rect.top + window.scrollY;
+          const bottom = top + rect.height;
+          if (y >= top && y < bottom) {
+            currentIndex = i;
+            break;
+          }
+        }
+      };
+      window.addEventListener('scroll', () => requestAnimationFrame(updateCurrentIndex), { passive: true });
+      updateCurrentIndex();
+
+      document.addEventListener('keydown', (e) => {
+        if (['INPUT', 'TEXTAREA'].includes((e.target && e.target.tagName) || '')) return;
+        if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { if (currentIndex < sectionIds.length - 1) { currentIndex++; scrollToModule(currentIndex); e.preventDefault(); } }
+        if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { if (currentIndex > 0) { currentIndex--; scrollToModule(currentIndex); e.preventDefault(); } }
+      });
+
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          const id = dot.dataset.target;
+          const idx = sectionIds.indexOf(id);
+          if (idx >= 0) scrollToModule(idx);
+        });
+      });
+
+      // Glossary tooltips
+      let activeTooltip = null;
+      function positionTooltip(term, tip) {
+        const rect = term.getBoundingClientRect();
+        const tipWidth = 320;
+        let left = rect.left + rect.width / 2 - tipWidth / 2;
+        left = Math.max(8, Math.min(left, window.innerWidth - tipWidth - 8));
+
+        // Default: above
+        tip.style.left = left + 'px';
+        tip.classList.remove('flip');
+        document.body.appendChild(tip);
+
+        const tipHeight = tip.offsetHeight || 80;
+        const spaceAbove = rect.top - tipHeight - 8;
+        if (spaceAbove < 0) {
+          tip.style.top = (rect.bottom + 8) + 'px';
+          tip.classList.add('flip');
+        } else {
+          tip.style.top = (rect.top - tipHeight - 8) + 'px';
+          tip.classList.remove('flip');
+        }
+      }
+
+      document.querySelectorAll('.term').forEach(term => {
+        const tip = document.createElement('span');
+        tip.className = 'term-tooltip';
+        tip.textContent = term.dataset.definition || '';
+
+        term.addEventListener('mouseenter', () => {
+          if (activeTooltip && activeTooltip !== tip) {
+            activeTooltip.classList.remove('visible');
+            activeTooltip.remove();
+          }
+          positionTooltip(term, tip);
+          requestAnimationFrame(() => tip.classList.add('visible'));
+          activeTooltip = tip;
+        });
+        term.addEventListener('mouseleave', () => {
+          tip.classList.remove('visible');
+          setTimeout(() => {
+            if (!tip.classList.contains('visible')) tip.remove();
+          }, 120);
+          activeTooltip = null;
+        });
+        term.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (activeTooltip && activeTooltip !== tip) {
+            activeTooltip.classList.remove('visible');
+            activeTooltip.remove();
+          }
+          if (tip.classList.contains('visible')) {
+            tip.classList.remove('visible');
+            tip.remove();
+            activeTooltip = null;
+          } else {
+            positionTooltip(term, tip);
+            requestAnimationFrame(() => tip.classList.add('visible'));
+            activeTooltip = tip;
+          }
+        });
+      });
+      document.addEventListener('click', () => {
+        if (activeTooltip) {
+          activeTooltip.classList.remove('visible');
+          activeTooltip.remove();
+          activeTooltip = null;
+        }
+      });
+
+      // Quiz logic
+      window.selectOption = function (btn) {
+        const block = btn.closest('.quiz-question-block');
+        if (!block) return;
+        block.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('selected'));
+        btn.classList.add('selected');
+      };
+
+      window.checkQuiz = function (sectionId) {
+        const container = document.getElementById(sectionId);
+        if (!container) return;
+        const questions = container.querySelectorAll('.quiz-question-block');
+        let correctCount = 0;
+        let answeredAny = false;
+
+        questions.forEach(q => {
+          const selected = q.querySelector('.quiz-option.selected');
+          const feedback = q.querySelector('.quiz-feedback');
+          const correctValue = q.dataset.correct;
+          const correctFb = q.dataset.feedbackCorrect || '回答正确。';
+          const wrongFb = q.dataset.feedbackWrong || '再想一想。';
+
+          // Reset feedback state
+          feedback.className = 'quiz-feedback';
+
+          if (!selected) {
+            feedback.textContent = '先选一个答案。';
+            feedback.className = 'quiz-feedback show warning';
+            answeredAny = true;
+            return;
+          }
+
+          answeredAny = true;
+          const value = selected.dataset.value;
+          if (value === correctValue) {
+            correctCount++;
+            selected.classList.add('correct');
+            feedback.innerHTML = '<strong>对了。</strong> ' + correctFb;
+            feedback.className = 'quiz-feedback show success';
+          } else {
+            selected.classList.add('incorrect');
+            // highlight correct option too
+            const correctBtn = q.querySelector('.quiz-option[data-value="' + correctValue + '"]');
+            if (correctBtn) correctBtn.classList.add('correct');
+            feedback.innerHTML = '<strong>不完全对。</strong> ' + wrongFb;
+            feedback.className = 'quiz-feedback show error';
+          }
+
+          q.querySelectorAll('.quiz-option').forEach(o => o.disabled = true);
+        });
+
+        const overall = document.getElementById(sectionId + '-overall');
+        if (overall) {
+          overall.textContent = '本页答对 ' + correctCount + ' / ' + questions.length + '（不计分，只用于校准你的理解）。';
+        }
+      };
+
+      window.resetQuiz = function (sectionId) {
+        const container = document.getElementById(sectionId);
+        if (!container) return;
+        const questions = container.querySelectorAll('.quiz-question-block');
+        questions.forEach(q => {
+          q.querySelectorAll('.quiz-option').forEach(o => {
+            o.classList.remove('selected', 'correct', 'incorrect');
+            o.disabled = false;
+          });
+          const feedback = q.querySelector('.quiz-feedback');
+          feedback.textContent = '';
+          feedback.className = 'quiz-feedback';
+        });
+        const overall = document.getElementById(sectionId + '-overall');
+        if (overall) overall.textContent = '';
+      };
+
+      // Group chat animation
+      let chatIndex = 0;
+      const chatMessages = Array.from(document.querySelectorAll('#chat-messages .chat-message'));
+      const typing = document.getElementById('chat-typing');
+      const typingAvatar = document.getElementById('typing-avatar');
+      const chatProgress = document.getElementById('chat-progress');
+      const chatTotal = chatMessages.length;
+
+      window.playChatNext = function () {
+        if (chatIndex >= chatTotal) return;
+        const msg = chatMessages[chatIndex];
+        const sender = msg.dataset.sender || 'actor-1';
+
+        // set avatar by sender
+        const colorMap = {
+          'actor-1': 'var(--color-actor-1)',
+          'actor-2': 'var(--color-actor-2)',
+          'actor-3': 'var(--color-actor-3)',
+          'actor-4': 'var(--color-actor-4)',
+          'actor-5': 'var(--color-actor-5)'
+        };
+        const initialsMap = {
+          'actor-1': 'C',
+          'actor-2': 'S',
+          'actor-3': 'F',
+          'actor-4': 'U',
+          'actor-5': 'D'
+        };
+        typingAvatar.textContent = initialsMap[sender] || '?';
+        typingAvatar.style.background = colorMap[sender] || 'var(--color-accent)';
+        typing.style.display = 'flex';
+
+        setTimeout(() => {
+          typing.style.display = 'none';
+          msg.style.display = 'flex';
+          msg.style.animation = 'fadeSlideUp 0.3s var(--ease-out)';
+          chatIndex++;
+          if (chatProgress) chatProgress.textContent = chatIndex + ' / ' + chatTotal + ' messages';
+        }, 650);
+      };
+
+      window.playChatAll = function () {
+        const timer = setInterval(() => {
+          if (chatIndex >= chatTotal) { clearInterval(timer); return; }
+          playChatNext();
+        }, 900);
+      };
+
+      window.resetChat = function () {
+        chatIndex = 0;
+        chatMessages.forEach(m => {
+          m.style.display = 'none';
+          m.style.animation = '';
+        });
+        if (typing) typing.style.display = 'none';
+        if (chatProgress) chatProgress.textContent = '0 / ' + chatTotal + ' messages';
+      };
+
+      // Data flow animation
+      let flowStep = 0;
+      const flowLabel = document.getElementById('flow-label');
+      const flowPacket = document.getElementById('flow-packet');
+      const flowPacketInner = document.getElementById('flow-packet-inner');
+      const flowProgress = document.getElementById('flow-progress');
+
+      const flowSteps = [
+        { highlight: 'flow-actor-browser', label: 'Step 1：你在前端点了“部署流程模型”。' },
+        { highlight: 'flow-actor-controller', label: 'Step 2：BpmModelController 接到 HTTP 请求，准备调用 Service。' , packet: true },
+        { highlight: 'flow-actor-service', label: 'Step 3：BpmModelServiceImpl 做校验（模型/权限、BPMN、表单）。', packet: true },
+        { highlight: 'flow-actor-engine', label: 'Step 4：把校验通过的内容交给 Flowable，引擎开始生成流程定义。', packet: true },
+        { highlight: 'flow-actor-db', label: 'Step 5：过程中会落表（业务表 + Flowable 的 ACT_* 表）。', packet: true },
+        { highlight: 'flow-actor-service', label: 'Step 6：Service 更新模型/部署关联状态，最终返回成功响应给 Controller。' , packet: true }
+      ];
+
+      function highlightActor(actorId) {
+        document.querySelectorAll('.flow-actor').forEach(a => a.classList.remove('active'));
+        const el = document.getElementById(actorId);
+        if (el) el.classList.add('active');
+      }
+
+      window.flowNext = function () {
+        if (flowStep >= flowSteps.length) return;
+        const step = flowSteps[flowStep];
+        highlightActor(step.highlight);
+        if (flowLabel) flowLabel.textContent = step.label;
+        if (step.packet) {
+          if (flowPacketInner) {
+            // restart animation reliably
+            flowPacketInner.style.animation = 'none';
+            void flowPacketInner.offsetHeight;
+            flowPacketInner.style.animation = 'packetMove 0.9s var(--ease-out) forwards';
+          }
+        }
+        flowStep++;
+        if (flowProgress) flowProgress.textContent = 'Step ' + flowStep + ' / ' + flowSteps.length;
+      };
+
+      window.flowReset = function () {
+        flowStep = 0;
+        highlightActor('flow-actor-browser');
+        if (flowLabel) flowLabel.textContent = '点击 “Next Step” 开始追踪。';
+        if (flowProgress) flowProgress.textContent = 'Step 0 / ' + flowSteps.length;
+        if (flowPacketInner) {
+          flowPacketInner.style.animation = 'none';
+          flowPacketInner.style.opacity = '0';
+        }
+      };
+
+      // Start state for flow
+      highlightActor('flow-actor-browser');
+      if (flowProgress) flowProgress.textContent = 'Step 0 / ' + flowSteps.length;
+    })();
+  </script>
+</body>
+</html>
+

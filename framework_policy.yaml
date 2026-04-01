@@ -1,0 +1,81 @@
+version: "1.0"
+project:
+  name: "ahzx-wmt-svc"
+  default_branch: "dev"
+
+policy_priority:
+  - architecture_layer
+  - api_contract_layer
+  - test_gate_layer
+  - code_style_layer
+  - release_compliance_layer
+
+toolchain_versions:
+  # 工具链版本声明：unit / 阶段 YAML 只引用 toolchain_ref
+  maven_jdk17:
+    tool_name: "maven"
+    version_ref: "maven:3.9.x"
+    jdk_ref: "jdk:17"
+  node_18:
+    tool_name: "node"
+    version_ref: "node:18.x"
+  python_3_11:
+    tool_name: "python"
+    version_ref: "python:3.11.x"
+
+api_contract_layer:
+  response_wrapper: "com.wmt.framework.common.pojo.CommonResult"
+  pagination_request: ["com.wmt.framework.common.pojo.PageParam", "com.wmt.framework.common.pojo.SortablePageParam"]
+  pagination_response: "com.wmt.framework.common.pojo.PageResult"
+  error_contract:
+    - "com.wmt.framework.common.exception.ServiceException"
+    - "com.wmt.framework.common.exception.enums.GlobalErrorCodeConstants"
+
+architecture_layer:
+  naming:
+    persistence: "DO"
+    request: "DTO"
+    response: "VO"
+  mapper_base: "com.wmt.framework.mybatis.core.mapper.BaseMapperX"
+  forbidden:
+    # 框架层面返回包装/响应错误用法禁止项（由全局异常处理器统一转 CommonResult）
+    - "Controller return ResponseEntity"
+    - "Controller return Map/JSONObject instead of CommonResult"
+    - "AOP layer auto-wrap response (禁止在 AOP 层自动包装返回值)"
+
+code_style_layer:
+  controller_contract:
+    required_wrapper: "CommonResult<T>"
+    required_annotations:
+      - "@Validated"
+      - "@Operation"
+      - "@Valid"
+  pagination_contract:
+    request_params: ["PageParam", "SortablePageParam"]
+    response: "PageResult"
+
+test_gate_layer:
+  # 门禁策略：与 pipeline_validator_rules.yaml 保持一致
+  no_tests_matched_policy: "blocked"
+  required_suites_for_gate_approved:
+    - "unit"
+    - "api"
+    - "e2e_or_integration"
+
+release_compliance_layer:
+  merge_target: "dev"
+
+agent_contract:
+  # status 归属策略：文件级单写者；跨文件汇总态由 orchestrator / merge_agent 处理
+  status_writer:
+    unit_definition: "requirements_agent"
+    api_contract: "system_design_agent"
+    system_design: "system_design_agent"
+    data_model_delta: "system_design_agent"
+    impl_plan: "Orchestrator"
+    test_plan: "test_agent"
+    gate_report: "gate_agent"
+  unit_status_writer:
+    unit_status_next_suggested: "Orchestrator"
+    unit_status_merged: "merge_agent"
+

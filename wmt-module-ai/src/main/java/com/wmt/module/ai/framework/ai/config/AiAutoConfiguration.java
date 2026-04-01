@@ -218,7 +218,7 @@ public class AiAutoConfiguration {
                         .maxTokens(properties.getMaxTokens())
                         .topP(properties.getTopP())
                         .build())
-                // TODO @芋艿：星火的 function call 有 bug，会报 ToolResponseMessage must have an id 错误！！！
+                // TODO @wmt：星火的 function call 有 bug，会报 ToolResponseMessage must have an id 错误！！！
                 .toolCallingManager(getToolCallingManager())
                 .build();
         return new XingHuoChatModel(openAiChatModel);

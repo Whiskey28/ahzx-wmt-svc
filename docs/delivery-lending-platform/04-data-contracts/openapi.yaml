@@ -1,0 +1,576 @@
+openapi: 3.0.3
+info:
+  title: Lending Digital Platform API
+  version: 0.1.0
+  description: |
+    合同约定：
+    - 所有接口统一返回 CommonResult：{ code, msg, data }，成功 code=0。
+    - 管理端接口前缀：/admin-api/**（UserType=ADMIN）
+    - C端小程序接口前缀：/app-api/**（UserType=MEMBER）
+
+servers:
+  - url: /
+
+tags:
+  - name: app-auth
+    description: 小程序登录与会话
+  - name: app-loan
+    description: 小程序申贷（测算/申请/材料/进度）
+  - name: admin-application
+    description: 管理端进件/案件
+  - name: admin-postloan
+    description: 管理端贷后预警与催收
+
+paths:
+  /app-api/auth/wechat/login:
+    post:
+      tags: [app-auth]
+      summary: 微信小程序 code 登录/绑定
+      description: 以微信 code 换取 openId/unionId 后，绑定/创建 MEMBER 用户并返回 accessToken。
+      operationId: AppAuth_wechatLogin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WechatLoginReq'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_WechatLoginResp'
+
+  /app-api/loan/assessment:
+    post:
+      tags: [app-loan]
+      summary: 额度测算（预评估）
+      operationId: AppLoan_assessment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanAssessmentReq'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_LoanAssessmentResp'
+
+  /app-api/loan/applications:
+    post:
+      tags: [app-loan]
+      summary: 创建并提交贷款申请
+      operationId: AppLoan_createApplication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanApplicationCreateReq'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_IdResp'
+    get:
+      tags: [app-loan]
+      summary: 我的申请列表（分页）
+      operationId: AppLoan_getMyApplicationsPage
+      parameters:
+        - $ref: '#/components/parameters/pageNo'
+        - $ref: '#/components/parameters/pageSize'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_PageResult_LoanApplicationBriefResp'
+
+  /app-api/loan/applications/{id}:
+    get:
+      tags: [app-loan]
+      summary: 申请详情
+      operationId: AppLoan_getApplication
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_LoanApplicationResp'
+
+  /app-api/loan/applications/{id}/timeline:
+    get:
+      tags: [app-loan]
+      summary: 申请进度时间线
+      operationId: AppLoan_getApplicationTimeline
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_List_TimelineEventResp'
+
+  /app-api/loan/applications/{id}/materials:
+    post:
+      tags: [app-loan]
+      summary: 上传/关联材料（引用 infra_file）
+      description: |
+        文件上传建议使用既有 infra 文件上传接口，拿到 infra_file.id 后在此处关联到申请单。
+      operationId: AppLoan_addMaterial
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoanApplicationMaterialAddReq'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_IdResp'
+
+  /admin-api/fin/applications/page:
+    get:
+      tags: [admin-application]
+      summary: 进件分页查询
+      operationId: AdminFinApplication_page
+      parameters:
+        - $ref: '#/components/parameters/pageNo'
+        - $ref: '#/components/parameters/pageSize'
+        - name: status
+          in: query
+          required: false
+          schema: { type: integer, format: int32 }
+        - name: applicationNo
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_PageResult_AdminApplicationResp'
+
+  /admin-api/fin/applications/{id}:
+    get:
+      tags: [admin-application]
+      summary: 进件详情
+      operationId: AdminFinApplication_get
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_AdminApplicationResp'
+
+  /admin-api/fin/applications/{id}/status:
+    post:
+      tags: [admin-application]
+      summary: 更新进件状态（审批/补件/拒绝）
+      operationId: AdminFinApplication_updateStatus
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminApplicationStatusUpdateReq'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_Boolean'
+
+  /admin-api/fin/postloan/alerts/page:
+    get:
+      tags: [admin-postloan]
+      summary: 贷后预警分页
+      operationId: AdminPostLoanAlert_page
+      parameters:
+        - $ref: '#/components/parameters/pageNo'
+        - $ref: '#/components/parameters/pageSize'
+        - name: status
+          in: query
+          required: false
+          schema: { type: integer, format: int32 }
+        - name: alertNo
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_PageResult_PostLoanAlertResp'
+
+  /admin-api/fin/collections/cases/page:
+    get:
+      tags: [admin-postloan]
+      summary: 催收案件分页
+      operationId: AdminCollectionCase_page
+      parameters:
+        - $ref: '#/components/parameters/pageNo'
+        - $ref: '#/components/parameters/pageSize'
+        - name: status
+          in: query
+          required: false
+          schema: { type: integer, format: int32 }
+        - name: caseNo
+          in: query
+          required: false
+          schema: { type: string }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommonResult_PageResult_CollectionCaseResp'
+
+components:
+  securitySchemes:
+    Authorization:
+      type: apiKey
+      in: header
+      name: Authorization
+
+  parameters:
+    tenantId:
+      name: tenant-id
+      in: header
+      required: false
+      schema: { type: integer, format: int64 }
+      description: 租户编号
+    terminal:
+      name: terminal
+      in: header
+      required: false
+      schema: { type: integer, format: int32, enum: [0,10,11,20,31] }
+      description: 终端（TerminalEnum）
+    pageNo:
+      name: pageNo
+      in: query
+      required: true
+      schema: { type: integer, format: int32, minimum: 1, default: 1 }
+    pageSize:
+      name: pageSize
+      in: query
+      required: true
+      schema: { type: integer, format: int32, minimum: 1, maximum: 200, default: 10 }
+
+  schemas:
+    CommonResult_Boolean:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data: { type: boolean }
+
+    CommonResult_IdResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/IdResp'
+
+    CommonResult_WechatLoginResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/WechatLoginResp'
+
+    CommonResult_LoanAssessmentResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/LoanAssessmentResp'
+
+    CommonResult_LoanApplicationResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/LoanApplicationResp'
+
+    CommonResult_AdminApplicationResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/AdminApplicationResp'
+
+    CommonResult_List_TimelineEventResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimelineEventResp'
+
+    CommonResult_PageResult_LoanApplicationBriefResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/PageResult_LoanApplicationBriefResp'
+
+    CommonResult_PageResult_AdminApplicationResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/PageResult_AdminApplicationResp'
+
+    CommonResult_PageResult_PostLoanAlertResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/PageResult_PostLoanAlertResp'
+
+    CommonResult_PageResult_CollectionCaseResp:
+      type: object
+      required: [code, msg, data]
+      properties:
+        code: { type: integer, format: int32, example: 0 }
+        msg: { type: string, example: "" }
+        data:
+          $ref: '#/components/schemas/PageResult_CollectionCaseResp'
+
+    PageResult_LoanApplicationBriefResp:
+      type: object
+      required: [total, list]
+      properties:
+        total: { type: integer, format: int64 }
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/LoanApplicationBriefResp'
+
+    PageResult_AdminApplicationResp:
+      type: object
+      required: [total, list]
+      properties:
+        total: { type: integer, format: int64 }
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminApplicationResp'
+
+    PageResult_PostLoanAlertResp:
+      type: object
+      required: [total, list]
+      properties:
+        total: { type: integer, format: int64 }
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostLoanAlertResp'
+
+    PageResult_CollectionCaseResp:
+      type: object
+      required: [total, list]
+      properties:
+        total: { type: integer, format: int64 }
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/CollectionCaseResp'
+
+    IdResp:
+      type: object
+      required: [id]
+      properties:
+        id: { type: integer, format: int64 }
+
+    WechatLoginReq:
+      type: object
+      required: [code]
+      properties:
+        code: { type: string, description: 微信登录临时凭证 }
+
+    WechatLoginResp:
+      type: object
+      required: [accessToken, expiresTime]
+      properties:
+        accessToken: { type: string, description: Bearer token }
+        refreshToken: { type: string }
+        expiresTime: { type: string, format: date-time }
+        userId: { type: integer, format: int64, description: system userId（MEMBER） }
+
+    LoanAssessmentReq:
+      type: object
+      required: [amountRequested, termMonths]
+      properties:
+        amountRequested: { type: number, format: double, example: 10000 }
+        termMonths: { type: integer, format: int32, example: 12 }
+        productCode: { type: string }
+
+    LoanAssessmentResp:
+      type: object
+      required: [resultCode]
+      properties:
+        resultCode: { type: string, example: "OK" }
+        resultMsg: { type: string }
+        quotaSuggested: { type: number, format: double, example: 20000 }
+        score: { type: number, format: double, example: 720 }
+
+    LoanApplicationCreateReq:
+      type: object
+      required: [amountRequested, termMonths]
+      properties:
+        productCode: { type: string }
+        amountRequested: { type: number, format: double }
+        termMonths: { type: integer, format: int32 }
+        extJson: { type: string, description: 扩展字段JSON（字符串形式） }
+
+    LoanApplicationBriefResp:
+      type: object
+      required: [id, applicationNo, status, createTime]
+      properties:
+        id: { type: integer, format: int64 }
+        applicationNo: { type: string }
+        status: { type: integer, format: int32 }
+        createTime: { type: string, format: date-time }
+
+    LoanApplicationResp:
+      allOf:
+        - $ref: '#/components/schemas/LoanApplicationBriefResp'
+        - type: object
+          properties:
+            amountRequested: { type: number, format: double }
+            termMonths: { type: integer, format: int32 }
+            approvedAmount: { type: number, format: double }
+            approvedTermMonths: { type: integer, format: int32 }
+            decisionReason: { type: string }
+
+    TimelineEventResp:
+      type: object
+      required: [eventType, eventTitle, eventTime]
+      properties:
+        eventType: { type: string }
+        eventTitle: { type: string }
+        eventDetail: { type: string }
+        eventTime: { type: string, format: date-time }
+
+    LoanApplicationMaterialAddReq:
+      type: object
+      required: [materialType, fileId]
+      properties:
+        materialType: { type: string }
+        fileId: { type: integer, format: int64, description: infra_file.id }
+        fileName: { type: string }
+
+    AdminApplicationResp:
+      type: object
+      required: [id, applicationNo, status, customerId, createTime]
+      properties:
+        id: { type: integer, format: int64 }
+        applicationNo: { type: string }
+        status: { type: integer, format: int32 }
+        customerId: { type: integer, format: int64 }
+        ownerUserId: { type: integer, format: int64, description: system_users.id }
+        amountRequested: { type: number, format: double }
+        approvedAmount: { type: number, format: double }
+        createTime: { type: string, format: date-time }
+
+    AdminApplicationStatusUpdateReq:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: integer
+          format: int32
+          description: 目标状态（如 20待补件/40通过/50拒绝）
+        approvedAmount: { type: number, format: double }
+        approvedTermMonths: { type: integer, format: int32 }
+        reason: { type: string }
+
+    PostLoanAlertResp:
+      type: object
+      required: [id, alertNo, alertLevel, alertType, status, occurredTime]
+      properties:
+        id: { type: integer, format: int64 }
+        alertNo: { type: string }
+        alertLevel: { type: integer, format: int32 }
+        alertType: { type: string }
+        status: { type: integer, format: int32 }
+        occurredTime: { type: string, format: date-time }
+        ownerUserId: { type: integer, format: int64 }
+
+    CollectionCaseResp:
+      type: object
+      required: [id, caseNo, status, openTime]
+      properties:
+        id: { type: integer, format: int64 }
+        caseNo: { type: string }
+        status: { type: integer, format: int32 }
+        priority: { type: integer, format: int32 }
+        ownerUserId: { type: integer, format: int64 }
+        openTime: { type: string, format: date-time }
+

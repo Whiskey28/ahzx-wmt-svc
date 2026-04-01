@@ -1,0 +1,142 @@
+version: "1.0"
+policy_ref: "framework_policy.yaml@1.0"
+
+validation_rules:
+  unit_dir_required_files:
+    always:
+      - "unit_definition.yaml"
+      - "api_contract.yaml"
+      - "system_design.yaml"
+      - "impl_plan.yaml"
+      - "test_plan.yaml"
+      - "gate_report.yaml"
+    conditional:
+      - when: "unit_definition.data_model_delta_required_initial == true"
+        require:
+          - "data_model_delta.yaml"
+
+  yaml_required_top_level_fields:
+    required_fields:
+      - "unit_id"
+      - "artifact_type"
+      - "version"
+      - "status"
+      - "owner_agent"
+      - "reviewer"
+      - "updated_at"
+      - "depends_on"
+      - "policy_ref"
+      - "trace"
+
+  artifact_type_and_status_enum:
+    unit_definition:
+      allowed_status: ["requirements_ready"]
+    api_contract:
+      allowed_status: ["contract_reviewed"]
+    system_design:
+      allowed_status: ["design_reviewed"]
+    data_model_delta:
+      allowed_status: ["design_reviewed"]
+    impl_plan:
+      allowed_status: ["implemented"]
+    test_plan:
+      allowed_status: ["tests_ready"]
+    gate_report:
+      allowed_status: ["gate_approved", "blocked"]
+
+  required_nested_fields_minimum:
+    unit_definition:
+      required_paths:
+        - "business_goal.goal_type"
+        - "business_goal.description"
+        - "business_goal.user_value"
+        - "business_goal.kpi_metric"
+        - "business_goal.success_threshold"
+        - "business_goal.measurement_method"
+        - "scope_boundary.in_scope"
+        - "scope_boundary.out_of_scope"
+        - "scope_boundary.constraints"
+        - "api_contract_ref.interface_ids"
+        - "api_contract_ref.case_ids"
+        - "acceptance_criteria"
+        - "data_model_delta_required_initial"
+        - "acceptance_criteria[].criterion_id"
+        - "acceptance_criteria[].scenario.preconditions"
+        - "acceptance_criteria[].scenario.inputs"
+        - "acceptance_criteria[].scenario.steps"
+        - "acceptance_criteria[].scenario.expected_result.kind"
+        - "acceptance_criteria[].scenario.pass_condition.kind"
+    api_contract:
+      required_paths:
+        - "interfaces"
+        - "cases"
+        - "interfaces[].interface_id"
+        - "interfaces[].method"
+        - "interfaces[].path"
+        - "interfaces[].related_criterion_ids"
+        - "cases[].case_id"
+        - "cases[].related_criterion_ids"
+    system_design:
+      required_paths:
+        - "architecture_decisions"
+        - "api_contract_impact_refs"
+        - "module_change_refs"
+        - "risks_and_mitigations"
+    impl_plan:
+      required_paths:
+        - "implementation_tasks"
+        - "implementation_tasks[].task_id"
+        - "implementation_tasks[].owner_agent"
+        - "build_tools"
+        - "build_tools[].tool_name"
+        - "build_tools[].toolchain_ref"
+        - "build_tools[].test_selector.class_pattern"
+    test_plan:
+      required_paths:
+        - "test_suites"
+        - "test_suites[].suite_name"
+        - "test_suites[].commands"
+        - "test_suites[].test_cases"
+        - "test_suites[].test_cases[].test_case_id"
+        - "test_suites[].test_cases[].related_criterion_ids"
+        - "test_suites[].test_selector.class_pattern"
+        - "no_tests_matched_policy"
+    gate_report:
+      required_paths:
+        - "unit_status_current"
+        - "unit_status_next_suggested"
+        - "test_runs"
+        - "test_runs[].suite_name"
+        - "test_runs[].pass"
+        - "test_runs[].failure_summary"
+        - "gate_decision"
+        - "unit_status_next_on_merge"
+
+  no_tests_matched_policy:
+    definition: "当某 suite 的 test_selector 匹配到 0 个测试类时，门禁直接判定 blocked"
+    enforced_by: "gate_agent"
+
+  command_patterns:
+    # 该规则用于 gate/test 选择参数的“写法规范”（可由 orchestrator 校验字符串正则）
+    java_maven_test_class_filters:
+      unit: "-Dtest='\\\\*Test'"
+      api: "-Dtest='\\\\*ApiTest'"
+      e2e_or_integration: "-Dtest='\\\\*IntegrationTest'"
+
+  cross_reference_integrity:
+    enabled: true
+    # 说明：acceptance_criteria_ids_must_be_referenced_by_api_cases 仅检查 criterion_id 是否出现在
+    # api_contract.cases[].related_criterion_ids。若某 criterion 只写在 interfaces[].related_criterion_ids
+    # 而未出现在任何 case，交叉引用校验会失败（blocked）。编写契约时应保证每个验收标准至少被一个 case 引用。
+    rules:
+      - name: "acceptance_criteria_ids_must_be_referenced_by_api_cases"
+        check:
+          from: "unit_definition.acceptance_criteria[].criterion_id"
+          to: "api_contract.cases[].related_criterion_ids"
+        on_fail: "blocked"
+      - name: "test_case_related_criterion_ids_must_be_present"
+        check:
+          from: "test_plan.test_suites[].test_cases[].related_criterion_ids"
+          required: true
+        on_fail: "blocked"
+

@@ -98,7 +98,7 @@ public class IotDeviceMessageServiceImpl implements IotDeviceMessageService {
         return sendDeviceMessage(message, device);
     }
 
-    // TODO @芋艿：针对连接网关的设备，是不是 productKey、deviceName 需要调整下；
+    // TODO @wmt：针对连接网关的设备，是不是 productKey、deviceName 需要调整下；
     @Override
     public IotDeviceMessage sendDeviceMessage(IotDeviceMessage message, IotDeviceDO device) {
         return sendDeviceMessage(message, device, null);
@@ -117,7 +117,7 @@ public class IotDeviceMessageServiceImpl implements IotDeviceMessageService {
 
         // 2.2 情况二：发送下行消息
         // 如果是下行消息，需要校验 serverId 存在
-        // TODO 芋艿：【设计】下行消息需要区分 PUSH 和 PULL 模型
+        // TODO wmt：【设计】下行消息需要区分 PUSH 和 PULL 模型
         // 1. PUSH 模型：适用于 MQTT 等长连接协议。通过 serverId 将消息路由到指定网关，实时推送。
         // 2. PULL 模型：适用于 HTTP 等短连接协议。设备无固定 serverId，无法主动推送。
         // 解决方案：
@@ -184,7 +184,7 @@ public class IotDeviceMessageServiceImpl implements IotDeviceMessageService {
         }
     }
 
-    // TODO @芋艿：可优化：未来逻辑复杂后，可以独立拆除 Processor 处理器
+    // TODO @wmt：可优化：未来逻辑复杂后，可以独立拆除 Processor 处理器
     @SuppressWarnings("SameReturnValue")
     private Object handleUpstreamDeviceMessage0(IotDeviceMessage message, IotDeviceDO device) {
         // 设备上下线
@@ -193,7 +193,7 @@ public class IotDeviceMessageServiceImpl implements IotDeviceMessageService {
             assert stateStr != null;
             Assert.notEmpty(stateStr, "设备状态不能为空");
             deviceService.updateDeviceState(device, Integer.valueOf(stateStr));
-            // TODO 芋艿：子设备的关联
+            // TODO wmt：子设备的关联
             return null;
         }
 
@@ -209,7 +209,7 @@ public class IotDeviceMessageServiceImpl implements IotDeviceMessageService {
             return null;
         }
 
-        // TODO @芋艿：这里可以按需，添加别的逻辑；
+        // TODO @wmt：这里可以按需，添加别的逻辑；
         return null;
     }
 

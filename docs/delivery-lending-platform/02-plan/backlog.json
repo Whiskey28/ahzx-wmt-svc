@@ -1,0 +1,61 @@
+{
+  "project": "lending-digital-platform",
+  "profile": "springboot",
+  "description": "微信小程序 + 数字化管理/贷后Web，一套Spring Boot后端；敏感数据与分级权限。",
+  "epics": [
+    {
+      "id": "E-PLATFORM",
+      "title": "平台基座与工程形态",
+      "items": [
+        { "id": "POM-001", "title": "根pom与wmt-server剥离credit-report/report依赖，改为新业务模块占位", "priority": "P0", "estimate": "S" },
+        { "id": "MOD-001", "title": "新建Maven业务模块（建议 wmt-module-fin-core 或拆 customer/ops/postloan）并接入server", "priority": "P0", "estimate": "M" },
+        { "id": "SEC-001", "title": "定义C端与管理端API路径隔离、鉴权链、审计切面范围", "priority": "P0", "estimate": "M" }
+      ]
+    },
+    {
+      "id": "E-IDENTITY",
+      "title": "身份、组织与权限",
+      "items": [
+        { "id": "IAM-001", "title": "复用system模块：用户/角色/菜单/数据权限模型梳理与业务角色模板", "priority": "P0", "estimate": "M" },
+        { "id": "IAM-002", "title": "小程序登录绑定（微信code）与用户体系映射设计", "priority": "P0", "estimate": "L" },
+        { "id": "IAM-003", "title": "敏感接口分级（MFA/二次校验占位）与操作审计字段标准", "priority": "P1", "estimate": "M" }
+      ]
+    },
+    {
+      "id": "E-CUSTOMER-APP",
+      "title": "小程序申贷与客户侧",
+      "items": [
+        { "id": "APP-001", "title": "CAP-C-001~006对应REST：申请/材料/进度/额度只读与提交", "priority": "P0", "estimate": "L" },
+        { "id": "APP-002", "title": "对象存储与授权书记录模型", "priority": "P0", "estimate": "M" },
+        { "id": "APP-003", "title": "限流、防刷、关键字段脱敏与错误码约定", "priority": "P1", "estimate": "M" }
+      ]
+    },
+    {
+      "id": "E-ADMIN",
+      "title": "数字化管理端",
+      "items": [
+        { "id": "ADM-001", "title": "进件/案件列表与详情、内部状态流转（简化版）", "priority": "P0", "estimate": "L" },
+        { "id": "ADM-002", "title": "驾驶舱KPI占位API与缓存策略", "priority": "P1", "estimate": "M" },
+        { "id": "ADM-003", "title": "线索/标签/活动最小模型（CAP-M-004占位）", "priority": "P2", "estimate": "M" },
+        { "id": "ADM-004", "title": "监管报送导出任务骨架（CAP-M-006分期）", "priority": "P2", "estimate": "L" }
+      ]
+    },
+    {
+      "id": "E-POSTLOAN",
+      "title": "贷后子域",
+      "items": [
+        { "id": "PL-001", "title": "借据/监测指标/预警事件/催收工单核心表与状态机", "priority": "P0", "estimate": "L" },
+        { "id": "PL-002", "title": "规则引擎占位（配置+触发+通知）", "priority": "P1", "estimate": "L" },
+        { "id": "PL-003", "title": "批处理任务：监测跑批、报表预聚合", "priority": "P1", "estimate": "M" }
+      ]
+    },
+    {
+      "id": "E-CONTRACTS-QA",
+      "title": "契约、测试与流水线",
+      "items": [
+        { "id": "DC-001", "title": "输出openapi.yaml与schema.sql（阶段4）", "priority": "P0", "estimate": "L" },
+        { "id": "QA-001", "title": "接入springboot check-gates；Playwright关键路径", "priority": "P1", "estimate": "M" }
+      ]
+    }
+  ]
+}

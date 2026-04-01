@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:flowable="http://flowable.org/bpmn"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             targetNamespace="http://www.wmt.com/bpmn/ticket_lab_xor">
+
+  <process id="ticket_lab_xor" name="ticket_lab_xor" isExecutable="true">
+    <documentation>启动变量：amount（数值）、title、startUserId。金额&gt;=1000 走高额分支，否则走低额分支。用户任务使用候选人策略「发起人自己」(36)。</documentation>
+
+    <startEvent id="start_xor" name="开始"/>
+
+    <exclusiveGateway id="gateway_amount" name="金额分支"/>
+
+    <userTask id="Activity_xor_high" name="高额路径审批" flowable:candidateStrategy="36"/>
+    <userTask id="Activity_xor_low" name="低额路径审批" flowable:candidateStrategy="36"/>
+
+    <endEvent id="end_xor" name="结束"/>
+
+    <sequenceFlow id="f_start_gw" sourceRef="start_xor" targetRef="gateway_amount"/>
+    <sequenceFlow id="f_gw_high" sourceRef="gateway_amount" targetRef="Activity_xor_high">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${amount >= 1000}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="f_gw_low" sourceRef="gateway_amount" targetRef="Activity_xor_low">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${amount < 1000}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="f_high_end" sourceRef="Activity_xor_high" targetRef="end_xor"/>
+    <sequenceFlow id="f_low_end" sourceRef="Activity_xor_low" targetRef="end_xor"/>
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ticket_lab_xor">
+    <bpmndi:BPMNPlane id="BPMNPlane_ticket_lab_xor" bpmnElement="ticket_lab_xor">
+      <bpmndi:BPMNShape id="BPMNShape_start_xor" bpmnElement="start_xor">
+        <dc:Bounds x="152" y="232" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_gateway_amount" bpmnElement="gateway_amount" isMarkerVisible="true">
+        <dc:Bounds x="270" y="215" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_xor_high" bpmnElement="Activity_xor_high">
+        <dc:Bounds x="400" y="100" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_xor_low" bpmnElement="Activity_xor_low">
+        <dc:Bounds x="400" y="300" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_end_xor" bpmnElement="end_xor">
+        <dc:Bounds x="600" y="232" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="BPMNEdge_f_start_gw" bpmnElement="f_start_gw">
+        <di:waypoint x="188" y="250"/>
+        <di:waypoint x="270" y="240"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_gw_high" bpmnElement="f_gw_high">
+        <di:waypoint x="295" y="215"/>
+        <di:waypoint x="295" y="140"/>
+        <di:waypoint x="400" y="140"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_gw_low" bpmnElement="f_gw_low">
+        <di:waypoint x="295" y="265"/>
+        <di:waypoint x="295" y="340"/>
+        <di:waypoint x="400" y="340"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_high_end" bpmnElement="f_high_end">
+        <di:waypoint x="500" y="140"/>
+        <di:waypoint x="550" y="140"/>
+        <di:waypoint x="550" y="250"/>
+        <di:waypoint x="600" y="250"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_low_end" bpmnElement="f_low_end">
+        <di:waypoint x="500" y="340"/>
+        <di:waypoint x="550" y="340"/>
+        <di:waypoint x="550" y="250"/>
+        <di:waypoint x="600" y="250"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
  *
  * @author AHC源码
  */
-@Disabled // TODO 芋艿：后续修复
+@Disabled // TODO wmt：后续修复
 public class TradeCouponPriceCalculatorTest extends BaseMockitoUnitTest {
 
     @InjectMocks

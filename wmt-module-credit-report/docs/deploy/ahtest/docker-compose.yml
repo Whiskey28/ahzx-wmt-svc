@@ -14,7 +14,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U ahzx" ]
+      test: [ "CMD-SHELL", "pg_isready -U ahzx -d tdc-wmt" ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -23,8 +23,8 @@ services:
       - ahc_net
 
   ahzx-wmt-svc:
-    image: wmtserver:v1-6
-    container_name: ahzx-wmt-svcspring-boot-starter-actuator
+    image: credit-server:v2
+    container_name: ahzx-wmt-svc
     restart: unless-stopped
     depends_on:
       postgres:

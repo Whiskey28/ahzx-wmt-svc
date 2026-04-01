@@ -22,13 +22,13 @@ import static com.wmt.framework.test.core.util.RandomUtils.randomPojo;
 import static com.wmt.module.promotion.enums.ErrorCodeConstants.ARTICLE_CATEGORY_NOT_EXISTS;
 import static org.junit.jupiter.api.Assertions.*;
 
-// TODO 芋艿：review 单测
+// TODO wmt：review 单测
 /**
  * {@link ArticleCategoryServiceImpl} 的单元测试类
  *
  * @author HUIHUI
  */
-@Disabled // TODO 芋艿：后续 fix 补充的单测
+@Disabled // TODO wmt：后续 fix 补充的单测
 @Import(ArticleCategoryServiceImpl.class)
 public class ArticleCategoryServiceImplTest extends BaseDbUnitTest {
 

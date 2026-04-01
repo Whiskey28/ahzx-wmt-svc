@@ -13,7 +13,7 @@ import static com.wmt.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY
 @Data
 public class Demo03StudentNormalPageReqVO extends PageParam {
 
-    @Schema(description = "名字", example = "芋艿")
+    @Schema(description = "名字", example = "wmt")
     private String name;
 
     @Schema(description = "性别")

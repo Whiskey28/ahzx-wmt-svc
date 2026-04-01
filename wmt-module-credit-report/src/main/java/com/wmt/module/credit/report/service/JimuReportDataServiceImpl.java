@@ -14,6 +14,7 @@ import com.wmt.module.credit.report.dal.dataobject.ReportFillBizStatCreditBuildD
 import com.wmt.module.credit.report.dal.dataobject.ReportFillInfoSourceByIndustryDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillInfoUserOrgItemDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillInfoUserGovItemDO;
+import com.wmt.module.credit.report.dal.dataobject.ReportFillServiceByIndustryDO;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillProductStatDO;
 import com.wmt.module.credit.report.dal.mysql.JimuDictItemMapper;
 import com.wmt.module.credit.report.dal.mysql.ReportFillBasicInfoMapper;
@@ -414,11 +415,22 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
         );
         Map<String, BigDecimal> serviceCountMap = reportFillServiceByIndustryMapper.selectYearServiceCountByIndustryCode(serviceRecordIds);
 
-        // 3) 机构总累计/当前使用：来自“经营情况-信用体系建设”表单
-        //    - 非政府：市场部最新填报
-        //    - 政府：数据管理中心最新填报
+        // 3) 机构总累计/当前使用：
+        //    - 非政府：市场部最新填报（经营情况-信用体系建设表单）
+        //    - 政府：数据管理中心最新 report_fill_service_by_industry.user_org_total_government / user_org_current_government
         ReportFillBizStatCreditBuildDO marketCreditBuild = selectLatestCreditBuildByPeriodAndRole(periodId, ROLE_ID_MARKET_DEPT);
-        ReportFillBizStatCreditBuildDO dataCenterCreditBuild = selectLatestCreditBuildByPeriodAndRole(periodId, ROLE_ID_DATA_CENTER);
+
+        // 政府行口径：从 report_fill_service_by_industry 直接读取“政府用户机构总累计/当前使用服务”字段
+        // 注意：此处固定只取 roleId=208（数据管理中心）对应的“最新一条”填报记录。
+        // 政府口径严格使用本次请求的 reportId（例如 1178570056840228864），不参与上半部分 3 个模板的汇总逻辑。
+        List<String> dataCenterServiceRecordIds = resolveLatestRecordIdsByPeriodAndReportAndRoles(
+                periodId,
+                reportId,
+                List.of(ROLE_ID_DATA_CENTER)
+        );
+        ReportFillServiceByIndustryDO dataCenterService = CollUtil.isNotEmpty(dataCenterServiceRecordIds) ?
+                CollUtil.getFirst(reportFillServiceByIndustryMapper.selectListByRecordIds(dataCenterServiceRecordIds)) :
+                null;
 
         // 4) 组装 items（政府行最后）
         List<JmReportServiceByIndustryItemRespVO> items = new ArrayList<>(dictItems.size());
@@ -435,9 +447,17 @@ public class JimuReportDataServiceImpl implements JimuReportDataService {
             }
             boolean isGovernment = "government".equals(industryCode);
 
-            ReportFillBizStatCreditBuildDO source = isGovernment ? dataCenterCreditBuild : marketCreditBuild;
-            BigDecimal userOrgTotal = getUserOrgTotalByIndustryCode(source, industryCode);
-            BigDecimal userOrgCurrent = getUserOrgCurrentByIndustryCode(source, industryCode);
+            BigDecimal userOrgTotal;
+            BigDecimal userOrgCurrent;
+            if (isGovernment) {
+                userOrgTotal = dataCenterService != null && dataCenterService.getUserOrgTotalGovernment() != null ?
+                        dataCenterService.getUserOrgTotalGovernment() : BigDecimal.ZERO;
+                userOrgCurrent = dataCenterService != null && dataCenterService.getUserOrgCurrentGovernment() != null ?
+                        dataCenterService.getUserOrgCurrentGovernment() : BigDecimal.ZERO;
+            } else {
+                userOrgTotal = getUserOrgTotalByIndustryCode(marketCreditBuild, industryCode);
+                userOrgCurrent = getUserOrgCurrentByIndustryCode(marketCreditBuild, industryCode);
+            }
             BigDecimal yearServiceCount = serviceCountMap.getOrDefault(industryCode, BigDecimal.ZERO);
 
             totalUserOrgTotal = totalUserOrgTotal.add(userOrgTotal);

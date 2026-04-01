@@ -9,7 +9,7 @@ import com.wmt.framework.common.pojo.PageParam;
 @Data
 public class InfraCategoryListReqVO {
 
-    @Schema(description = "名字", example = "芋头")
+    @Schema(description = "名字", example = "wmt")
     private String name;
 
 }

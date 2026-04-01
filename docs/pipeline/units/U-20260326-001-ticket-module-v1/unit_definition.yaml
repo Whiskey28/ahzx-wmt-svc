@@ -1,0 +1,284 @@
+unit_id: "U-20260326-001-ticket-module-v1"
+artifact_type: "unit_definition"
+version: "1.0"
+status: "requirements_ready"
+owner_agent: "requirements_agent"
+reviewer: ""
+updated_at: "2026-03-26T11:30:00Z"
+depends_on: ["framework_policy.yaml@1.0"]
+policy_ref: "framework_policy.yaml@1.0"
+trace:
+  request_id: "REQ-20260326-ticket-v1"
+  sources:
+    - "USER: 确认先落地工单模块第一版，后续对接工作流"
+    - "CODE: wmt-module-ticket 第一版实现结果"
+  notes: "本文件为按 multi-agent-delivery 要求补录的 requirements 产物。"
+
+business_goal:
+  goal_type: "feature"
+  description: "上线工单中心第一版，支撑用户提单与客服处理闭环。"
+  user_value: "用户可提交问题并跟踪处理进度，客服可统一指派与处理工单。"
+  kpi_metric: "工单处理闭环率"
+  success_threshold: "P0: 核心接口可用且通过基础编译验证；P1: 处理闭环率>=90%"
+  measurement_method: "通过管理端状态流转记录与接口调用日志统计"
+  references:
+    - "wmt-module-ticket"
+
+scope_boundary:
+  in_scope:
+    - kind: "feature"
+      description: "用户侧创建工单、我的工单分页、详情、回复"
+      reason: "构成用户自助提单最小闭环"
+      references:
+        - "I-U-20260326-001-APP-CREATE"
+        - "I-U-20260326-001-APP-PAGE"
+        - "I-U-20260326-001-APP-GET"
+        - "I-U-20260326-001-APP-REPLY"
+    - kind: "feature"
+      description: "管理侧工单分页、详情、指派、状态更新、回复"
+      reason: "构成客服处理最小闭环"
+      references:
+        - "I-U-20260326-001-ADMIN-PAGE"
+        - "I-U-20260326-001-ADMIN-GET"
+        - "I-U-20260326-001-ADMIN-ASSIGN"
+        - "I-U-20260326-001-ADMIN-UPDATE-STATUS"
+        - "I-U-20260326-001-ADMIN-REPLY"
+    - kind: "api"
+      description: "分类启用列表查询接口（只读）"
+      reason: "创建工单时需要可选分类"
+      references:
+        - "I-U-20260326-001-APP-CATEGORY-LIST"
+    - kind: "db"
+      description: "新增工单、工单回复、工单分类数据对象与查询写入逻辑"
+      reason: "支持功能落地与后续演进"
+      references:
+        - "wmt-module-ticket/dal/dataobject"
+  out_of_scope:
+    - kind: "workflow"
+      description: "工单与 BPM 工作流对接"
+      reason: "用户已明确后续阶段再接入"
+      references: []
+    - kind: "feature"
+      description: "分类完整 CRUD 与复杂运营配置"
+      reason: "第一版仅需启用分类列表以支撑提单"
+      references: []
+    - kind: "feature"
+      description: "工单 SLA 预警、催办、超时升级策略"
+      reason: "第一版优先完成基础处理闭环"
+      references: []
+  constraints:
+    - kind: "framework_rule"
+      description: "Controller 返回统一使用 CommonResult；分页使用 PageResult"
+      reason: "framework_policy 与项目规则约束"
+      references:
+        - "framework_policy.yaml@1.0"
+    - kind: "framework_rule"
+      description: "Mapper 必须继承 BaseMapperX，避免手写 SQL 优先"
+      reason: "架构层统一规范"
+      references:
+        - "framework_policy.yaml@1.0"
+    - kind: "compatibility"
+      description: "沿用现有模块包结构与命名风格，避免影响既有模块"
+      reason: "仓库当前为多模块并行开发状态"
+      references:
+        - "pom.xml"
+
+api_contract_ref:
+  interface_ids:
+    - "I-U-20260326-001-APP-CATEGORY-LIST"
+    - "I-U-20260326-001-APP-CREATE"
+    - "I-U-20260326-001-APP-PAGE"
+    - "I-U-20260326-001-APP-GET"
+    - "I-U-20260326-001-APP-REPLY"
+    - "I-U-20260326-001-ADMIN-PAGE"
+    - "I-U-20260326-001-ADMIN-GET"
+    - "I-U-20260326-001-ADMIN-ASSIGN"
+    - "I-U-20260326-001-ADMIN-UPDATE-STATUS"
+    - "I-U-20260326-001-ADMIN-REPLY"
+  case_ids:
+    - "CA-U-20260326-001-APP-CREATE-OK"
+    - "CA-U-20260326-001-APP-OWNERSHIP-CHECK"
+    - "CA-U-20260326-001-ADMIN-ASSIGN-OK"
+    - "CA-U-20260326-001-ADMIN-STATUS-CLOSED"
+    - "CA-U-20260326-001-REPLY-CLOSED-BLOCKED"
+
+data_model_delta_required_initial: true
+data_model_delta_initial_reason: "新增工单领域实体，预计涉及 ticket/category/reply 持久化表结构或与现有表映射。"
+
+acceptance_criteria:
+  - criterion_id: "C-U-20260326-001-APP-CREATE-PAGE"
+    scenario:
+      preconditions:
+        - kind: "auth"
+          description: "用户已登录，具备 app 端访问权限"
+          variable_ref: "loginUserId"
+          validation_rule: "token 有效且可解析用户ID"
+          example: "Authorization: Bearer xxx"
+      inputs:
+        - kind: "dto_field"
+          variable_key: "AppTicketCreateReqVO"
+          description: "提交 categoryId、title、content、priority"
+          variable_ref: "request.body"
+          validation_rule: "title/content 非空，priority 为合法枚举"
+          example: "{categoryId:1,title:'登录异常',content:'无法登录',priority:2}"
+      steps:
+        - kind: "action"
+          description: "调用创建接口后再调用我的分页接口"
+          variable_ref: "/ticket/create;/ticket/page"
+          validation_rule: "创建成功且分页可检索到新工单"
+          example: "POST create -> GET page"
+      expected_result:
+        kind: "data_shape"
+        description: "创建返回工单ID，分页返回包含该工单记录"
+        assertion_ref: "A-U-20260326-001-APP-CREATE-PAGE"
+        example: "{code:0,data:id}; {code:0,data:list[0].id==id}"
+      pass_condition:
+        kind: "assertion"
+        description: "create/page 均返回 code=0 且数据一致"
+        assertion_ref: "A-U-20260326-001-APP-CREATE-PAGE"
+        example: "code==0 && page.list contains created ticket"
+      out_of_scope:
+        - kind: "non_goal"
+          description: "不验证消息通知与外部回调"
+          reason: "第一版未包含通知链路"
+          references: []
+      data_requirements:
+        - kind: "seed"
+          description: "存在至少一个启用状态分类"
+          variable_ref: "ticket_category"
+          validation_rule: "status=0 的分类>=1"
+          example: "seed category id=1"
+
+  - criterion_id: "C-U-20260326-001-APP-OWNERSHIP"
+    scenario:
+      preconditions:
+        - kind: "data"
+          description: "系统中存在 A 用户工单"
+          variable_ref: "ticket.id"
+          validation_rule: "ticket.userId == A"
+          example: "ticket#1001 belongs to userA"
+      inputs:
+        - kind: "dto_field"
+          variable_key: "id"
+          description: "B 用户访问 A 用户工单详情"
+          variable_ref: "query.id"
+          validation_rule: "id 为有效工单ID"
+          example: "id=1001"
+      steps:
+        - kind: "action"
+          description: "B 用户调用 app 工单详情接口"
+          variable_ref: "/ticket/get"
+          validation_rule: "触发所有权校验"
+          example: "GET /ticket/get?id=1001 by userB"
+      expected_result:
+        kind: "success"
+        description: "返回业务错误，不允许跨用户访问"
+        assertion_ref: "A-U-20260326-001-APP-OWNERSHIP"
+        example: "{code!=0,msg:'工单不存在或无权限'}"
+      pass_condition:
+        kind: "assertion"
+        description: "非工单所属用户访问被拒绝"
+        assertion_ref: "A-U-20260326-001-APP-OWNERSHIP"
+        example: "code == TICKET_NOT_OWNER"
+      out_of_scope:
+        - kind: "non_goal"
+          description: "不验证细粒度组织级数据权限"
+          reason: "第一版只做用户本人所有权校验"
+          references: []
+      data_requirements:
+        - kind: "fixture"
+          description: "准备 userA/userB 与一条 userA 工单"
+          variable_ref: "users,ticket"
+          validation_rule: "userA != userB 且 ticket.userId=userA"
+          example: "fixture users + ticket"
+
+  - criterion_id: "C-U-20260326-001-ADMIN-HANDLING"
+    scenario:
+      preconditions:
+        - kind: "auth"
+          description: "管理员已登录"
+          variable_ref: "adminUserId"
+          validation_rule: "token 有效"
+          example: "admin token"
+        - kind: "data"
+          description: "存在状态为 CREATED 的工单"
+          variable_ref: "ticket.status"
+          validation_rule: "status=10"
+          example: "ticket#2001 status=CREATED"
+      inputs:
+        - kind: "dto_field"
+          variable_key: "AdminTicketAssignReqVO/AdminTicketUpdateStatusReqVO"
+          description: "指派处理人并更新状态"
+          variable_ref: "request.body"
+          validation_rule: "id 合法，status 为有效枚举值"
+          example: "{id:2001,assignedAdminUserId:3001}; {id:2001,status:20}"
+      steps:
+        - kind: "action"
+          description: "依次调用管理侧 assign 与 update-status"
+          variable_ref: "/ticket/admin/assign;/ticket/admin/update-status"
+          validation_rule: "接口均执行成功"
+          example: "POST assign -> POST update-status"
+      expected_result:
+        kind: "side_effect"
+        description: "工单被成功指派并进入处理状态"
+        assertion_ref: "A-U-20260326-001-ADMIN-HANDLING"
+        example: "assignedAdminUserId=3001,status=20"
+      pass_condition:
+        kind: "assertion"
+        description: "详情查询结果反映最新指派人与状态"
+        assertion_ref: "A-U-20260326-001-ADMIN-HANDLING"
+        example: "GET detail returns assignedAdminUserId/status updated"
+      out_of_scope:
+        - kind: "non_goal"
+          description: "不验证自动派单策略"
+          reason: "第一版仅手工指派"
+          references: []
+      data_requirements:
+        - kind: "fixture"
+          description: "准备管理员账号与待处理工单"
+          variable_ref: "admin,ticket"
+          validation_rule: "管理员存在且工单状态为 CREATED"
+          example: "admin#3001 + ticket#2001"
+
+  - criterion_id: "C-U-20260326-001-REPLY-CLOSED"
+    scenario:
+      preconditions:
+        - kind: "state"
+          description: "工单已关闭"
+          variable_ref: "ticket.status"
+          validation_rule: "status=40"
+          example: "ticket#3001 status=CLOSED"
+      inputs:
+        - kind: "dto_field"
+          variable_key: "AppTicketReplyReqVO/AdminTicketReplyReqVO"
+          description: "用户或管理员尝试对已关闭工单回复"
+          variable_ref: "request.body"
+          validation_rule: "ticketId 对应 CLOSED 工单"
+          example: "{ticketId:3001,content:'补充说明'}"
+      steps:
+        - kind: "action"
+          description: "调用回复接口"
+          variable_ref: "/ticket/reply;/ticket/admin/reply"
+          validation_rule: "命中关闭态校验"
+          example: "POST reply"
+      expected_result:
+        kind: "success"
+        description: "返回业务错误，禁止对关闭工单回复"
+        assertion_ref: "A-U-20260326-001-REPLY-CLOSED"
+        example: "{code!=0,msg:'工单已关闭，不能回复'}"
+      pass_condition:
+        kind: "assertion"
+        description: "回复接口返回关闭态错误码"
+        assertion_ref: "A-U-20260326-001-REPLY-CLOSED"
+        example: "code == TICKET_CLOSED_CANNOT_REPLY"
+      out_of_scope:
+        - kind: "non_goal"
+          description: "不验证关闭后自动重开策略"
+          reason: "第一版未定义重开逻辑"
+          references: []
+      data_requirements:
+        - kind: "seed"
+          description: "准备至少一条 CLOSED 状态工单"
+          variable_ref: "ticket"
+          validation_rule: "status=40"
+          example: "seed closed ticket"

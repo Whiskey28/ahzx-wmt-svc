@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:flowable="http://flowable.org/bpmn"
+             targetNamespace="http://www.wmt.com/bpmn/ticket_lab_parallel">
+
+  <process id="ticket_lab_parallel" name="工单实验-并行网关" isExecutable="true">
+    <documentation>并行分支各一个用户任务，候选人策略 36（发起人自己），便于单人联调。</documentation>
+
+    <startEvent id="start_par" name="开始"/>
+
+    <parallelGateway id="fork_par" name="分叉"/>
+    <parallelGateway id="join_par" name="合并"/>
+
+    <userTask id="Activity_par_a" name="并行分支A" flowable:candidateStrategy="36"/>
+    <userTask id="Activity_par_b" name="并行分支B" flowable:candidateStrategy="36"/>
+
+    <endEvent id="end_par" name="结束"/>
+
+    <sequenceFlow id="f_start_fork" sourceRef="start_par" targetRef="fork_par"/>
+    <sequenceFlow id="f_fork_a" sourceRef="fork_par" targetRef="Activity_par_a"/>
+    <sequenceFlow id="f_fork_b" sourceRef="fork_par" targetRef="Activity_par_b"/>
+    <sequenceFlow id="f_a_join" sourceRef="Activity_par_a" targetRef="join_par"/>
+    <sequenceFlow id="f_b_join" sourceRef="Activity_par_b" targetRef="join_par"/>
+    <sequenceFlow id="f_join_end" sourceRef="join_par" targetRef="end_par"/>
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ticket_lab_parallel">
+    <bpmndi:BPMNPlane id="BPMNPlane_ticket_lab_parallel" bpmnElement="ticket_lab_parallel">
+      <bpmndi:BPMNShape id="BPMNShape_start_par" bpmnElement="start_par">
+        <dc:Bounds x="152" y="232" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_fork_par" bpmnElement="fork_par">
+        <dc:Bounds x="250" y="215" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_par_a" bpmnElement="Activity_par_a">
+        <dc:Bounds x="400" y="120" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_Activity_par_b" bpmnElement="Activity_par_b">
+        <dc:Bounds x="400" y="280" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_join_par" bpmnElement="join_par">
+        <dc:Bounds x="580" y="215" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BPMNShape_end_par" bpmnElement="end_par">
+        <dc:Bounds x="700" y="232" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="BPMNEdge_f_start_fork" bpmnElement="f_start_fork">
+        <di:waypoint x="188" y="250"/>
+        <di:waypoint x="250" y="240"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_fork_a" bpmnElement="f_fork_a">
+        <di:waypoint x="275" y="215"/>
+        <di:waypoint x="275" y="160"/>
+        <di:waypoint x="400" y="160"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_fork_b" bpmnElement="f_fork_b">
+        <di:waypoint x="275" y="265"/>
+        <di:waypoint x="275" y="320"/>
+        <di:waypoint x="400" y="320"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_a_join" bpmnElement="f_a_join">
+        <di:waypoint x="500" y="160"/>
+        <di:waypoint x="540" y="160"/>
+        <di:waypoint x="540" y="240"/>
+        <di:waypoint x="580" y="240"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_b_join" bpmnElement="f_b_join">
+        <di:waypoint x="500" y="320"/>
+        <di:waypoint x="540" y="320"/>
+        <di:waypoint x="540" y="240"/>
+        <di:waypoint x="580" y="240"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMNEdge_f_join_end" bpmnElement="f_join_end">
+        <di:waypoint x="630" y="240"/>
+        <di:waypoint x="700" y="250"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -50,14 +50,14 @@ public class ReportQuarterMicroLoanStatRespVO {
     // 5) 平均年利率（百分数）
     private BigDecimal avgAnnualRatePctCurrent;
     private BigDecimal avgAnnualRatePctYtd;
-    // 百分点差：currentPct - lastPct
+    // 同期增长量：currentPct - lastPct（不乘100，按小数形式输出）
     private BigDecimal avgAnnualRatePctYoyDelta;
     private BigDecimal avgAnnualRatePctYoyRate;
 
     // 6) 不良率（百分数）
     private BigDecimal nplRatePctCurrent;
     private BigDecimal nplRatePctYtd;
-    // 百分点差：currentPct - lastPct
+    // 同期增长量：currentPct - lastPct（不乘100，按小数形式输出）
     private BigDecimal nplRatePctYoyDelta;
     private BigDecimal nplRatePctYoyRate;
 }

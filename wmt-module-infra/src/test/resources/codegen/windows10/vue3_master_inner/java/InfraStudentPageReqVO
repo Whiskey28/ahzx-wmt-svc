@@ -15,7 +15,7 @@ import static com.wmt.framework.common.util.date.DateUtils.FORMAT_YEAR_MONTH_DAY
 @ToString(callSuper = true)
 public class InfraStudentPageReqVO extends PageParam {
 
-    @Schema(description = "名字", example = "芋头")
+    @Schema(description = "名字", example = "wmt")
     private String name;
 
     @Schema(description = "出生日期")

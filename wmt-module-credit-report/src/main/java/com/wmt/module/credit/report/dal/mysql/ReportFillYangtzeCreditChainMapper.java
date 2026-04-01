@@ -2,6 +2,7 @@ package com.wmt.module.credit.report.dal.mysql;
 
 import com.wmt.framework.mybatis.core.mapper.BaseMapperX;
 import com.wmt.module.credit.report.dal.dataobject.ReportFillYangtzeCreditChainDO;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -18,6 +19,9 @@ import java.math.BigDecimal;
  */
 @Mapper
 public interface ReportFillYangtzeCreditChainMapper extends BaseMapperX<ReportFillYangtzeCreditChainDO> {
+
+    @Delete("DELETE FROM report_fill_yangtze_credit_chain WHERE record_id = #{recordId}")
+    int deleteRealByRecordId(@Param("recordId") String recordId);
 
     /**
      * 统计指定周期 + 报表模板 + 角色 下，长三角征信链 7 个字段的总和

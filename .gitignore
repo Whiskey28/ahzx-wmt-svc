@@ -52,3 +52,7 @@ application-my.yaml
 
 /wmt-ui-app/unpackage/
 **/.DS_Store
+
+node_modules/
+.agents/skills/*.zip
+.cursor/skills/*.zip
