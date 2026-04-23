@@ -3,7 +3,7 @@ spring:
     name: wmt-server
 
   profiles:
-    active: creditlocal
+    active: nmlocal
     #fianciallocal
     #creditlocal
 

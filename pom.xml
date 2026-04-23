@@ -15,11 +15,11 @@
         <!-- 各种 module 拓展 -->
         <module>wmt-module-system</module>
         <module>wmt-module-infra</module>
-        <module>wmt-module-credit-report</module>
+<!--        <module>wmt-module-credit-report</module>-->
 <!--        <module>wmt-module-ticket</module>-->
 <!--        <module>wmt-module-member</module>-->
 <!--        <module>wmt-module-bpm</module>-->
-        <module>wmt-module-report</module>
+<!--        <module>wmt-module-report</module>-->
 <!--        <module>wmt-module-mp</module>-->
 <!--        <module>wmt-module-pay</module>-->
 <!--        <module>wmt-module-mall</module>-->
