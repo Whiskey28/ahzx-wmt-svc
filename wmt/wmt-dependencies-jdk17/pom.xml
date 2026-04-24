@@ -21,6 +21,7 @@
         <!-- Web 相关 -->
         <springdoc.version>2.8.14</springdoc.version>
         <knife4j.version>4.5.0</knife4j.version>
+        <tongweb.springboot.version>7.0.E.8_P2</tongweb.springboot.version>
         <!-- DB 相关 -->
         <druid.version>1.2.27</druid.version>
         <mybatis.version>3.5.19</mybatis.version>
@@ -140,6 +141,16 @@
                 <groupId>com.wmt</groupId>
                 <artifactId>wmt-spring-boot-starter-web</artifactId>
                 <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wmt</groupId>
+                <artifactId>wmt-spring-boot-starter-web-tongweb</artifactId>
+                <version>${revision}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.tongweb.springboot</groupId>
+                <artifactId>tongweb-spring-boot-starter-3.x</artifactId>
+                <version>${tongweb.springboot.version}</version>
             </dependency>
 
             <dependency>

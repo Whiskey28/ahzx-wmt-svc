@@ -14,6 +14,7 @@
         <module>wmt-spring-boot-starter-mybatis</module>
         <module>wmt-spring-boot-starter-redis</module>
         <module>wmt-spring-boot-starter-web</module>
+        <module>wmt-spring-boot-starter-web-tongweb</module>
         <module>wmt-spring-boot-starter-security</module>
         <module>wmt-spring-boot-starter-websocket</module>
 
