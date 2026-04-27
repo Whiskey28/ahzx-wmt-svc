@@ -20,6 +20,7 @@ echo %JAVA_HOME%
 ```
 
 预期：
+
 - `java -version` 正常输出版本信息。
 - `mvn -v` 正常输出 Maven 与 JDK 信息。
 - `JAVA_HOME` 指向有效 JDK 路径。
@@ -32,6 +33,7 @@ echo %JAVA_HOME%
 ### 2.3 明确 `settings.xml` 的实际生效文件
 
 建议统一使用：
+
 - `%USERPROFILE%\.m2\settings.xml`
 
 并确保至少包含本地仓库配置：
@@ -43,6 +45,7 @@ echo %JAVA_HOME%
 ```
 
 说明：
+
 - 路径请按实际修改。
 - 若同时存在 `%MAVEN_HOME%\conf\settings.xml` 与 `%USERPROFILE%\.m2\settings.xml`，以用户目录配置为主更稳妥。
 
@@ -67,6 +70,7 @@ installAll-7.0.E.8_P2.bat
 ```
 
 作用：
+
 - 解压资源包。
 - 将 `lib` 下需要的 jar 安装到本地 Maven 仓库（`settings.xml` 指定目录）。
 
@@ -77,6 +81,7 @@ deployAll-7.0.E.8_P2.bat <url> <sid>
 ```
 
 参数说明：
+
 - `url`：企业私仓完整可写地址（必须可 deploy）。
 - `sid`：`settings.xml` 中 `<servers><server><id>...</id></server></servers>` 的 id。
 
@@ -89,10 +94,11 @@ deployAll-7.0.E.8_P2.bat http://127.0.0.1:8081/nexus/content/repositories/centra
 ### 4.3 手动解压路径（备选）
 
 若不走一键脚本：
+
 1. 手动解压 `tongweb-embed-7.0.E.8_P2.zip`。
 2. 在解压目录执行：
-   - 本地安装：`installMavenJar.bat`
-   - 私仓部署：`deployMavenJar.bat <url> <sid>`
+  - 本地安装：`installMavenJar.bat`
+  - 私仓部署：`deployMavenJar.bat <url> <sid>`
 
 ### 4.4 国密包（如项目需要）
 
@@ -104,9 +110,9 @@ deployAll-7.0.E.8_P2.bat http://127.0.0.1:8081/nexus/content/repositories/centra
 
 1. 排除 Spring Boot 默认 Tomcat。
 2. 按 Spring Boot 大版本引入对应 TongWeb starter：
-   - Boot 1.x -> `tongweb-spring-boot-starter-1.x`
-   - Boot 2.x -> `tongweb-spring-boot-starter-2.x`
-   - Boot 3.x -> `tongweb-spring-boot-starter-3.x`
+  - Boot 1.x -> `tongweb-spring-boot-starter-1.x`
+  - Boot 2.x -> `tongweb-spring-boot-starter-2.x`
+  - Boot 3.x -> `tongweb-spring-boot-starter-3.x`
 3. 若需 JSP，再加 `tongweb-jsp`（Boot 1/2）或 `tongweb-jsp-3.x`（Boot 3）。
 
 ### 5.2 Boot 3.x 参考片段
@@ -148,6 +154,7 @@ mvn -U clean package -DskipTests
 ```
 
 预期：
+
 - 不再出现找不到 `com.tongweb*` 依赖的错误。
 
 ### 6.3 应用启动验证（对应 3.7）
@@ -157,6 +164,7 @@ java -jar your-app.jar
 ```
 
 预期：
+
 - 日志出现 TongWeb 初始化成功关键字（例如 `TongWeb initialized`、`Starting Servlet engine: [TongWeb/... ]`）。
 
 ## 7. 缺失环节检查清单（防漏项）
@@ -180,6 +188,7 @@ java -jar your-app.jar
 ### 8.1 401 Unauthorized
 
 优先检查：
+
 - `<server><id>` 是否与 deploy 命令中的 `sid` 一致；
 - 用户是否具备仓库 deploy 权限；
 - 仓库 URL 是否正确且可写；

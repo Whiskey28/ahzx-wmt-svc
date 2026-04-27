@@ -37,11 +37,31 @@
             <groupId>com.wmt</groupId>
             <artifactId>wmt-module-system</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 运行时切换到 TongWeb，排除传递进来的内嵌 Tomcat -->
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.wmt</groupId>
             <artifactId>wmt-module-infra</artifactId>
             <version>${revision}</version>
+            <exclusions>
+                <!-- 运行时切换到 TongWeb，排除传递进来的内嵌 Tomcat -->
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- TongWeb 适配版 Web Starter：复用框架原有 Web 能力，并替换内嵌容器 -->
+        <dependency>
+            <groupId>com.wmt</groupId>
+            <artifactId>wmt-spring-boot-starter-web-tongweb</artifactId>
         </dependency>
 
         <!-- 会员中心。默认注释，保证编译速度 -->

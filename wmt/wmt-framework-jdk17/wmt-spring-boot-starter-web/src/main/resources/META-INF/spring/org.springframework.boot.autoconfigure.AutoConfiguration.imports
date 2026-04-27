@@ -1,7 +1,0 @@
-com.wmt.framework.apilog.config.WmtApiLogAutoConfiguration
-com.wmt.framework.jackson.config.WmtJacksonAutoConfiguration
-com.wmt.framework.swagger.config.WmtSwaggerAutoConfiguration
-com.wmt.framework.web.config.WmtWebAutoConfiguration
-com.wmt.framework.xss.config.WmtXssAutoConfiguration
-com.wmt.framework.banner.config.WmtBannerAutoConfiguration
-com.wmt.framework.encrypt.config.WmtApiEncryptAutoConfiguration

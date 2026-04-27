@@ -1,4 +1,0 @@
-com.wmt.framework.idempotent.config.WmtIdempotentConfiguration
-com.wmt.framework.lock4j.config.WmtLock4jConfiguration
-com.wmt.framework.ratelimiter.config.WmtRateLimiterConfiguration
-com.wmt.framework.signature.config.WmtApiSignatureAutoConfiguration

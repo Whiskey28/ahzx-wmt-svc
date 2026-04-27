@@ -1,3 +1,0 @@
-com.wmt.framework.mq.redis.config.WmtRedisMQProducerAutoConfiguration
-com.wmt.framework.mq.redis.config.WmtRedisMQConsumerAutoConfiguration
-com.wmt.framework.mq.rabbitmq.config.WmtRabbitMQAutoConfiguration

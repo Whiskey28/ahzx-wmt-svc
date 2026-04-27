@@ -1,3 +1,0 @@
-com.wmt.framework.datasource.config.WmtDataSourceAutoConfiguration
-com.wmt.framework.mybatis.config.WmtMybatisAutoConfiguration
-com.wmt.framework.translate.config.WmtTranslateAutoConfiguration
