@@ -1,0 +1,135 @@
+{
+  "meta": {
+    "base_url": "http://172.20.10.4:48080",
+    "matrix_path": "tongweb-tongrds-adaptation-test-matrix.md",
+    "generated_at": "2026-04-28T01:53:17.345252+00:00"
+  },
+  "summary": {
+    "PASS": 8,
+    "FAIL": 2,
+    "SKIPPED": 10,
+    "total": 20
+  },
+  "results": [
+    {
+      "id": "TW-02",
+      "name": "应用热重启（需人工）",
+      "status": "SKIPPED",
+      "evidence": "该项需要在服务器侧执行重启并留痕（无法通过远程只读 HTTP 自动触发）。"
+    },
+    {
+      "id": "TW-05",
+      "name": "全局异常处理一致性",
+      "status": "PASS",
+      "evidence": "GET /admin-api/system/user/get -> http 200, code=400；GET /admin-api/system/user/get?id=not_a_number -> http 200, code=400"
+    },
+    {
+      "id": "TW-06",
+      "name": "文件上传下载",
+      "status": "FAIL",
+      "evidence": "上传业务失败 code=500 msg=系统异常"
+    },
+    {
+      "id": "TW-07",
+      "name": "中文编码一致性",
+      "status": "PASS",
+      "evidence": "创建并回读中文用户成功（userId=144, nickname=测试用户0428095251）"
+    },
+    {
+      "id": "TW-09",
+      "name": "Druid 监控可用",
+      "status": "PASS",
+      "evidence": "/druid/: http 200, content-type=text/html;charset=utf-8"
+    },
+    {
+      "id": "TW-10",
+      "name": "稳态资源观察（需压测/监控）",
+      "status": "SKIPPED",
+      "evidence": "该项需要压测工具与监控数据（线程/连接池/错误率），不适合在单机脚本内判定。"
+    },
+    {
+      "id": "TW-11",
+      "name": "会话保持/失效（需交互/多端）",
+      "status": "SKIPPED",
+      "evidence": "该项需要交互式登录/登出、多端复现或真实浏览器行为（脚本无法完整覆盖）。"
+    },
+    {
+      "id": "TW-12",
+      "name": "升级回滚演练（需运维操作）",
+      "status": "SKIPPED",
+      "evidence": "该项需要运维侧执行部署/回滚流程并留痕（脚本无法替代）。"
+    },
+    {
+      "id": "TR-03",
+      "name": "事务提交验证（用户增删改）",
+      "status": "PASS",
+      "evidence": "create->update->delete 全部成功（userId=145）"
+    },
+    {
+      "id": "TR-04",
+      "name": "事务回滚验证（冲突场景）",
+      "status": "PASS",
+      "evidence": "重复创建触发业务失败，原记录保持可读（无异常污染）"
+    },
+    {
+      "id": "TR-05",
+      "name": "唯一约束冲突",
+      "status": "PASS",
+      "evidence": "重复用户名创建失败（http=200, code=1002003000）"
+    },
+    {
+      "id": "TR-06",
+      "name": "主从路由正确性",
+      "status": "SKIPPED",
+      "evidence": "该项需要业务侧专用事务/路由/故障注入/压测或DB侧证据，目前缺少可自动化的公共接口证据点。"
+    },
+    {
+      "id": "TR-07",
+      "name": "分页 SQL 兼容",
+      "status": "PASS",
+      "evidence": "分页返回结构正确（total=12, page1=10, page2=2）"
+    },
+    {
+      "id": "TR-08",
+      "name": "过滤条件兼容",
+      "status": "PASS",
+      "evidence": "username过滤命中成功（username=tw0428095313）"
+    },
+    {
+      "id": "TR-09",
+      "name": "批量写入兼容（导入链路）",
+      "status": "FAIL",
+      "evidence": "上传业务失败 code=500 msg=系统异常"
+    },
+    {
+      "id": "TR-10",
+      "name": "慢 SQL 可观测",
+      "status": "SKIPPED",
+      "evidence": "该项需要业务侧专用事务/路由/故障注入/压测或DB侧证据，目前缺少可自动化的公共接口证据点。"
+    },
+    {
+      "id": "TR-11",
+      "name": "连接池稳态",
+      "status": "SKIPPED",
+      "evidence": "该项需要业务侧专用事务/路由/故障注入/压测或DB侧证据，目前缺少可自动化的公共接口证据点。"
+    },
+    {
+      "id": "TR-12",
+      "name": "断连恢复能力",
+      "status": "SKIPPED",
+      "evidence": "该项需要业务侧专用事务/路由/故障注入/压测或DB侧证据，目前缺少可自动化的公共接口证据点。"
+    },
+    {
+      "id": "TR-13",
+      "name": "字符集与时区一致性",
+      "status": "SKIPPED",
+      "evidence": "该项需要业务侧专用事务/路由/故障注入/压测或DB侧证据，目前缺少可自动化的公共接口证据点。"
+    },
+    {
+      "id": "TR-14",
+      "name": "大结果集读取稳定性",
+      "status": "SKIPPED",
+      "evidence": "该项需要业务侧专用事务/路由/故障注入/压测或DB侧证据，目前缺少可自动化的公共接口证据点。"
+    }
+  ]
+}

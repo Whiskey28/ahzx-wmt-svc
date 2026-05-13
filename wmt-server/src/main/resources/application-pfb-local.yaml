@@ -1,3 +1,9 @@
+# application-pfb-local.yaml
+# 与 application-nmlocal.yaml 完全一致，仅修改：
+#   - 数据源 JDBC：主机/端口/库名为本机 MySQL + wmt_pfb（master/slave 同步）
+#   - Redis：host 为本机（port/password/database 等与 nmlocal 一致）
+# 推荐：--spring.profiles.active=nmlocal,pfb-local
+
 server:
   port: 48080
 
@@ -49,7 +55,7 @@ spring:
         master:
           #          url: jdbc:mysql://172.20.10.3:33060/ruoyi-vue-pro?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true # MySQL Connector/J 8.X 连接的示例
           #          url: jdbc:mysql://172.20.10.5:2881/pg_migrate?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
-          url: jdbc:mysql://172.30.243.122:2881/credit_project_db?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
+          url: jdbc:mysql://127.0.0.1:3306/wmt_pfb?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # PFB 本地：本机 + wmt_pfb
           #          url: jdbc:postgresql://172.20.10.3:5432/tdc-wmt # PostgreSQL 连接的示例
           #          url: jdbc:oceanbase://172.20.10.5:2881/pg_migrate?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
           #          driver-class-name: com.oceanbase.jdbc.Driver
@@ -60,8 +66,8 @@ spring:
           #          url: jdbc:postgresql://127.0.0.1:5432/postgres # OpenGauss 连接的示例
           #          username: root@sys
           #          password: wmt123456
-          username: credit_user@credit_tenant
-          password: Credit@123456
+          username: root
+          password: wmt123456
           #          username: sa # SQL Server 连接的示例
           #          password: Wmt@2024 # SQL Server 连接的示例
           #          username: SYSDBA # DM 连接的示例
@@ -71,9 +77,9 @@ spring:
         slave: # 模拟从库，可根据自己需要修改
           lazy: true # 开启懒加载，保证启动速度
           #          url: jdbc:postgresql://172.20.10.3:5432/tdc-wmt # PostgreSQL 连接的示例
-          url: jdbc:mysql://172.30.243.122:2881/credit_project_db?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
-          username: credit_user@credit_tenant
-          password: Credit@123456
+          url: jdbc:mysql://127.0.0.1:3306/wmt_pfb?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # PFB 本地：与 master 同库
+          username: root
+          password: wmt123456
   #        tdengine: # IoT 数据库（需要 IoT 物联网再开启噢！）
   #          url: jdbc:TAOS-WS://127.0.0.1:6041/ruoyi_vue_pro
   #          driver-class-name: com.taosdata.jdbc.ws.WebSocketDriver
@@ -85,10 +91,10 @@ spring:
   # Redis 配置。Redisson 默认的配置足够使用，一般不需要进行调优
   data:
     redis:
-      host: 172.30.243.73 # 地址
-      port: 48250 # 端口
-      database: 0 # 数据库索引
-      password: Admin321 # 密码，建议生产环境开启
+      host: 127.0.0.1 # PFB 本地 Redis（与 nmlocal 除 host 外一致）
+      port: 6379 # 端口
+      database: 1 # 数据库索引
+      password: wmt123456 # 密码，建议生产环境开启
       timeout: 3s
       connect-timeout: 3s
 

@@ -6,6 +6,6 @@
 
 ## Learned Workspace Facts
 
-- Backend is a Maven multi-module Java 17 codebase using Spring Boot 3.5.x with the unified BOM `wmt-dependencies-jdk17`; the runnable application module is `wmt-server`, and shared framework code lives in the WMT `wmt-framework-jdk17` stack.
+- Backend is a Maven multi-module Java 17 codebase using Spring Boot 3.5.x with the unified BOM `wmt-dependencies-jdk17`; the runnable application module is `wmt-server`, and shared framework code lives in the WMT `wmt-framework-jdk17` stack (separate clone; local example root: `/Users/whiskey/Projects/Github/Whiskey1028/wmt-framework/wmt-framework-jdk17`). For `CommonResult`, `PageParam`, `BaseDO`, `BaseMapperX`, tenant annotations, etc., read framework **source** first; `docs/nm-deliver/superpowers/plans/2026-05-11-pfb-phase1-backend-tasks.md` has a `file://` link table to key classes.
 - Long-form learning notes and roadmap documents for this project are kept under `docs/learning-roadmap/`.
 - The credit-report admin frontend is maintained in a separate repository (`CreditService_Report_Web`); typical deployment exposes `/CreditServiceReport/` and `/admin-api/` via Nginx for browser-to-backend calls.

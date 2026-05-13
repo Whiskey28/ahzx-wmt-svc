@@ -51,6 +51,18 @@
             </exclusions>
         </dependency>
 
+        <dependency>
+            <groupId>com.wmt</groupId>
+            <artifactId>wmt-module-pfb</artifactId>
+            <version>${revision}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- 会员中心。默认注释，保证编译速度 -->
 <!--        <dependency>-->
 <!--            <groupId>com.wmt</groupId>-->

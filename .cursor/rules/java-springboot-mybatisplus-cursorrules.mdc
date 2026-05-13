@@ -26,6 +26,14 @@ code_style:
     - "Swagger/OpenAPI：对外接口使用 @Operation/@Parameter，POJO 使用 @Schema 标注字段。"
 
 project_knowledge:
+  framework_source:
+    root: "/Users/whiskey/Projects/Github/Whiskey1028/wmt-framework/wmt-framework-jdk17"
+    note: "业务仓仅依赖 BOM；实现分页/CommonResult/租户扩展表等时以该路径下源码为准。关键类速查见 docs/nm-deliver/superpowers/plans/2026-05-11-pfb-phase1-backend-tasks.md 中的 file:// 表。"
+    modules:
+      - "wmt-common — CommonResult、PageParam、PageResult、SortablePageParam、异常与错误码"
+      - "wmt-spring-boot-starter-mybatis — BaseDO、BaseMapperX、MyBatisUtils"
+      - "wmt-spring-boot-starter-web — GlobalExceptionHandler、GlobalResponseBodyHandler、WebFrameworkUtils"
+      - "wmt-spring-boot-starter-biz-tenant — @TenantIgnore 及租户 AOP/DB 拦截"
   common_result:
     class: "com.wmt.framework.common.pojo.CommonResult"
     success_factory: "CommonResult.success(data)"

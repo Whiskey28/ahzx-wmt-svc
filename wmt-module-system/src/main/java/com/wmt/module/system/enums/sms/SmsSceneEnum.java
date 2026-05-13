@@ -23,7 +23,12 @@ public enum SmsSceneEnum implements ArrayValuable<Integer> {
 
     ADMIN_MEMBER_LOGIN(21, "admin-sms-login", "后台用户 - 手机号登录"),
     ADMIN_MEMBER_REGISTER(22, "admin-sms-register", "后台用户 - 手机号注册"),
-    ADMIN_MEMBER_RESET_PASSWORD(23, "admin-reset-password", "后台用户 - 忘记密码");
+    ADMIN_MEMBER_RESET_PASSWORD(23, "admin-reset-password", "后台用户 - 忘记密码"),
+
+    /** 普惠金融小程序（PFB）：复用后台短信模版编码，场景号独立，避免与 ADMIN 短信混用 */
+    PFB_SMS_LOGIN(24, "admin-sms-login", "PFB 小程序 - 手机号登录"),
+    PFB_SMS_REGISTER(25, "admin-sms-register", "PFB 小程序 - 手机号注册"),
+    PFB_SMS_RESET_PASSWORD(26, "admin-reset-password", "PFB 小程序 - 忘记密码");
 
     public static final Integer[] ARRAYS = Arrays.stream(values()).map(SmsSceneEnum::getScene).toArray(Integer[]::new);
 

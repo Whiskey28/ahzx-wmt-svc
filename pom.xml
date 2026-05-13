@@ -15,6 +15,7 @@
         <!-- 各种 module 拓展 -->
         <module>wmt-module-system</module>
         <module>wmt-module-infra</module>
+        <module>wmt-module-pfb</module>
 <!--        <module>wmt-module-credit-report</module>-->
 <!--        <module>wmt-module-member</module>-->
 <!--        <module>wmt-module-bpm</module>-->
