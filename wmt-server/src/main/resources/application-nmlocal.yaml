@@ -282,3 +282,15 @@ justauth:
     type: REDIS
     prefix: 'social_auth_state:' # 缓存前缀，目前只对 Redis 缓存生效，默认 JUSTAUTH::STATE::
     timeout: 24h # 超时时长，目前只对 Redis 缓存生效，默认 3 分钟
+
+--- #################### 普惠金融 PFB-API（C2，内蒙 profile）####################
+# 本 profile 若单独声明 wmt.security.permit-all_urls，会覆盖 application.yaml 中同名列表，故需保留 mp/open 等既有匿名路径。
+wmt:
+  web:
+    pfb-api:
+      prefix: /pfb-api
+      controller: "**.controller.pfb.**"
+  security:
+    permit-all_urls:
+      - /admin-api/mp/open/**
+      - /pfb-api/pfb/auth/**

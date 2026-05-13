@@ -228,6 +228,13 @@ public class OAuth2TokenServiceImpl implements OAuth2TokenService {
         } else if (userType.equals(UserTypeEnum.MEMBER.getValue())) {
             // 注意：目前 Member 暂时不读取，可以按需实现
             return Collections.emptyMap();
+        } else if (userType.equals(UserTypeEnum.PFB.getValue())) {
+            // 普惠金融（C2）：主数据在 system_users，userId 即 AdminUserDO.id；不在 userInfo 中写入后台部门语义
+            AdminUserDO user = adminUserService.getUser(userId);
+            if (user == null) {
+                return Collections.emptyMap();
+            }
+            return MapUtil.builder(LoginUser.INFO_KEY_NICKNAME, user.getNickname()).build();
         }
         throw new IllegalArgumentException("未知用户类型：" + userType);
     }
