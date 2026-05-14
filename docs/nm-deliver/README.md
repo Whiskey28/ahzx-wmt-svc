@@ -13,3 +13,4 @@
 | 后端 **一期** 任务（与 v0 DDL 对齐；含数据库初始化 Task 2） | `superpowers/plans/2026-05-11-pfb-phase1-backend-tasks.md` |
 | OceanDB（MySQL 模式）服务器直装 — 库初始化操作说明（凭据见 `application-nmlocal.yaml`） | `superpowers/plans/2026-05-11-pfb-oceandb-mysql-server-db-init-ops.md` |
 | 后端 **二期** 任务（检索、进度、幂等、运营等） | `superpowers/plans/2026-05-11-pfb-phase2-backend-tasks.md` |
+| **开发自测**（标准 + PFB 一期清单与记录表） | `test/README.md`、`test/2026-05-14-pfb-dev-self-test-checklist.md` |
