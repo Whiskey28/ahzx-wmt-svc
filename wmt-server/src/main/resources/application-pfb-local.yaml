@@ -3,6 +3,9 @@
 #   - 数据源 JDBC：主机/端口/库名为本机 MySQL + wmt_pfb（master/slave 同步）
 #   - Redis：host 为本机（port/password/database 等与 nmlocal 一致）
 # 推荐：--spring.profiles.active=nmlocal,pfb-local
+#
+# 数据库说明：生产目标为 OceanBase（OceanDB）MySQL 兼容模式；开发与单测可使用标准 MySQL 或
+# H2（MODE=MYSQL）作为协议/SQL 语义的平替，仍以 MySQL Connector 连接串为准。
 
 server:
   port: 48080

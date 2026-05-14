@@ -65,6 +65,8 @@
 
 ## Task 2 — 数据库初始化（Docker MySQL / 本机）
 
+**服务器直装 OceanBase（OceanDB）MySQL 兼容模式** 下的建库与导入命令（凭据从 `application-nmlocal.yaml` 读取的说明）见独立运维文档：[`2026-05-11-pfb-oceandb-mysql-server-db-init-ops.md`](./2026-05-11-pfb-oceandb-mysql-server-db-init-ops.md)。
+
 **开发库名**：**`wmt_pfb`**（普惠金融专用库名；与 [`application-pfb-local.yaml`](../../../../wmt-server/src/main/resources/application-pfb-local.yaml) 中 `master`/`slave` URL 一致）。
 
 **环境假设**：MySQL 监听本机 **3306**。`application-pfb-local.yaml` 与 **`application-nmlocal.yaml` 对齐**（含 JDBC 用户名 `credit_user@credit_tenant` 等）；若本地仅有 `root`，请在 **`wmt_pfb`** 内创建等价租户用户，或在本文件中临时改写 `username`/`password`（会破坏「与 nmlocal 除库/Redis 外一致」的约定，仅作本机权宜）。容器名以本机 `docker ps` 为准（下文示例 **`mc-mysql`**）。

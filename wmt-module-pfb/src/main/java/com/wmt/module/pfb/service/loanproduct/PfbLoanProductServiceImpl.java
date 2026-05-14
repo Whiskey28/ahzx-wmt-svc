@@ -17,6 +17,8 @@ import static com.wmt.framework.common.exception.util.ServiceExceptionUtil.excep
 public class PfbLoanProductServiceImpl implements PfbLoanProductService {
 
     private static final int DEFAULT_HOT_LIMIT = 20;
+    /** 热门列表防护上限，避免异常 limit 拖垮查询 */
+    private static final int MAX_HOT_LIMIT = 200;
 
     @Resource
     private PfbLoanProductMapper pfbLoanProductMapper;
@@ -29,7 +31,7 @@ public class PfbLoanProductServiceImpl implements PfbLoanProductService {
 
     @Override
     public List<PfbLoanProductRespVO> listHot(int limit) {
-        int n = limit > 0 ? limit : DEFAULT_HOT_LIMIT;
+        int n = limit > 0 ? Math.min(limit, MAX_HOT_LIMIT) : DEFAULT_HOT_LIMIT;
         List<PfbLoanProductDO> list = pfbLoanProductMapper.selectList(
                 baseOnShelfWrapper()
                         .eq(PfbLoanProductDO::getIsHot, 1)

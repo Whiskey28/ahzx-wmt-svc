@@ -1,6 +1,8 @@
 server:
   port: 48080
 
+# 数据源：生产目标可为 OceanBase（OceanDB）MySQL 兼容模式；本地开发常用标准 MySQL 实例平替（JDBC 仍使用 MySQL 驱动与语法）。
+
 --- #################### 数据库相关配置 ####################
 spring:
   autoconfigure:

@@ -11,4 +11,5 @@
 | 表结构优化与演进建议（MySQL） | `docs/nm-deliver/sql/PFB-SCHEMA-OPTIMIZATION.md` |
 | 后端计划索引（指向一期 / 二期） | `superpowers/plans/2026-05-11-pfb-miniprogram-backend-mvp.md` |
 | 后端 **一期** 任务（与 v0 DDL 对齐；含数据库初始化 Task 2） | `superpowers/plans/2026-05-11-pfb-phase1-backend-tasks.md` |
+| OceanDB（MySQL 模式）服务器直装 — 库初始化操作说明（凭据见 `application-nmlocal.yaml`） | `superpowers/plans/2026-05-11-pfb-oceandb-mysql-server-db-init-ops.md` |
 | 后端 **二期** 任务（检索、进度、幂等、运营等） | `superpowers/plans/2026-05-11-pfb-phase2-backend-tasks.md` |
