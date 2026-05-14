@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.wmt.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "普惠金融 PFB - 融资申请")
+@Tag(name = "普惠金融 PFB - 融资申请", description = "需登录；提交前校验实名、绑定企业及征信授权等门禁")
 @RestController
 @RequestMapping("/pfb/loan-application")
 @Validated
@@ -26,14 +26,14 @@ public class PfbLoanApplicationController {
     private PfbLoanApplicationService pfbLoanApplicationService;
 
     @PostMapping("/submit")
-    @Operation(summary = "提交融资申请")
+    @Operation(summary = "提交融资申请", description = "applyAmountCent 须为万元整数倍；creditAuthAccepted 表示勾选征信授权")
     public CommonResult<Boolean> submit(@Valid @RequestBody PfbLoanApplicationSubmitReqVO reqVO) {
         pfbLoanApplicationService.submit(SecurityFrameworkUtils.getLoginUserId(), reqVO);
         return success(true);
     }
 
     @GetMapping("/list")
-    @Operation(summary = "我的申请列表（一期只读）")
+    @Operation(summary = "我的申请列表", description = "一期只读列表，行为以当前实现为准")
     public CommonResult<List<PfbLoanApplicationListItemVO>> list() {
         return success(pfbLoanApplicationService.listMine(SecurityFrameworkUtils.getLoginUserId()));
     }

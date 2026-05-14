@@ -7,7 +7,10 @@ import lombok.Data;
 @Data
 public class PfbEnterpriseUpdateReqVO {
 
+    @Schema(description = "企业中文名称")
     private String enterpriseName;
+    @Schema(description = "企业英文名称")
     private String englishName;
+    @Schema(description = "核心联系方式")
     private String coreContact;
 }

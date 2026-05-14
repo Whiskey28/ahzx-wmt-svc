@@ -16,7 +16,7 @@ import java.util.List;
 
 import static com.wmt.framework.common.pojo.CommonResult.success;
 
-@Tag(name = "普惠金融 PFB - Banner")
+@Tag(name = "普惠金融 PFB - Banner", description = "首页轮播；匿名可读")
 @RestController
 @RequestMapping("/pfb/banner")
 @Validated
@@ -27,7 +27,7 @@ public class PfbBannerController {
 
     @GetMapping("/list")
     @PermitAll
-    @Operation(summary = "首页 Banner 列表")
+    @Operation(summary = "首页 Banner 列表", description = "上架、未删除，且在 effective_begin / effective_end 时间窗内（空表示不限制）")
     public CommonResult<List<PfbBannerRespVO>> list() {
         return success(pfbBannerService.listActiveBanners());
     }
