@@ -1,0 +1,346 @@
+{
+  "info": {
+    "_postman_id": "a1f2e3d4-c5b6-7890-abcd-ef1029384756",
+    "name": "WMT 普惠金融 PFB API（一期）",
+    "description": "导入 Postman 后请先编辑集合变量：baseUrl、mobile、smsCode；登录后将 accessToken、refreshToken、entId 填入变量。\n\n自测种子数据：docs/nm-deliver/test/sql/pfb-self-test-data-seed.sql\n产品 UUID 示例：{{productIdHot}}（上架+热门）、{{productIdOff}}（下架）。\n\n鉴权：需登录接口在 Authorization 选择 Bearer Token，值为 {{accessToken}}。",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://127.0.0.1:48080/pfb-api" },
+    { "key": "accessToken", "value": "" },
+    { "key": "refreshToken", "value": "" },
+    { "key": "mobile", "value": "19000000001" },
+    { "key": "smsCode", "value": "9999" },
+    { "key": "entId", "value": "" },
+    { "key": "productIdHot", "value": "11111111-1111-1111-1111-111111111101" },
+    { "key": "productIdOff", "value": "11111111-1111-1111-1111-111111111103" }
+  ],
+  "item": [
+    {
+      "name": "01 匿名",
+      "item": [
+        {
+          "name": "Banner 列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/banner/list"
+          }
+        },
+        {
+          "name": "贷款产品-上架列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/loan-product/list"
+          }
+        },
+        {
+          "name": "贷款产品-热门",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/loan-product/hot-list?limit=10"
+          }
+        },
+        {
+          "name": "贷款产品-详情(上架)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/loan-product/get?id={{productIdHot}}"
+          }
+        },
+        {
+          "name": "贷款产品-详情(下架-负例)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/loan-product/get?id={{productIdOff}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 认证",
+      "item": [
+        {
+          "name": "发送短信(scene非法-负例)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"scene\": \"INVALID\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/auth/send-sms-code"
+          }
+        },
+        {
+          "name": "发送短信(LOGIN)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"scene\": \"LOGIN\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/auth/send-sms-code"
+          }
+        },
+        {
+          "name": "发送短信(REGISTER)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"19000000002\",\n  \"scene\": \"REGISTER\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/auth/send-sms-code"
+          }
+        },
+        {
+          "name": "校验短信",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"scene\": \"LOGIN\",\n  \"code\": \"{{smsCode}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/auth/validate-sms-code"
+          }
+        },
+        {
+          "name": "注册",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"19000000002\",\n  \"nickname\": \"自测用户\",\n  \"password\": \"a1234567\",\n  \"smsCode\": \"{{smsCode}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/auth/register"
+          }
+        },
+        {
+          "name": "登录(密码+短信)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"password\": \"a1234567\",\n  \"smsCode\": \"{{smsCode}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/auth/login"
+          }
+        },
+        {
+          "name": "短信登录",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"code\": \"{{smsCode}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/auth/sms-login"
+          }
+        },
+        {
+          "name": "重置密码",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"password\": \"a1234567\",\n  \"code\": \"{{smsCode}}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/auth/reset-password"
+          }
+        },
+        {
+          "name": "刷新令牌",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/auth/refresh-token?refreshToken={{refreshToken}}"
+          }
+        },
+        {
+          "name": "登出",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/auth/logout"
+          }
+        },
+        {
+          "name": "注销账号(占位)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/auth/account-cancel"
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 自然人(需登录)",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "实名状态",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/individual/status"
+          }
+        },
+        {
+          "name": "提交自然人",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"realName\": \"张三\",\n  \"idCardNo\": \"110101199001011234\",\n  \"address\": \"北京市朝阳区\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/individual/submit"
+          }
+        },
+        {
+          "name": "L2回调占位",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/individual/l2/callback"
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 企业(需登录)",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "我的企业列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/enterprise/list"
+          }
+        },
+        {
+          "name": "新增企业并绑定",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enterpriseName\": \"自测企业有限公司\",\n  \"companyCreditCode\": \"91110000123456789X\",\n  \"coreContact\": \"13800000000\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/enterprise"
+          }
+        },
+        {
+          "name": "编辑企业",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enterpriseName\": \"自测企业有限公司（改）\",\n  \"englishName\": \"SelfTest Co Ltd\",\n  \"coreContact\": \"13800000001\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/enterprise/{{entId}}"
+          }
+        },
+        {
+          "name": "设为默认企业",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/enterprise/{{entId}}/set-default"
+          }
+        },
+        {
+          "name": "法人核验占位",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/enterprise/{{entId}}/legal-verify"
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 融资申请(需登录)",
+      "auth": {
+        "type": "bearer",
+        "bearer": [{ "key": "token", "value": "{{accessToken}}", "type": "string" }]
+      },
+      "item": [
+        {
+          "name": "提交申请(征信未勾选-负例)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productIdHot}}\",\n  \"entId\": \"{{entId}}\",\n  \"applyAmountCent\": 100000000,\n  \"termMonths\": 12,\n  \"repayMethod\": \"EQUAL_PRINCIPAL_INTEREST\",\n  \"creditAuthAccepted\": 0\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/loan-application/submit"
+          }
+        },
+        {
+          "name": "提交申请(成功)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": \"{{productIdHot}}\",\n  \"entId\": \"{{entId}}\",\n  \"applyAmountCent\": 100000000,\n  \"termMonths\": 12,\n  \"repayMethod\": \"EQUAL_PRINCIPAL_INTEREST\",\n  \"creditAuthAccepted\": 1\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": "{{baseUrl}}/pfb/loan-application/submit"
+          }
+        },
+        {
+          "name": "我的申请列表",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/pfb/loan-application/list"
+          }
+        }
+      ]
+    }
+  ]
+}

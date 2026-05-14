@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-@Schema(description = "PFB - 提交/更新自然人")
+@Schema(description = "PFB - 提交/更新自然人（入参）")
 @Data
 public class PfbIndividualSubmitReqVO {
 

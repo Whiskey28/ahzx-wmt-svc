@@ -5,7 +5,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Schema(description = "PFB - 申请列表项（一期只读 stub）")
+@Schema(description = "PFB - 申请列表项（出参，一期只读）")
 @Data
 public class PfbLoanApplicationListItemVO {
 

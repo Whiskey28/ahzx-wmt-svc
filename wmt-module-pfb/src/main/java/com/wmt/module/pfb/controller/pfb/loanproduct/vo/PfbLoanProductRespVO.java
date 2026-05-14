@@ -6,7 +6,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Schema(description = "PFB - 贷款产品")
+@Schema(description = "PFB - 贷款产品（出参）")
 @Data
 public class PfbLoanProductRespVO {
 

@@ -3,7 +3,7 @@ package com.wmt.module.pfb.controller.pfb.enterprise.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-@Schema(description = "PFB - 我的企业项")
+@Schema(description = "PFB - 我的企业项（出参）")
 @Data
 public class PfbEnterpriseListItemVO {
 

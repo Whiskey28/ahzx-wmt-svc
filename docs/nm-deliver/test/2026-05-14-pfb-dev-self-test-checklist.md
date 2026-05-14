@@ -4,7 +4,7 @@
 > **目标**：在合并/提测前，用可重复步骤验证本迭代接口 **可用、可回归、可说明**，并留下最小 **自测证据**。  
 > **接口前缀**：`http://{host}:{port}/pfb-api`（路径形如 `/pfb-api/pfb/...`）。  
 > **真源**：Controller 见 `wmt-module-pfb`；匿名白名单见 `wmt-server` 下 `application-pfb-local.yaml` / `application-nmlocal.yaml` 的 `wmt.security.permit-all_urls`。  
-> **测试数据 SQL**：`sql/pfb-self-test-data-seed.sql`（导入）、`sql/pfb-self-test-data-cleanup.sql`（清除）。
+> **Postman**：可导入 [`postman/WMT-PFB-api.postman_collection.json`](./postman/WMT-PFB-api.postman_collection.json)，说明见 [`postman/README.md`](./postman/README.md)。
 
 ---
 
@@ -314,4 +314,4 @@ curl -sS -X GET "$BASE/pfb/individual/status" -H "Authorization: Bearer $OLD_TOK
 | 清除 SQL | [`sql/pfb-self-test-data-cleanup.sql`](./sql/pfb-self-test-data-cleanup.sql) |
 | 一期任务与 Task 2 | [`../superpowers/plans/2026-05-11-pfb-phase1-backend-tasks.md`](../superpowers/plans/2026-05-11-pfb-phase1-backend-tasks.md) |
 | OceanDB 初始化运维 | [`../superpowers/plans/2026-05-11-pfb-oceandb-mysql-server-db-init-ops.md`](../superpowers/plans/2026-05-11-pfb-oceandb-mysql-server-db-init-ops.md) |
-| nm-deliver 总索引 | [`../README.md`](../README.md) |
+| Postman 集合 | [`postman/WMT-PFB-api.postman_collection.json`](./postman/WMT-PFB-api.postman_collection.json) |

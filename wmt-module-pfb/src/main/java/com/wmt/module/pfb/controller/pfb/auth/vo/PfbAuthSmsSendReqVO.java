@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-@Schema(description = "PFB - 发送短信验证码")
+@Schema(description = "PFB - 发送短信验证码；scene：LOGIN / REGISTER / RESET_PASSWORD；RESET_PASSWORD 且开启图形验证码时需传父类 captchaVerification")
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class PfbAuthSmsSendReqVO extends CaptchaVerificationReqVO {
