@@ -51,7 +51,7 @@ spring:
         master:
           #          url: jdbc:mysql://172.20.10.3:33060/ruoyi-vue-pro?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&nullCatalogMeansCurrent=true&rewriteBatchedStatements=true # MySQL Connector/J 8.X 连接的示例
           #          url: jdbc:mysql://172.20.10.5:2881/pg_migrate?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
-          url: jdbc:mysql://172.30.243.122:2881/credit_project_db?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
+          url: jdbc:mysql://172.30.243.122:2881/wmt_pfb?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
           #          url: jdbc:postgresql://172.20.10.3:5432/tdc-wmt # PostgreSQL 连接的示例
           #          url: jdbc:oceanbase://172.20.10.5:2881/pg_migrate?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
           #          driver-class-name: com.oceanbase.jdbc.Driver
@@ -62,8 +62,8 @@ spring:
           #          url: jdbc:postgresql://127.0.0.1:5432/postgres # OpenGauss 连接的示例
           #          username: root@sys
           #          password: wmt123456
-          username: credit_user@credit_tenant
-          password: Credit@123456
+          username: credit_user
+          password: akVJoXdHXpa3DFGtdg7m
           #          username: sa # SQL Server 连接的示例
           #          password: Wmt@2024 # SQL Server 连接的示例
           #          username: SYSDBA # DM 连接的示例
@@ -73,9 +73,9 @@ spring:
         slave: # 模拟从库，可根据自己需要修改
           lazy: true # 开启懒加载，保证启动速度
           #          url: jdbc:postgresql://172.20.10.3:5432/tdc-wmt # PostgreSQL 连接的示例
-          url: jdbc:mysql://172.30.243.122:2881/credit_project_db?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
-          username: credit_user@credit_tenant
-          password: Credit@123456
+          url: jdbc:mysql://172.30.243.122:2881/wmt_pfb?useSSL=true&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&rewriteBatchedStatements=true # MySQL Connector/J 5.X 连接的示例
+          username: credit_user
+          password: akVJoXdHXpa3DFGtdg7m
   #        tdengine: # IoT 数据库（需要 IoT 物联网再开启噢！）
   #          url: jdbc:TAOS-WS://127.0.0.1:6041/ruoyi_vue_pro
   #          driver-class-name: com.taosdata.jdbc.ws.WebSocketDriver
