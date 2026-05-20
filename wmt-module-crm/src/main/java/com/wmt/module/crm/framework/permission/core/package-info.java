@@ -1,1 +1,0 @@
-package com.wmt.module.crm.framework.permission.core;
