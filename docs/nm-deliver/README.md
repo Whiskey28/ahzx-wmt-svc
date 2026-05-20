@@ -4,6 +4,7 @@
 
 | 内容 | 路径 |
 |------|------|
+| **SRS V0.5 技术评审（A/B 可落地性 + AHDS-W 映射）** | [`2026-05-20-普惠金融SRS-V0.5-技术评审-需求可落地性.md`](2026-05-20-普惠金融SRS-V0.5-技术评审-需求可落地性.md) |
 | WMT 框架 JDK17 源码根（CommonResult、PageParam、BaseDO、BaseMapperX 等；与业务仓分离克隆） | 本机示例：`/Users/whiskey/Projects/Github/Whiskey1028/wmt-framework/wmt-framework-jdk17`；关键类 `file://` 链接见一期计划 |
 | 原始需求规格说明书（Word） | `0508-1.doc`、`0508-1.docx` |
 | 加固 PRD（用户故事 / 验收 / 图；**已与 v0 DDL 同步 Banner、企业码等**） | `PRD-普惠金融数字化系统-小程序-需求加固-V0.1.md` |
@@ -13,4 +14,4 @@
 | 后端 **一期** 任务（与 v0 DDL 对齐；含数据库初始化 Task 2） | `superpowers/plans/2026-05-11-pfb-phase1-backend-tasks.md` |
 | OceanDB（MySQL 模式）服务器直装 — 库初始化操作说明（凭据见 `application-nmlocal.yaml`） | `superpowers/plans/2026-05-11-pfb-oceandb-mysql-server-db-init-ops.md` |
 | 后端 **二期** 任务（检索、进度、幂等、运营等） | `superpowers/plans/2026-05-11-pfb-phase2-backend-tasks.md` |
-| **开发自测**（标准 + curl + 种子 SQL + Postman） | `test/README.md`、`test/2026-05-14-pfb-dev-self-test-checklist.md`、`test/sql/`、`test/postman/` |
+| **开发自测**（标准 + curl + 种子 SQL + Postman + 执行报告） | `test/README.md`、`test/2026-05-14-pfb-dev-self-test-checklist.md`、`test/2026-05-14-pfb-dev-self-test-testcase-report-completed.md`、`test/sql/`、`test/postman/` |

@@ -4,7 +4,8 @@
 > **目标**：在合并/提测前，用可重复步骤验证本迭代接口 **可用、可回归、可说明**，并留下最小 **自测证据**。  
 > **接口前缀**：`http://{host}:{port}/pfb-api`（路径形如 `/pfb-api/pfb/...`）。  
 > **真源**：Controller 见 `wmt-module-pfb`；匿名白名单见 `wmt-server` 下 `application-pfb-local.yaml` / `application-nmlocal.yaml` 的 `wmt.security.permit-all_urls`。  
-> **Postman**：可导入 [`postman/WMT-PFB-api.postman_collection.json`](./postman/WMT-PFB-api.postman_collection.json)，说明见 [`postman/README.md`](./postman/README.md)。
+> **Postman**：可导入 [`postman/WMT-PFB-api.postman_collection.json`](./postman/WMT-PFB-api.postman_collection.json)，说明见 [`postman/README.md`](./postman/README.md)。  
+> **全部用例执行通过后**：请归档至 [`2026-05-14-pfb-dev-self-test-testcase-report-completed.md`](./2026-05-14-pfb-dev-self-test-testcase-report-completed.md)（用例明细 + 结论）。
 
 ---
 
